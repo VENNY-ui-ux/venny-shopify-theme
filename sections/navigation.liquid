@@ -1,0 +1,122 @@
+<style>
+  .Navigation--left .Nav{
+    justify-content: start; 
+  }
+  .Navigation--center .Nav{
+    justify-content: center; 
+  }
+  .Navigation--right .Nav{
+    justify-content: end; 
+  }
+
+  .Navigation--left .Nav__Item .Nav__Link{
+    padding-left: 0;
+  }
+  .Navigation--left .Nav__Item:last-child .Nav__Link{
+    padding-right: 0;
+  }
+
+  .Navigation--right .Nav__Item .Nav__Link{
+    padding-right: 0;
+  }
+  .Navigation--right .Nav__Item:last-child .Nav__Link{
+    padding-left: 0;
+  }
+</style>
+
+<section class="Container Container--specialSpacingFirstSection {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %} Container--{{ section.settings.section_spacing }} Navigation Navigation--{{ section.settings.content_align }}" data-section-id="{{ section.id }}">
+  <ul class="Nav">
+    {%- for link in section.settings.navigation_menu.links -%}
+    <li class="Nav__Item">
+        <a href="{{ link.url }}" class="Nav__Link TitleMedium{% if link.links == blank and link.active %} Active{% endif %}">
+            {{- link.title | escape -}}
+        </a>
+    </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Navigation",
+  "class": "shopify-section--navigation",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingSmall"
+    },
+    {
+        "type": "header",
+        "content": "Navigation"
+    },
+    {
+        "type": "link_list",
+        "id": "navigation_menu",
+        "label": "Menu",
+        "default": "main-menu",
+        "info": "This menu won't show dropdown items"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Navigation"
+    }
+  ]
+}
+{% endschema %}

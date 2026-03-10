@@ -1,0 +1,117 @@
+{%- liquid
+    assign activate_account_header_title =  'customer.activate_account.title' | t 
+    assign add_gap =  true 
+    if section.settings.page_header_width == 'full_width_no_gap'
+        assign add_gap =  false 
+    endif 
+-%}
+
+{% render 'page-header', 
+    page_header_title: activate_account_header_title,
+    background_image: section.settings.page_header_bg_image,
+    background_color: section.settings.page_header_bg_color,
+    page_header_height: section.settings.page_header_height,
+    add_gap: add_gap
+%}
+<section class="Container Container--customers" data-section-id="activate-account">
+    {%- form 'activate_customer_password', name: 'activate', class: 'Form Form--activateAccount', id: 'activate_customer_password' -%}
+        <header class="TextCenter" style="margin-bottom: 20px;">
+            <h2 class="TitleLarge">{{ 'customer.activate_account.title' | t }}</h2>
+            <p class="Form__Text">{{ 'customer.activate_account.description' | t }}</p>
+        </header>
+
+        {%- if form.errors -%}
+            <div class="Form__Alert Alert Alert--danger">
+                <ul class="List List--unstyle">
+                    {%- for field in form.errors -%}
+                        {%- if field == 'form' -%}
+                            <li>{{ form.errors.messages[field] }}</li>
+                        {%- else -%}
+                            <li><strong>{{ form.errors.translated_fields[field] }}</strong> {{ form.errors.messages[field] }}</li>
+                        {%- endif -%}
+                    {%- endfor -%}
+                </ul>
+            </div>
+        {%- endif -%}
+
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="ActivateCustomerFormPassword--{{ section.id }}" type="password" class="Form__Input" name="customer[password]" aria-label="{{ 'customer.activate_account.password' | t }}" placeholder="{{ 'customer.activate_account.password' | t }}" autofocus>
+            <label for="ActivateCustomerFormPassword--{{ section.id }}">{{ 'customer.activate_account.password' | t }}</label>
+        </div>
+
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="ActivateCustomerFormPasswordConfirmmation--{{ section.id }}" type="password" class="Form__Input" name="customer[password_confirmation]" aria-label="{{ 'customer.activate_account.password_confirmation' | t }}" placeholder="{{ 'customer.activate_account.password_confirmation' | t }}">
+            <label for="ActivateCustomerFormPasswordConfirmmation--{{ section.id }}">{{ 'customer.activate_account.password_confirmation' | t }}</label>
+        </div>
+
+        <div>
+            <button type="submit" class="Form__Submit Button Button--primary Button--full" style="margin-bottom: 12px;">{{ 'customer.activate_account.submit' | t }}</button>
+            <button type="submit" class="Form__Submit Button Button--primary Button--full" name="decline">{{ 'customer.activate_account.decline' | t }}</button>
+        </div>
+
+    {%- endform -%}
+</section>
+
+{% schema %}
+{
+  "name": "Activate account page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "page_header_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    }
+  ]
+}
+{% endschema %}

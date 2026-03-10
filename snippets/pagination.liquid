@@ -1,0 +1,83 @@
+{%- if paginate.pages > 1 -%}
+  <style type="text/css">
+    :root {
+      --tg-component-pagination-label-background-color: var(--tg-sys-color-surface2);
+      --tg-component-pagination-label-text-color: var(--tg-sys-color-on-surface);
+    }
+    
+    .Pagination {
+      display: flex;
+      padding-left: 0;
+      list-style: none;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    
+    .Pagination__Link {
+      position: relative;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+    
+    .Pagination__Link:hover {
+      z-index: 2;
+      color: var(--tg-component-pagination-label-text-color);
+      background: var(--tg-component-pagination-label-background-color);
+    }
+    
+    .Pagination__Link:focus {
+      z-index: 3;
+      color: var(--tg-component-pagination-label-text-color);
+      background: var(--tg-component-pagination-label-background-color);
+    }
+    
+    .Pagination__Item {
+      display: flex;
+    }
+    
+    .Pagination__Item.Active .Pagination__Link {
+      z-index: 3;
+      border-bottom: 1px solid var(--tg-component-pagination-label-text-color);
+    }
+    
+    .Pagination__Link {
+      padding: 1rem;
+    }
+    .Pagination__Link.Pagination__Link--previous, .Pagination__Link.Pagination__Link--next {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+  </style>
+  <ul class="Pagination">
+    {%- if paginate.previous -%}
+      <li class="Pagination__Item">
+        <a class="Pagination__Link Pagination__Link--previous" rel="prev" href="{{ paginate.previous.url }}{{ hash }}" aria-label="{{ 'general.pagination.previous_page' | t }}" title="{{ 'general.pagination.previous_page' | t }}">
+          {%- render 'icons', icon: 'chevron-left' -%}
+        </a>
+      </li>
+    {%- endif -%}
+
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+        <li class="Pagination__Item"><a class="Button Pagination__Link" title="{{ 'general.pagination.go_to_page' | t: page: part.title }}" href="{{ part.url }}{{ hash }}">{{ part.title }}</a></li>
+      {%- else -%}
+        {%- if part.title == paginate.current_page -%}
+          <li class="Pagination__Item Active" aria-current="page" aria-label="{{ 'general.pagination.go_to_page' | t: page: part.title }}"><button class="Button Pagination__Link">{{ part.title }}</button></li>
+        {%- else -%}
+          <li class="Pagination__Item"><button class="Button Pagination__Link">{{ part.title }}</button></li>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if paginate.next -%}
+      <li class="Pagination__Item">
+        <a class="Pagination__Link Pagination__Link--next" href="{{ paginate.next.url }}{{ hash }}" rel="next" aria-label="{{ 'general.pagination.next_page' | t }}"  title="{{ 'general.pagination.next_page' | t }}">
+          {%- render 'icons', icon: 'chevron-right' -%}
+        </a>
+      </li>
+    {%- endif -%}
+  </ul>
+
+{%- endif -%}

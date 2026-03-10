@@ -1,0 +1,101 @@
+{{ 'component-product-pickup-availability.css' | asset_url | stylesheet_tag }}
+
+<div class="PickupAvailability" data-section-id="{{ section.id }}">
+
+  {%- assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+
+  {%- if pick_up_availabilities.size > 0 -%}
+    <div class="PickupAvailability__Body">
+      {%- assign closest_location = pick_up_availabilities.first -%}
+
+      {%- if closest_location.available -%}
+        {%- render 'icons', icon: 'pickup-availability-in-stock' -%}
+      {%- else -%}
+        {%- render 'icons', icon: 'pickup-availability-out-of-stock' -%}
+      {%- endif -%}
+
+      <div class="StoreAvailability">
+        {%- if closest_location.available -%}
+          <p class="StoreAvailability__Title">
+            {{- 'sections.pickup_availability.pick_up_available_at_html' | t: location_name: closest_location.location.name -}}
+          </p>
+
+          <p class="StoreAvailability__Stock">{{ closest_location.pick_up_time }}</p>
+
+          <p class="StoreAvailability__Stores">
+            <button type="button" class="Button Button--underline" data-tg-toggle="Drawer" data-tg-target="#PickupAvailabilityModal-{{ product_variant.id }}">
+              {%- if pick_up_availabilities.size == 1 -%}
+                {{- 'sections.pickup_availability.view_store_info' | t -}}
+              {%- else -%}
+                {{- 'sections.pickup_availability.check_other_stores' | t -}}
+              {%- endif -%}
+            </button>
+          </p>
+        {%- else -%}
+          <p class="StoreAvailability__Title">
+            {{- 'sections.pickup_availability.pick_up_unavailable_at_html' | t: location_name: closest_location.location.name -}}
+          </p>
+          {%- if pick_up_availabilities.size > 1 -%}
+            <p class="StoreAvailability__Stores">
+              <button type="button" class="Button Button--underline" data-tg-toggle="Drawer" data-tg-target="#PickupAvailabilityModal-{{ product_variant.id }}">
+                {{- 'sections.pickup_availability.check_other_stores' | t -}}
+              </button>
+            </p>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="Drawer Drawer--end" aria-hidden="true" tabindex="-1" id="PickupAvailabilityModal-{{ product_variant.id }}">
+      <div class="Drawer__Header">
+          <h2 class="Drawer__Title Product__Title">{{ product_variant.product.title }}</h2>
+          <button type="button" class="ButtonClose" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}"></button>
+        </div>
+
+        <div class="Drawer__Body">
+          {%- unless product_variant.product.has_only_default_variant -%}
+            <p class="Product__VariantTitle">
+              {%- for product_option in product_variant.product.options_with_values -%}
+                {{ product_option.name | escape }}:&nbsp;
+                {%- for value in product_option.values -%}
+                  {%- if product_option.selected_value == value -%}
+                    <span>{{ value | escape }}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- unless forloop.last -%},&nbsp;{%- endunless forloop.last -%}
+              {%- endfor -%}
+            </p>
+          {%- endunless -%}
+
+            <div class="StoreAvailabilityList">
+              {%- for availability in pick_up_availabilities -%}
+                <div class="StoreAvailabilityItem">
+                  <h4 class="StoreAvailabilityItem__Location">{{ availability.location.name }}</h4>
+
+                  <div class="StoreAvailabilityItem__Info">
+                    <div class="StoreAvailabilityItem__Stock">
+                      {%- if availability.available -%}
+                        {%- render 'icons', icon: 'pickup-availability-in-stock' -%} {{ 'sections.pickup_availability.pick_up_available' | t }}, {{ availability.pick_up_time | downcase }}
+                      {%- else -%}
+                        {%- render 'icons', icon: 'pickup-availability-out-of-stock' -%} {{ 'sections.pickup_availability.pick_up_currently_unavailable' | t }}
+                      {%- endif -%}
+                    </div>
+
+                    <div class="StoreAvailabilityItem__Contact">
+                      {%- assign address = availability.location.address -%}
+                      {{- address | format_address -}}
+
+                      {%- if address.phone.size > 0 -%}
+                        {{ address.phone }}
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+
+        </div>
+      </div>
+
+  {%- endif -%}
+</div>

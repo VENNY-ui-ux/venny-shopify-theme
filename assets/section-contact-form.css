@@ -1,0 +1,23 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Contact form
+ * ----------------------------------------------------------------------------
+ */
+.ContactForm__Header {
+  margin-bottom: 1.5rem;
+}
+
+.ContactForm__Description {
+  font-family: var(--tg-sys-typescale-body-large-font);
+  font-weight: var(--tg-sys-typescale-body-large-weight);
+  font-size: var(--tg-sys-typescale-body-large-size);
+  line-height: var(--tg-sys-typescale-body-large-line-height);
+  letter-spacing: var(--tg-sys-typescale-body-large-tracking);
+  margin-bottom: 2rem;
+}
+
+@media screen and (min-width: 641px) {
+  .ContactForm__Description {
+    margin-bottom: 1.5rem;
+  }
+}

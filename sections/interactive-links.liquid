@@ -1,0 +1,407 @@
+{{ 'section-featured-row.css' | asset_url | stylesheet_tag }}
+{{ 'section-interactive-links.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign lazy_load = 'lazy'
+  assign fetch_priority = 'auto'
+  if section.index == 1 and section.location != 'footer'
+    assign lazy_load = 'eager'
+    assign fetch_priority = 'high'
+  endif
+
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class = 'FeaturedRow__Image'
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class = 'Image--withLoader FeaturedRow__Image'
+  endif
+
+  assign use_static_ratio = false
+  assign use_first_image_ratio = true
+  assign use_natural_ratio = false
+  
+  assign container_aspect_ratio = 1.6
+
+  if section.settings.image_ratio == 'natural'
+    assign use_natural_ratio = true
+    assign use_first_image_ratio = false
+  elsif section.settings.image_ratio == 'adapt_to_first_image'
+    assign first_block = section.blocks | first
+
+    case first_block.type
+      when 'custom_link'
+        assign container_aspect_ratio = first_block.settings.image.aspect_ratio | default: 1.6
+      when 'products'
+        assign first_product_item = first_block.settings.product_list | first
+        assign container_aspect_ratio = first_product_item.featured_media.aspect_ratio | default: 1.6
+      when 'collections'
+        assign first_collection_item = first_block.settings.collection_list | first
+        assign first_collection_item_image = first_collection_item.image | default: first_collection_item.products.first.featured_image
+        assign container_aspect_ratio = first_collection_item_image.aspect_ratio | default: 1.6
+    endcase
+    
+  else
+    assign use_static_ratio = true
+    assign use_first_image_ratio = false
+  endif
+-%}
+
+<style>
+  {%- if section.settings.background_color != blank -%}
+    #section-{{ section.id }} .FeatureRow__ContentWrapper {
+      background: {{ section.settings.background_color }};
+    }
+  {%- endif -%}
+
+  {%- if section.settings.text_color != blank -%}
+     #section-{{ section.id }} .FeatureRow__ContentWrapper .SectionHeader__Heading a {
+      color: {{ section.settings.text_color }};
+      text-decoration-color: {{ section.settings.text_color }};
+    }
+  {%- endif -%}
+</style>
+
+<section-interactive-links id="section-{{ section.id }}" class="Container Container--specialSpacingFirstSection Container--{{ section.settings.section_spacing }} {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %} InteractiveLinks FeaturedRow FeaturedRow--image{{ section.settings.image_position }}">
+  
+    <div class="FeaturedRow__Body">
+      <div class="FeatureRow__ContentWrapper {% if section.settings.background_color != blank %}FeatureRow__ContentWrapper--withBackgroundColor{% endif %}">
+        <div class="FeatureRow__Content FeatureRow__Content--align{{ section.settings.text_align }}">
+            <div class="SectionHeader">
+              {%- for block in section.blocks -%}
+                {%- case block.type -%}
+                  {%- when 'custom_link' -%}
+                    {%- liquid
+                      if block.settings.image != blank and block.settings.image.aspect_ratio < container_aspect_ratio and use_natural_ratio
+                        assign container_aspect_ratio = block.settings.image.aspect_ratio 
+                      endif
+                    -%}
+                    <h2 class="SectionHeader__Heading" {{ block.shopify_attributes }}>
+                      <a id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}" class="InteractiveLinks__Link {% if forloop.first %}Active{% endif %}" href="{{ block.settings.link }}">{{- block.settings.label | escape -}}</a>
+                    </h2>
+                  {%- when 'products' -%}
+                    {%- for product_item in block.settings.product_list -%}
+                      {%- liquid
+                        if product_item.featured_media != blank and product_item.featured_media.aspect_ratio < container_aspect_ratio and use_natural_ratio
+                          assign container_aspect_ratio = product_item.featured_media.aspect_ratio 
+                        endif
+                      -%}
+                      <h2 class="SectionHeader__Heading" {{ block.shopify_attributes }}>
+                        <a id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}" class="InteractiveLinks__Link {% if forloop.parentloop.first and forloop.first %}Active{% endif %}" href="{{ product_item.url }}">{{ product_item.title }}</a>
+                      </h2>
+                    {%- else -%}
+                      <h2 class="SectionHeader__Heading" {{ block.shopify_attributes }}>
+                        <a id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}" class="InteractiveLinks__Link {% if forloop.first %}Active{% endif %}" href="#">{{ 'sections.onboarding.product_title' | t }}</a>
+                      </h2>
+                    {%- endfor -%}
+                  {%- when 'collections' -%}
+                    {%- for collection_item in block.settings.collection_list -%}
+                      {%- liquid
+                        assign collection_image = collection_item.image | default: collection_item.products.first.featured_image
+                        if collection_image != blank and collection_image.aspect_ratio < container_aspect_ratio and use_natural_ratio
+                          assign container_aspect_ratio = collection_image.aspect_ratio 
+                        endif
+                      -%}
+                      <h2 class="SectionHeader__Heading" {{ block.shopify_attributes }}>
+                        <a id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}" class="InteractiveLinks__Link {% if forloop.parentloop.first and forloop.first %}Active{% endif %}" href="{{ collection_item.url }}">{{ collection_item.title }}</a>
+                      </h2>
+                    {%- else -%}
+                      <h2 class="SectionHeader__Heading" {{ block.shopify_attributes }}>
+                        <a id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}" class="InteractiveLinks__Link {% if forloop.first %}Active{% endif %}" href="#">{{ 'sections.onboarding.collection_title' | t }}</a>
+                      </h2>
+                    {%- endfor -%}
+                {%- endcase -%}
+                
+              {%- endfor -%}
+            </div>
+        </div>
+      </div>
+
+      <div class="FeaturedRow__ImageWrapper">     
+        {%- for block in section.blocks -%}
+          {% capture current_placeholder %}{% cycle 1, 2 %}{% endcapture %}
+          {%- case block.type -%}
+            {%- when 'custom_link' -%}
+              {%- if block.settings.image != blank -%}
+                <{{- animation_image_loading_tag }} id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}-Image" class="Ratio {% if use_natural_ratio %}Ratio--contain{% endif %} {% if use_static_ratio %}Ratio--{{ section.settings.image_ratio }}{% endif %} InteractiveLinks__Image {% if forloop.first %}Active{% endif %}" {% if use_natural_ratio or use_first_image_ratio %}style="--tg-aspect-ratio: {{ container_aspect_ratio }};"{% endif %}>
+                  {%- capture tg_sizes -%}(min-width: 641px) calc(100vw / 2), 100vw{%- endcapture -%}
+                  {{ block.settings.image | image_url: width: 3000 | image_tag:
+                    sizes: tg_sizes,
+                    widths: '360, 535, 750, 1070, 1500, 2000, 3000',
+                    class: animation_image_loading_class,
+                    loading: lazy_load,
+                    fetchpriority: fetch_priority
+                  }}
+                  {%- if settings.animation_image_loading != 'none' -%}
+                    <span class="Image--loader"></span>
+                  {%- endif -%}
+                  {%- if block.settings.link != blank -%}
+                    <a class="StretchedLink" href="{{ block.settings.link }}"></a>
+                  {%- endif -%}
+                </{{- animation_image_loading_tag }}>
+              {%- else -%}
+                <div id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}-Image" class="Ratio {% if use_natural_ratio %}Ratio--contain{% endif %} {% if use_static_ratio %}Ratio--{{ section.settings.image_ratio }}{% endif %} InteractiveLinks__Image {% if forloop.first %}Active{% endif %}"  {% if use_natural_ratio or use_first_image_ratio %}style="--tg-aspect-ratio: {{ container_aspect_ratio }};"{% endif %}>
+                  {{ 'lifestyle-' | append: current_placeholder | placeholder_svg_tag: 'FeaturedRow__Image SvgPlaceholder' }}
+                </div>
+              {%- endif -%}
+            {%- when 'products' -%}
+              {%- for product_item in block.settings.product_list -%}
+                {%- if product_item.featured_media != blank -%}
+                  <{{- animation_image_loading_tag }} id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}-Image" class="Ratio {% if use_natural_ratio %}Ratio--contain{% endif %} {% if use_static_ratio %}Ratio--{{ section.settings.image_ratio }}{% endif %} InteractiveLinks__Image {% if forloop.parentloop.first and forloop.first %}Active{% endif %}" {% if use_natural_ratio or use_first_image_ratio %}style="--tg-aspect-ratio: {{ container_aspect_ratio }};"{% endif %}>
+                    {%- capture tg_sizes -%}(min-width: 641px) calc(100vw / 2), 100vw{%- endcapture -%}
+                    {{ product_item.featured_media | image_url: width: 3000 | image_tag:
+                      sizes: tg_sizes,
+                      widths: '360, 535, 750, 1070, 1500, 2000, 3000',
+                      class: animation_image_loading_class,
+                      loading: lazy_load,
+                      fetchpriority: fetch_priority
+                    }}
+                    {%- if settings.animation_image_loading != 'none' -%}
+                      <span class="Image--loader"></span>
+                    {%- endif -%}
+                    <a class="StretchedLink" href="{{ product_item.url }}"></a>
+                  </{{- animation_image_loading_tag }}>
+                {%- else -%}
+                  <div id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}-Image" class="Ratio {% if use_natural_ratio %}Ratio--contain{% endif %} {% if use_static_ratio %}Ratio--{{ section.settings.image_ratio }}{% endif %} InteractiveLinks__Image {% if forloop.parentloop.first and forloop.first %}Active{% endif %}"  {% if use_natural_ratio or use_first_image_ratio %}style="--tg-aspect-ratio: {{ container_aspect_ratio }};"{% endif %}>
+                    {{ 'product-' | append: current_placeholder | placeholder_svg_tag: 'FeaturedRow__Image SvgPlaceholder' }}
+                  </div>
+                {%- endif -%}
+               {%- else -%}
+                  <div id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}-Image" class="Ratio {% if use_natural_ratio %}Ratio--contain{% endif %} {% if use_static_ratio %}Ratio--{{ section.settings.image_ratio }}{% endif %} InteractiveLinks__Image {% if forloop.first %}Active{% endif %}"  {% if use_natural_ratio or use_first_image_ratio %}style="--tg-aspect-ratio: {{ container_aspect_ratio }};"{% endif %}>
+                    {{ 'product-' | append: current_placeholder | placeholder_svg_tag: 'FeaturedRow__Image SvgPlaceholder' }}
+                  </div>
+               {%- endfor -%}
+            {%- when 'collections' -%}
+              {%- for collection_item in block.settings.collection_list -%}
+                {%-  assign collection_image = collection_item.image | default: collection_item.products.first.featured_image -%}
+                {%- if collection_image != blank -%}
+                  <{{- animation_image_loading_tag }} id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}-Image" class="Ratio {% if use_natural_ratio %}Ratio--contain{% endif %} {% if use_static_ratio %}Ratio--{{ section.settings.image_ratio }}{% endif %} InteractiveLinks__Image {% if forloop.parentloop.first and forloop.first %}Active{% endif %}" {% if use_natural_ratio or use_first_image_ratio %}style="--tg-aspect-ratio: {{ container_aspect_ratio }};"{% endif %}>
+                    {%- capture tg_sizes -%}(min-width: 641px) calc(100vw / 2), 100vw{%- endcapture -%}
+                    {{ collection_image | image_url: width: 3000 | image_tag:
+                      sizes: tg_sizes,
+                      widths: '360, 535, 750, 1070, 1500, 2000, 3000',
+                      class: animation_image_loading_class,
+                      loading: lazy_load,
+                      fetchpriority: fetch_priority
+                    }}
+                    {%- if settings.animation_image_loading != 'none' -%}
+                      <span class="Image--loader"></span>
+                    {%- endif -%}
+                    <a class="StretchedLink" href="{{ collection_image.url }}"></a>
+                  </{{- animation_image_loading_tag }}>
+                {%- else -%}
+                  <div id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}-Image" class="Ratio {% if use_natural_ratio %}Ratio--contain{% endif %} {% if use_static_ratio %}Ratio--{{ section.settings.image_ratio }}{% endif %} InteractiveLinks__Image {% if forloop.parentloop.first and forloop.first %}Active{% endif %}" {% if use_natural_ratio or use_first_image_ratio %}style="--tg-aspect-ratio: {{ container_aspect_ratio }};"{% endif %}>
+                    {{ 'collection-' | append: current_placeholder | placeholder_svg_tag: 'FeaturedRow__Image SvgPlaceholder' }}
+                  </div>
+                {%- endif -%}
+              {%- else -%}
+                  <div id="InteractiveLinks-{{ section.id }}-{{ block.id }}-{{ forloop.index }}-Image" class="Ratio {% if use_natural_ratio %}Ratio--contain{% endif %} {% if use_static_ratio %}Ratio--{{ section.settings.image_ratio }}{% endif %} InteractiveLinks__Image {% if forloop.first %}Active{% endif %}"  {% if use_natural_ratio or use_first_image_ratio %}style="--tg-aspect-ratio: {{ container_aspect_ratio }};"{% endif %}>
+                    {{ 'collection-' | append: current_placeholder | placeholder_svg_tag: 'FeaturedRow__Image SvgPlaceholder' }}
+                  </div>
+              {%- endfor -%}
+            {%- endcase -%}
+        {%- endfor -%}
+       </div>
+    </div>
+</section-interactive-links>
+<script src="{{ 'section-interactive-links.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Interactive links",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "natural",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "adapt_to_first_image",
+          "label": "Adapt to first image"
+        },
+        {
+          "value": "2x3",
+          "label": "2:3"
+        },
+        {
+          "value": "3x4",
+          "label": "3:4"
+        },
+        {
+          "value": "1x1",
+          "label": "1:1"
+        },
+        {
+          "value": "4x3",
+          "label": "4:3"
+        },
+        {
+          "value": "16x9",
+          "label": "16:9"
+        },
+        {
+          "value": "21x9",
+          "label": "21:9"
+        }
+      ],
+      "default": "adapt_to_first_image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "info": "Visible on desktop",
+      "options": [
+        {
+          "value": "Left",
+          "label": "Left"
+        },
+        {
+          "value": "Right",
+          "label": "Right"
+        }
+      ],
+      "default": "Right"
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "Left",
+          "label": "Left"
+        },
+        {
+          "value": "Center",
+          "label": "Center"
+        },
+        {
+          "value": "Right",
+          "label": "Right"
+        }
+      ],
+      "default": "Left"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collections",
+      "name": "Collections",
+      "settings": [
+        {
+          "type": "collection_list",
+          "id": "collection_list",
+          "label": "Collections"
+        }
+      ]
+    },
+    {
+      "type": "products",
+      "name": "Products",
+      "settings": [
+        {
+          "type": "product_list",
+          "id": "product_list",
+          "label": "Products"
+        }
+      ]
+    },
+    {
+      "type": "custom_link",
+      "name": "Custom link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "800 x 600px .png recommended."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Interactive links",
+      "blocks": [
+        {
+          "type": "custom_link"
+        },
+        {
+          "type": "products"
+        },
+        {
+          "type": "collections"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

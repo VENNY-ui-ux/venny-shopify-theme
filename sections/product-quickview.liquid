@@ -1,0 +1,371 @@
+{{ 'component-product-blocks.css' | asset_url | stylesheet_tag }}
+{{ 'section-product-quickview.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'component-product-variants.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'component-product-quickview.js' | asset_url }}" defer="defer"></script>
+{%- liquid
+  if request.design_mode and product == blank
+    assign product =  section.settings.product 
+  endif
+
+  assign show_sku = false
+  assign show_payment_button = false 
+
+  assign show_inventory_quantity = false
+  assign inventory_quantity_threshold = 5
+
+  for block in section.blocks
+    case block.type
+    when 'sku' 
+        assign show_sku = true
+    when 'buy_buttons'
+        assign show_payment_button = block.settings.show_dynamic_checkout
+    when 'quantity_selector'
+        assign show_inventory_quantity = block.settings.show_inventory_quantity 
+        assign inventory_quantity_threshold = block.settings.inventory_quantity_threshold 
+    endcase 
+  endfor
+
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class = 'Image--fadeIn'
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class = 'Image--withLoader Image--fadeIn'
+  endif
+-%}
+
+{%- capture section_settings -%}
+{
+  "productForm": "product-quickview",
+  "enableHistoryState": false,
+  "showInventoryQuantity": {{ show_inventory_quantity | json }},
+  "showSku": {{ show_sku | json }},
+  "inventoryQuantityThreshold": {{ inventory_quantity_threshold }},
+  "showPaymentButton": {{ show_payment_button | json }}
+}
+{%- endcapture -%}
+
+<section id="ProductQuickviewSection" class="Container ProductQuickview" data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}' data-product-url="{{ product.url }}">
+  {%- capture quiview_section_content -%}
+    <div class="SectionBody ProductQuickview__Body Grid">
+      {%- if product.id -%}
+        {%- if product.media.size > 0 -%}
+          <a href="{{ product.url }}" class="ProductQuickview__Gallery Grid__Item 1/2--medium-up">
+            <{{- animation_image_loading_tag }} class="Ratio" style="--tg-aspect-ratio: {{ product.featured_media.aspect_ratio | default: product.featured_media.preview_image.aspect_ratio }};">
+              <img
+                srcset="{%- if product.featured_media.width >= 375 -%}{{ product.featured_media | image_url: width: 375 }} 375w,{%- endif -%}
+                  {%- if product.featured_media.width >= 550 -%}{{ product.featured_media | image_url: width: 550 }} 550w,{%- endif -%}
+                  {%- if product.featured_media.width >= 750 -%}{{ product.featured_media | image_url: width: 750 }} 750w,{%- endif -%}
+                  {%- if product.featured_media.width >= 1100 -%}{{ product.featured_media | image_url: width: 1100 }} 1100w,{%- endif -%}
+                  {%- if product.featured_media.width >= 1500 -%}{{ product.featured_media | image_url: width: 1500 }} 1500w,{%- endif -%}
+                  {{ product.featured_media | image_url }} {{ product.featured_media.width }}w"
+                  sizes="(min-width: 641px) calc(100vw / 2), 100vw"
+                src="{{ product.featured_media | image_url: width: 1000 }}"
+                loading="lazy"
+                alt="{{ product.featured_media.alt | escape }}"
+                width="{{ product.featured_media.width }}"
+                height="{{ product.featured_media.height }}"
+                class="{{ animation_image_loading_class }}"
+              >
+              {%- if settings.animation_image_loading != 'none' -%}
+                <span class="Image--loader"></span>
+              {%- endif -%}
+            </{{- animation_image_loading_tag }}>
+          </a>
+        {%- endif -%}
+
+        <div class="ProductQuickview__Summary Grid__Item {% if product.featured_media %}1/2--medium-up{% endif %}">
+          {%- render 'product-blocks', product: product, product_from: 'product-quickview' -%}
+
+          <div class="ProductQuickview__ViewMore">
+            <a href="{{ product.url }}" class="Button Button--underline">{{ 'sections.featured_product.view_product' | t }}</a>
+          </div>
+        </div>
+      {%- elsif request.design_mode -%}
+        <div class="ProductQuickview__Gallery Grid__Item 1/2--medium-up">
+          {{- 'product-6' | placeholder_svg_tag -}}
+        </div>
+
+        <div class="ProductQuickview__Summary Grid__Item 1/2--medium-up">
+          <div class="Product__Block">
+            <h2 class="Product__Title">{{ 'sections.onboarding.product_title' | t }}</h2>
+            <div class="Product__PriceList">
+              <span class="Price">
+                {%- if settings.price_currency_format == 'money' -%}
+                  {{ 6800 | money }}
+                {%- elsif settings.price_currency_format == 'money_with_currency' -%}
+                  {{ 6800 | money_with_currency }}
+                {%- elsif settings.price_currency_format == 'money_without_currency' -%}
+                  {{ 6800 | money_without_currency }}
+                {%- else -%}
+                  {{ 6800 | money_without_trailing_zeros }}
+                {%- endif -%}
+              </span>
+            </div>
+          </div>
+
+          <div class="Product__Block">
+            <button type="button" class="ProductForm__AddToCart Button Button--primary Button--full" disabled>
+              <span>{{ 'product.form.sold_out' | t }}</span>
+            </button>
+          </div>
+
+          <div class="ProductQuickview__ViewMore">
+            <a href="#" class="Button Button--underline">{{ 'sections.featured_product.view_product' | t }}</a>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endcapture -%}
+
+  <div class="Modal Fade Modal--quickview" id="ProductQuickviewModal" tabindex="-1" aria-hidden="true">
+    <div class="Modal__Dialog Modal__Dialog--centered">
+      <div class="Modal__Content">
+        <button type="button" class="ButtonClose" data-tg-dismiss="Modal" aria-label="{{ 'general.modal.close' | t }}"></button>
+        <div class="Modal__Body">
+          {{ quiview_section_content }}   
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+{% schema %}
+{
+  "name": "Product quick view",
+  "class": "shopify-section--product-quickview",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Choose a product for the quick view preview."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "text_size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineMedium",
+          "label": "Title size"
+        }
+      ]
+    },
+    {
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1
+    },
+    {
+      "type": "sku",
+      "name": "SKU",
+      "limit": 1
+    },
+    {
+      "type": "rating",
+      "name": "Product rating",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-product-rating)"
+        }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Price"
+        },
+        {
+          "type": "select",
+          "id": "price_size",
+          "options": [
+            {
+              "value": "BodyMedium",
+              "label": "Small"
+            },
+            {
+              "value": "BodyLarge",
+              "label": "Medium"
+            },
+            {
+              "value": "TitleLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "BodyMedium",
+          "label": "Size"
+        },
+        {
+          "type": "color",
+          "id": "price_color",
+          "label": "Color"
+        },
+        {
+          "type": "color",
+          "id": "sale_price_color",
+          "label": "Sale color"
+        },
+        {
+          "type": "checkbox",
+          "id": "bold_font",
+          "label": "Bold font",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Taxes notice"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_taxes_included",
+          "label": "Show price taxes notice",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "quantity_selector",
+      "name": "Quantity selector",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_inventory_quantity",
+          "label": "Show inventory quantity",
+          "info": "Make sure that your inventory is tracked. [Learn more](https://help.shopify.com/manual/products/inventory#set-up-inventory-tracking).",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "inventory_quantity_threshold",
+          "label": "Inventory quantity threshold",
+          "info": "Only show inventory quantity if below threshold. Choose 0 to always show.",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "hide_sold_out_variants",
+          "label": "Hide sold out variants",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_unavailable_variants",
+          "label": "Hide unavailable variants",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "picker_type",
+          "options": [
+            {
+              "value": "dropdown",
+              "label": "Dropdown"
+            },
+            {
+              "value": "block",
+              "label": "Button"
+            },
+            {
+              "value": "color_swatch_dropdown",
+              "label": "Color swatch and dropdown"
+            },
+            {
+              "value": "color_image_swatch_dropdown",
+              "label": "Color image swatch and dropdown"
+            },
+            {
+              "value": "color_swatch_button",
+              "label": "Color swatch and button"
+            },
+            {
+              "value": "color_image_swatch_button",
+              "label": "Color image swatch and button"
+            }
+          ],
+          "default": "block",
+          "label": "Picker type"
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Add to cart button",
+      "limit": 1
+    },
+    {
+      "type": "share",
+      "name": "Share",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "If you include a link in social media posts, the page’s featured image will be shown as the preview image. [Learn more](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)."
+        },
+        {
+          "type": "paragraph",
+          "content": "A store title and description are included with the preview image. [Learn more](https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords#set-a-title-and-description-for-your-online-store)."
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom Liquid",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "refresh_when_variant_changes",
+          "label": "Refresh when variant changes",
+          "default": false
+        },
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid",
+          "info": "Add app snippets or other Liquid code to create advanced customizations."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

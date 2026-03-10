@@ -1,0 +1,71 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Template account pages
+  * ----------------------------------------------------------------------------
+  */
+.Template--customers .Form--login,
+.Template--customers .Form--recoverPassword,
+.Template--customers .Form--createCustomer,
+.Template--customers .Form--resetPassword,
+.Template--customers .Form--activateAccount {
+  max-width: 400px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.Template--customers .PageHeader__ButtonWrapper {
+  display: flex;
+  align-items: center;
+}
+@media screen and (min-width: 1008px) {
+  .Template--customers .PageHeader__ButtonWrapper {
+    position: absolute;
+    right: 2rem;
+    top: 0;
+  }
+}
+@media screen and (min-width: 1008px) {
+  .Template--customers .Account__Addresses, .Template--customers .Order__Addresses {
+    -webkit-padding-start: 3rem;
+            padding-inline-start: 3rem;
+  }
+}
+.Template--customers .OrderItem__ImageAndImage {
+  display: flex;
+}
+.Template--customers .OrderItem__ImageAndImage .OrderItem__ImageWrapper {
+  width: 40%;
+}
+.Template--customers .OrderItem__ImageAndImage .OrderItem__Info {
+  width: 60%;
+  -webkit-padding-start: 1rem;
+          padding-inline-start: 1rem;
+  align-self: center;
+}
+.Template--customers .Container--addresses .AddressAction {
+  text-align: end;
+  margin-bottom: 1.25rem;
+}
+.Template--customers .AccountAddress span {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+@media screen and (max-width: 640px) {
+  .Template--customers .Modal--address {
+    height: 100%;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+  }
+  .Template--customers .Modal--address .Modal__Header {
+    margin-top: 2rem;
+  }
+}
+.Template--customers .SignInWithShopProvider {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.Template--customers .SignInWithShopProvider__Separator {
+  margin-top: 1rem;
+}

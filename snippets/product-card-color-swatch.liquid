@@ -1,0 +1,184 @@
+{%- liquid
+    if settings.product_image_size == 'natural'
+        assign use_natural_size = true
+    else
+        assign use_natural_size = false
+    endif
+
+    assign show_color_image_swatch = settings.product_color_image_swatch
+
+    assign sectiion_id = product.id 
+-%}
+
+{%- capture color_swatch -%}
+    {%- assign color_label = 'color,colour,couleur,colore,farbe,färg,farve,kleur,barva,väri,색상,색,色,farge,kolor,cor,สี,renk,màu sắc,颜色,顏色' | split: ',' -%}
+    {%- if product.available or settings.product_card_hide_sold_out_swatch == false -%}
+    {%- for option in product.options_with_values -%}
+        {%- assign downcase_option = option.name | downcase -%}
+        
+        {%- if color_label contains downcase_option and show_swatches and show_color_image_swatch -%}
+            <ul class="SwatchList List List--horizontal">
+                {%- for value in option.values -%}
+                    {%- assign downcase_value = value | downcase -%}
+
+                    
+                        {%- liquid
+
+                            if value.swatch.color 
+                                assign background_color = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                            else
+                                assign background_color = value | replace: ' ', '' | downcase
+                            endif
+
+                            assign image_swatch_image = blank
+
+                            if value.swatch.image
+                                assign image_swatch_image = value.swatch.image
+                            else
+                                assign image_swatch_name = value | handle | append: '-' | append: product.handle | append: '.jpg'
+                                assign image_swatch_image = images[image_swatch_name]
+
+                                if image_swatch_image == blank
+                                    assign image_swatch_name = value | handle | append: '-' | append: product.handle | append: '.png'
+                                    assign image_swatch_image = images[image_swatch_name]
+                                endif 
+
+                                if image_swatch_image == blank
+                                    assign image_swatch_name = value | handle | append: '.jpg'
+                                    assign image_swatch_image = images[image_swatch_name]
+                                endif
+
+                                if image_swatch_image == blank
+                                    assign image_swatch_name = value | handle | append: '.png'
+                                    assign image_swatch_image = images[image_swatch_name]
+                                endif 
+                            
+                                if value.variant.image != empty 
+                                    assign image_swatch_image = value.variant.image 
+                                endif
+                            endif
+                        
+                            assign variant_for_value = value.variant
+
+                            assign option_disabled = true
+
+                            if value.variant.available
+                                assign option_disabled = false
+                            endif
+                        -%}
+                        {%- if variant_for_value.image -%}
+                            {%- capture variant_image_srcset -%}
+                                {%- if variant_for_value.image.width >= 165 -%}{{ variant_for_value.image | image_url: width: 165 }} 165w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 360 -%}{{ variant_for_value.image | image_url: width: 360 }} 360w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 533 -%}{{ variant_for_value.image | image_url: width: 533 }} 533w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 720 -%}{{ variant_for_value.image | image_url: width: 720 }} 720w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 940 -%}{{ variant_for_value.image | image_url: width: 940 }} 940w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 1066 -%}{{ variant_for_value.image | image_url: width: 1066 }} 1066w,{%- endif -%}
+                                {{ variant_for_value.image | image_url }} {{ variant_for_value.image.width }}w
+                            {%- endcapture -%}
+                            {%- assign variant_image_url = variant_for_value.image | image_url: width: 533 -%}
+                        {%- endif -%}
+                    <li class="ImageSwatchWrapper {% if option_disabled %}Unavailable{% endif %}">
+                        <input id="product-card-option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="ProductCard__ColorSwatchRadio Hidden" type="radio" name="product-card-option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}" {% if value == option.selected_value %}checked="checked"{% endif %}
+                            data-variant-url="{{ variant_for_value.url }}" 
+                            {% if variant_for_value.image %}
+                                data-image-id="{{ variant_for_value.image.id }}" 
+                                data-image-url="{{ variant_image_url }}" 
+                                data-image-srcset="{{ variant_image_srcset }}" 
+                                data-image-aspect-ratio="{{ variant_for_value.image.aspect_ratio }}"
+                            {% endif %}
+                        >
+                        <label for="product-card-option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="Ratio {% unless use_natural_size %}Ratio--{{ settings.product_image_size }}{% endunless %} {% if option_disabled %}Unavailable{% endif %} ImageSwatch ImageSwatch--small {% if downcase_value == 'white' and image_swatch_image == blank %}ColorSwatch--white{% endif %}" title="{{ value | escape }}" 
+                            style="display: block;  {% if use_natural_size %}--tg-aspect-ratio: {{ image_swatch_image.aspect_ratio | default: product.featured_image.aspect_ratio }};{% endif %} background-size:cover; background-position: center; {% unless image_swatch_image != blank %}background-color: {{ background_color }};{% endunless %} {% if image_swatch_image != blank %}background-image: url({{ image_swatch_image | image_url: width: 160 }}){% endif %}">
+                            <span class="VisuallyHidden">{{ value }}</span>
+                        </label>
+                    </li>
+                {%- endfor -%}
+            </ul>
+        {%- elsif color_label contains downcase_option and show_swatches -%}
+            <ul class="SwatchList List List--horizontal">
+                {%- for value in option.values -%}
+                        {%- liquid
+                            assign downcase_value = value | downcase
+
+                            if value.swatch.color
+                                assign background_color = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                            else
+                                assign background_color = value | replace: ' ', '' | downcase
+                            endif
+
+                            assign color_swatch_image = blank
+
+                            if value.swatch.image
+                                assign color_swatch_image = value.swatch.image
+                            else
+
+                                assign color_swatch_name = value | handle | append: '-' | append: product.handle | append: '.jpg'
+                                assign color_swatch_image = images[color_swatch_name]
+
+                                if color_swatch_image == blank
+                                    assign color_swatch_name = value | handle | append: '-' | append: product.handle | append: '.png'
+                                    assign color_swatch_image = images[color_swatch_name]
+                                endif 
+
+                                if color_swatch_image == blank
+                                    assign color_swatch_name = value | handle | append: '.jpg'
+                                    assign color_swatch_image = images[color_swatch_name]
+                                endif
+
+                                if color_swatch_image == blank
+                                    assign color_swatch_name = value | handle | append: '.png'
+                                    assign color_swatch_image = images[color_swatch_name]
+                                endif 
+                            endif
+
+                            assign option_disabled = true
+
+                            if value.variant.available
+                                assign option_disabled = false
+                            endif
+
+                            assign variant_for_value = value.variant
+                        -%}
+                        {%- if variant_for_value.image -%}
+                            {%- capture variant_image_srcset -%}
+                                {%- if variant_for_value.image.width >= 165 -%}{{ variant_for_value.image | image_url: width: 165 }} 165w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 360 -%}{{ variant_for_value.image | image_url: width: 360 }} 360w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 533 -%}{{ variant_for_value.image | image_url: width: 533 }} 533w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 720 -%}{{ variant_for_value.image | image_url: width: 720 }} 720w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 940 -%}{{ variant_for_value.image | image_url: width: 940 }} 940w,{%- endif -%}
+                                {%- if variant_for_value.image.width >= 1066 -%}{{ variant_for_value.image | image_url: width: 1066 }} 1066w,{%- endif -%}
+                                {{ variant_for_value.image | image_url }} {{ variant_for_value.image.width }}w
+                            {%- endcapture -%}
+                            {%- assign variant_image_url = variant_for_value.image | image_url: width: 533 -%}
+                        {%- endif -%}
+                    <li class="ColorSwatchWrapper {% if option_disabled %}Unavailable{% endif %}">
+                        <input id="product-card-option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="ProductCard__ColorSwatchRadio Hidden" type="radio" name="product-card-option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}" {% if value == option.selected_value %}checked="checked"{% endif %}
+                            data-variant-url="{{ variant_for_value.url }}" 
+                            {% if variant_for_value.image %}
+                                data-image-id="{{ variant_for_value.image.id }}" 
+                                data-image-url="{{ variant_image_url }}" 
+                                data-image-srcset="{{ variant_image_srcset }}" 
+                                data-image-aspect-ratio="{{ variant_for_value.image.aspect_ratio }}"
+                            {% endif %}
+                        >
+                        <label for="product-card-option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="ColorSwatch ColorSwatch--small {% if option_disabled %}Unavailable{% endif %} {% if downcase_value == 'white' and color_swatch_image == blank %}ColorSwatch--white{% endif %}" title="{{ value | escape }}" 
+                            style="{% unless color_swatch_image != blank %}background-color: {{ background_color }};{% endunless %} {% if color_swatch_image != blank %}background-image: url({{ color_swatch_image | image_url: width: 64, height: 64 }}){% endif %}">
+                            <span class="VisuallyHidden">{{ value }}</span>
+                        </label>
+                    </li>
+                {%- endfor -%}
+            </ul>
+        {%- endif -%}
+
+    {%- endfor -%}
+    {%- endif -%}
+{%- endcapture -%}
+
+{%- if show_swatches and color_swatch != blank -%}
+    {%- if product.available or settings.product_card_hide_sold_out_swatch == false -%}
+        <div class="ProductCard__ColorSwatch {% if settings.product_card_hide_sold_out_swatch %}ProductCard__ColorSwatch--hideSoldOutVariants{% endif %}">
+            {{- color_swatch -}}
+        </div>
+    {%- endif -%}
+{%- endif -%}

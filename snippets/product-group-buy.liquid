@@ -1,0 +1,79 @@
+{%- if block.settings.product_list != blank -%}
+{{ 'component-carousel.css' | asset_url | stylesheet_tag }}
+
+{%- capture carousel_options -%}
+    {
+      "freeMode": true,
+      "slidesPerView": "auto",
+      "navigation": {
+        "enabled": false,
+        "nextEl": ".Carousel__NavNext",
+        "prevEl": ".Carousel__NavPrev"
+      },
+      "breakpoints": {
+        "640": {
+          "slidesPerView": "auto",
+          "freeMode": false,
+          "navigation": {
+            "enabled": true,
+            "nextEl": ".Carousel__NavNext",
+            "prevEl": ".Carousel__NavPrev"
+          }
+        }
+      }
+    }
+{%- endcapture -%}
+
+<div class="Product__Block Product__Block--styleWith ProductStyleWith">
+
+    {%- if block.settings.heading != blank -%}
+        <header class="SectionHeader SectionHeader--{{ block.settings.header_align }}">
+            <div class="SectionHeader__Text">
+                <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h2>
+            </div>
+        </header>
+    {%- endif -%}
+
+    <div class="ProductStyleWith__Body ProductListWrapper">
+        <div class="ProductList ProductList--carousel Carousel" data-carousel-config='{{ carousel_options }}'>
+            <div class="CarouselWrapper">
+                {%- assign product_list = block.settings.product_list -%}
+                {%- assign product_list_count = 0 -%}
+                {%- if product_list != blank -%}
+                    {%- liquid
+                        for related_product in product_list 
+                            if product.id != related_product.id 
+                                assign product_list_count = product_list_count | plus: 1 
+                            endif
+                        endfor 
+
+                        assign card_desktop_items_per_row = 3
+                        assign card_mobile_items_per_row = 1
+                        if product_list_count == 2
+                            assign card_desktop_items_per_row = 6
+                            assign card_mobile_items_per_row = 2
+                        elsif product_list_count > 2
+                            assign card_desktop_items_per_row = 6
+                            assign card_mobile_items_per_row = 2.38
+                        endif
+                    -%}
+
+                    {%- for related_product in product_list -%}
+                        {%- if product.id != related_product.id -%}
+                            <div class="Carousel__Item 1/2--small 1/2--medium-up Carousel__Item--count{{ product_list_count }}">
+                                {%- render 'product-card', product: related_product, section_is_grid_width: section.settings.section_width, card_desktop_items_per_row: card_desktop_items_per_row, card_mobile_items_per_row: card_mobile_items_per_row, show_rating: block.settings.show_rating, show_product_info: block.settings.show_product_info, show_vendor: block.settings.show_vendor, show_swatches: block.settings.show_swatches, show_quick_add: false -%}
+                            </div>
+                        {%- endif -%} 
+                    {%- endfor -%}
+                {%- endif -%} 
+            </div>
+            <div class="Carousel__NavPrev">
+            {%- render 'icons', icon: 'nav-right' -%}
+            </div>
+            <div class="Carousel__NavNext">
+            {%- render 'icons', icon: 'nav-right' -%}
+            </div>
+        </div>
+    </div>
+</div>
+{%- endif -%}

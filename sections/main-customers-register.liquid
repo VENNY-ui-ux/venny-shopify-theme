@@ -1,0 +1,124 @@
+{%- liquid
+    assign register_header_title =  'customer.register.title' | t 
+    assign add_gap =  true 
+    if section.settings.page_header_width == 'full_width_no_gap'
+        assign add_gap =  false 
+    endif 
+-%}
+
+{% render 'page-header', 
+    page_header_title: register_header_title,
+    background_image: section.settings.page_header_bg_image,
+    background_color: section.settings.page_header_bg_color,
+    page_header_height: section.settings.page_header_height,
+    add_gap: add_gap
+%}
+
+<section class="Container Container--customers">
+    {%- form 'create_customer', name: 'create_customer', class: 'Form Form--createCustomer', id: 'CreateCustomer' -%}
+
+      {%- if form.errors -%}
+          <div class="Form__Alert Alert Alert--danger">
+            <ul class="List List--unstyle">
+              {%- for field in form.errors -%}
+                {%- if field == 'form' -%}
+                  <li>{{ form.errors.messages[field] }}</li>
+                {%- else -%}
+                  <li><strong>{{ form.errors.translated_fields[field] }}</strong> {{ form.errors.messages[field] }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="CreateCustomerFormFirstName--{{ section.id }}" type="text" class="Form__Input" name="customer[first_name]" aria-label="{{ 'customer.register.first_name' | t }}" placeholder="{{ 'customer.register.first_name' | t }}" autofocus>
+            <label class="Form__Label" for="CreateCustomerFormFirstName--{{ section.id }}">{{ 'customer.register.first_name' | t }}</label>
+        </div>
+
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="CreateCustomerFormLastName--{{ section.id }}" type="text" class="Form__Input" name="customer[last_name]" aria-label="{{ 'customer.register.last_name' | t }}" placeholder="{{ 'customer.register.last_name' | t }}">
+            <label class="Form__Label" for="CreateCustomerFormLastName--{{ section.id }}">{{ 'customer.register.last_name' | t }}</label>
+        </div>
+
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="CreateCustomerFormEmail--{{ section.id }}" type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" title="{{ 'general.meta.email_format' | t }}" class="Form__Input" name="customer[email]" aria-label="{{ 'customer.register.email' | t }}" placeholder="{{ 'customer.register.email' | t }}" required="required">
+            <label class="Form__Label" for="CreateCustomerFormEmail--{{ section.id }}">{{ 'customer.register.email' | t }}</label>
+        </div>
+
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="CreateCustomerFormPassword--{{ section.id }}" type="password" class="Form__Input" name="customer[password]" aria-label="{{ 'customer.register.password' | t }}" placeholder="{{ 'customer.register.password' | t }}" required="required">
+            <label class="Form__Label" for="CreateCustomerFormPassword--{{ section.id }}">{{ 'customer.register.password' | t }}</label>
+        </div>
+
+        <button type="submit" class="Form__Submit Button Button--primary Button--full">{{ 'customer.register.submit' | t }}</button>
+        <div class="Form__Text" style="margin-top: 1rem;">
+            <span class="TextMuted">{{ 'customer.register.have_account' | t }}</span>
+            <a href="{{ routes.account_login_url }}" class="Button Button--underline"> {{ 'customer.register.login' | t }}</a>
+        </div>
+    {%- endform -%}
+</section>
+
+{% schema %}
+{
+  "name": "Register page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "page_header_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    }
+  ]
+}
+{% endschema %}

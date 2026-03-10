@@ -1,0 +1,165 @@
+:root {
+  --tg-component-modal-background: var(--tg-sys-color-surface1);
+  --tg-component-modal-shadow-color: var(--tg-sys-color-shadow2);
+  --tg-component-modal-text-color: var(--tg-sys-color-on-surface);
+}
+
+.Modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1055;
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: 0;
+}
+
+.Modal--video {
+  padding: 0;
+}
+
+.Modal__Dialog {
+  position: relative;
+  width: auto;
+  margin: 0.5rem;
+  pointer-events: none;
+}
+
+.Modal.Fade .Modal__Dialog {
+  transition: transform 0.3s ease-out;
+  transform: translate(0, -50px);
+}
+
+.Modal.Show .Modal__Dialog {
+  transform: none;
+}
+
+.Modal.Modal--static .Modal__Dialog {
+  transform: scale(1.02);
+}
+
+.Modal__Dialog--scrollable {
+  height: calc(100% - 1rem);
+}
+.Modal__Dialog--scrollable .Modal__Content {
+  max-height: 100%;
+  overflow: hidden;
+}
+.Modal__Dialog--scrollable .Modal__Body {
+  overflow-y: auto;
+}
+
+.Modal__Dialog--centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 1rem);
+}
+
+.Modal__Content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background: var(--tg-component-modal-background);
+  color: var(--tg-component-drawer-text-color);
+  background-clip: padding-box;
+  outline: 0;
+}
+
+.Modal__Backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+
+.Modal__Backdrop.Fade {
+  opacity: 0;
+}
+
+.Modal__Backdrop.Show {
+  opacity: 0.5;
+}
+
+.Modal__Header {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid var(--tg-sys-color-outline);
+}
+
+.Modal__Dialog .ButtonClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.Modal--quickview .ButtonClose, .Modal--video .ButtonClose {
+  top: calc(100% + 1rem);
+  right: calc(50% - 1.5rem);
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 8rem;
+}
+@media screen and (min-width: 641px) {
+  .Modal--quickview .ButtonClose, .Modal--video .ButtonClose {
+    padding: 2rem;
+    right: calc(50% - 2rem);
+  }
+}
+
+.Modal__Title {
+  margin-bottom: 0;
+  line-height: 1.5;
+  font-family: var(--tg-sys-typescale-title-large-font);
+  font-style: var(--tg-sys-typescale-title-large-style);
+  font-weight: var(--tg-sys-typescale-title-large-weight);
+  font-size: var(--tg-sys-typescale-title-large-size);
+  line-height: var(--tg-sys-typescale-title-large-line-height);
+  letter-spacing: var(--tg-sys-typescale-title-large-tracking);
+}
+
+.Modal__Body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+
+.Modal__Footer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid var(--tg-sys-color-outline);
+  border-bottom-right-radius: calc(0.3rem - 1px);
+  border-bottom-left-radius: calc(0.3rem - 1px);
+}
+
+.Modal__Footer > * {
+  margin: 0.25rem;
+}
+
+@media screen and (min-width: 641px) {
+  .Modal__Dialog {
+    max-width: 800px;
+    margin: 1.75rem auto;
+  }
+  .Modal__Dialog--scrollable {
+    height: calc(100% - 3.5rem);
+  }
+  .Modal__Dialog--centered {
+    min-height: calc(100% - 3.5rem);
+  }
+}

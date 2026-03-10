@@ -1,0 +1,242 @@
+{{ 'component-cart-items.css' | asset_url | stylesheet_tag }}
+{{ 'component-cart-items-page.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-cart.js' | asset_url }}" defer="defer"></script>
+
+{%- capture section_settings -%}
+{
+  "itemCount": {{ cart.item_count }},
+  "freeShippingString": "{{ 'cart.general.free_shipping' | t }}",
+  "freeShippingAmountString": "{{ 'cart.general.free_shipping_remaining_html' | t: remaining_amount: 'remaining__amount' }}",
+  "freeShippingThreshold": {{ section.settings.cart_show_free_shipping_threshold }},
+  "freeShippingAmount": {{ section.settings.cart_free_shipping_threshold | times: 100 }}
+}
+{%- endcapture -%}
+
+{%- liquid
+  assign cart_header_title =  'cart.general.title' | t
+  assign add_gap =  true 
+  if section.settings.page_header_width == 'full_width_no_gap'
+    assign add_gap =  false 
+  endif 
+-%}
+
+{% render 'page-header', 
+    page_header_title: cart_header_title,
+    background_image: section.settings.image, 
+    background_color: section.settings.page_header_bg_color,
+    page_header_height: section.settings.page_header_height,
+    add_gap: add_gap
+%}
+
+<section-cart style="display: block;" class="Cart Container" data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}'>
+  <div class="Cart__Content">
+    {%- if section.settings.announcement != blank or section.settings.cart_show_free_shipping_threshold -%}
+      <header class="Cart__Header"> 
+        {%- if section.settings.announcement != blank -%}
+          <div class="Cart__ShippingNotice Alert Alert--info">
+            {{ section.settings.announcement }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.cart_show_free_shipping_threshold -%}
+          <div class="Cart__ShippingAmountNotice Alert Alert--info no-js-hidden">
+            &nbsp;
+          </div>
+        {%- endif -%}
+  
+      </header>
+    {%- endif -%}
+
+    {%- if cart.item_count == 0 -%}
+      <div class="EmptyResult">
+          <h2 class="EmptyResult__Title">{{ 'cart.general.empty' | t }}</h2>
+          <a href="{{ routes.all_products_collection_url }}" class="EmptyResult__Action Button Button--primary" style="min-width: 280px;">{{ 'cart.general.empty_button' | t }}</a>
+      </div>
+    {%- else -%}
+      <div class="Cart__Body">
+        <form action="{{ routes.cart_url }}" method="POST" class="Form Form--cart" novalidate data-cart-currency-symbol="{{ cart.currency.symbol }}"  data-cart-total-price="{{ cart.total_price }}"> 
+          <input type="hidden" name="attributes[collection_mobile_items_per_row]" value="">
+          <input type="hidden" name="attributes[collection_desktop_items_per_row]" value="">
+          <input type="hidden" name="attributes[search_mobile_items_per_row]" value="">
+          <input type="hidden" name="attributes[search_desktop_items_per_row]" value="">
+          
+          {% render 'cart-items' %}
+
+          <footer class="Cart__Summary Grid">
+            {%- if section.settings.cart_enable_notes -%}
+              <div class="Grid__Item 1/2--large">
+               
+                <div class="Form__Item Form__Item--floatingLabel">
+                  <textarea id="CartNote" class="Form__Input" placeholder="{{ 'cart.general.note_placeholder' | t }}" name="note" rows="5" style="height: auto;">{{ cart.note }}</textarea>
+                  <label for="CartNote">{{ 'cart.general.add_note' | t }}</label>
+                </div>
+
+              </div>
+            {%- endif -%}
+
+            <div class="Grid__Item 1/2--large TextEnd">
+              {% for block in section.blocks %}
+                {%- case block.type -%}
+                  {%- when '@app' -%}
+                    {% render block %}
+                  {%- endcase -%}
+              {% endfor %}
+              
+              {%- if cart.cart_level_discount_applications != blank -%}
+                {%- for discount_application in cart.cart_level_discount_applications -%}
+                  <p class="Cart__Discount">{%- render 'icons', icon: 'sale' -%}{{ 'cart.general.discount' | t }} ({{ discount_application.title }}): -<span>{{ discount_application.total_allocated_amount | money }}</span></p>
+                {%- endfor -%}
+              {%- endif -%}
+
+              <p class="Cart__Total">{{ 'cart.general.total' | t }}: <span>{{ cart.total_price | money_with_currency }}</span></p>
+
+              <small class="Cart__Taxes TextMuted">
+                {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+                  {{ 'cart.general.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                {%- elsif cart.taxes_included -%}
+                  {{ 'cart.general.taxes_included_but_shipping_at_checkout' | t }}
+                {%- elsif shop.shipping_policy.body != blank -%}
+                  {{ 'cart.general.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+                {%- else -%}
+                  {{ 'cart.general.taxes_and_shipping_at_checkout' | t }}
+                {%- endif -%}
+              </small>
+
+              <button type="submit" name="checkout" class="Cart__Checkout Button Button--primary">{{ 'cart.general.checkout' | t }}</button>
+
+              {%- if additional_checkout_buttons -%}
+                <div class="Cart__DynamicCheckoutButtons">
+                  {{ content_for_additional_checkout_buttons }}
+                </div>
+              {%- endif -%}
+            </div>
+          </footer>
+        </form>
+      </div>
+
+     
+      {%- if section.settings.show_shipping_estimator -%}
+        <div class="Cart__Footer">
+        {% render 'shipping-estimator' %}
+        </div>
+      {%- endif -%}
+      
+    {%- endif -%}
+  </div>
+</section-cart>
+
+{% schema %}
+{
+  "name": "Cart page",
+  "class": "shopify-section--main-cart",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Small",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    },
+    {
+      "type": "header",
+      "content": "Cart information"
+    },
+    {
+      "type": "checkbox",
+      "id": "cart_enable_notes",
+      "label": "Enable order notes",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement",
+      "label": "Announcement",
+      "default": "Make an announcement."
+    },
+    {
+      "type": "checkbox",
+      "id": "cart_show_free_shipping_threshold",
+      "label": "Show free shipping minimum amount",
+      "info": "Make sure that you have properly configured your [shipping rates](/admin/settings/shipping).",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "cart_free_shipping_threshold",
+      "label": "Free shipping minimum amount",
+      "info": "Use a number. Letters and special characters are not accepted.",
+      "default": "50"
+    },
+    {
+      "type": "header",
+      "content": "Shipping rates calculator"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_estimator",
+      "label": "Show shipping rates calculator",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shipping_estimator_default_country",
+      "label": "Default country to use",
+      "info": "If your customer is logged in, the country in their default shipping address will be preselected.",
+      "default": "United States"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,71 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Featured row
+ * ----------------------------------------------------------------------------
+ */
+@media screen and (min-width: 641px) {
+  .FeatureRow__ContentWrapper {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+@media screen and (min-width: 641px) {
+  .FeaturedRow--imageLeft .FeatureRow__ContentWrapper {
+    order: 2;
+  }
+}
+
+.FeaturedRow__ImageWrapper {
+  width: 100%;
+  flex: 0 0 auto;
+}
+@media screen and (min-width: 641px) {
+  .FeaturedRow__ImageWrapper {
+    width: 50%;
+  }
+}
+
+.FeaturedRow__Body {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.FeatureRow__ContentWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex: 0 0 auto;
+}
+@media screen and (min-width: 641px) {
+  .FeatureRow__ContentWrapper {
+    width: 50%;
+  }
+}
+.FeatureRow__ContentWrapper .FeatureRow__Content {
+  width: 100%;
+}
+.FeatureRow__ContentWrapper .FeatureRow__Content--alignLeft {
+  text-align: start;
+}
+.FeatureRow__ContentWrapper .FeatureRow__Content--alignLeft .ButtonGroup {
+  justify-content: flex-start;
+}
+.FeatureRow__ContentWrapper .FeatureRow__Content--alignCenter {
+  text-align: center;
+}
+.FeatureRow__ContentWrapper .FeatureRow__Content--alignCenter .ButtonGroup {
+  justify-content: center;
+}
+.FeatureRow__ContentWrapper .FeatureRow__Content--alignRight {
+  text-align: end;
+}
+.FeatureRow__ContentWrapper .FeatureRow__Content--alignRight .ButtonGroup {
+  justify-content: flex-end;
+}
+@media screen and (max-width: 640px) {
+  .FeatureRow__ContentWrapper.FeatureRow__ContentWrapper--withBackgroundColor {
+    padding: 1.6rem 1.5rem 0 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+}

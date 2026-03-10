@@ -1,0 +1,113 @@
+{% comment %}
+  Renders gift card recipient form.
+  Accepts:
+  - product_form_id: {String} product form id.
+  - form: {Object} the product form object.
+  - section: {Object} section to which this snippet belongs.
+
+  Usage:
+  {% render 'product-block-gift-card-recipient', product_form_id: product_form_id, form: form, section: section %}
+{% endcomment %}
+<style>
+  gift-card-recipient{
+    display: block;
+  }
+  .ProductForm__GiftCardRecipientBody{
+    margin-top: .75rem;
+  }
+
+  .ProductForm__GiftCardRecipientItem{
+    margin-bottom: 1rem;
+  }
+
+  .ProductForm__GiftCardRecipientItem .ProductForm__Label{
+    margin-bottom: .5rem;
+  }
+
+  .ProductForm__GiftCardRecipientItem .List:not(:last-child){
+      margin-bottom: 1rem;
+  }
+
+  .ProductForm__GiftCardRecipientItem .Form__Item{
+      margin-bottom: 1rem;
+  }
+
+  .Form__LabelText--recipientEmail {
+    display: none;
+  }
+  
+  .js .Form__LabelText--recipientEmail.Form__LabelText--required,
+  .no-js .Form__LabelText--recipientEmail.Form__LabelText--optional{
+    display: inline;
+  }
+
+  .no-js .ProductForm__GiftCardRecipientBody.Collapse:not(.Show){
+    display: block;
+  }
+
+  .no-js .ProductForm__GiftCardRecipientCheck{
+    display: none;
+  }
+
+  .ProductForm__GiftCardRecipientCheck{
+    padding-left: 0;
+  }
+  .ProductForm__GiftCardRecipientCheck .Icon{
+    margin-right: 6px;
+  }
+  .ProductForm__GiftCardRecipientCheck .FormCheck__Input,
+  .ProductForm__GiftCardRecipientCheck .Icon--checkbox-checked,
+  .ProductForm__GiftCardRecipientCheck .FormCheck__Input:checked + label .Icon--checkbox-unchecked{
+    display: none;
+  }
+
+  .ProductForm__GiftCardRecipientCheck .FormCheck__Input:checked + label .Icon--checkbox-checked, 
+  .ProductForm__GiftCardRecipientCheck .Icon--checkbox-unchecked{
+    display: inline-block;
+  }
+</style>
+{%- assign gift_card_recipient_control_flag = 'properties[__shopify_send_gift_card_to_recipient]' -%}
+<script src="{{ 'component-gift-card-recipient.js' | asset_url }}" defer="defer"></script>
+<gift-card-recipient class="Product__Block Product__Block--giftCardRecipient ProductForm__GiftCardRecipient" data-section-id="{{ section.id }}" data-block-id="{{ block.id }}">
+
+  <div class="Form__Item FormCheck ProductForm__GiftCardRecipientCheck"  data-tg-toggle="Collapse" data-tg-target="#GiftCardRecipient-{{ section.id }}-{{ block.id }}" aria-expanded="false">
+    <input disabled unchecked id="GiftCardRecipient-checkbox-{{ section.id }}-{{ block.id }}" aria-label="{{ 'recipient.form.checkbox' | t }}" class="FormCheck__Input" type="checkbox" name="{{ gift_card_recipient_control_flag }}" form="{{ product_form_id }}"> 
+    <label for="GiftCardRecipient-checkbox-{{ section.id }}-{{ block.id }}" class="FormCheck__Label">
+      {%- render 'icons', icon: 'checkbox-checked' -%}
+      {%- render 'icons', icon: 'checkbox-unchecked' -%}
+      <span class="FormCheck__LabelText">{{ 'recipient.form.checkbox' | t }}</span>
+    </label> 
+  </div>
+
+  <div class="ProductForm__GiftCardRecipientBody Collapse" id="GiftCardRecipient-{{ section.id }}-{{ block.id }}">
+    <div class="ProductForm__GiftCardRecipientItem">
+      <div class="Form__Item Form__Item--floatingLabel">
+        <input id="GiftCardRecipient-email-{{ section.id }}-{{ block.id }}" aria-label="{{ 'recipient.form.email' | t }}" class="Form__Input" type="email" name="properties[Recipient email]" placeholder="{{ 'recipient.form.email' | t }}" form="{{ product_form_id }}"> 
+        <label for="GiftCardRecipient-email-{{ section.id }}-{{ block.id }}" class="Form__Label">
+          <span class="Form__LabelText Form__LabelText--recipientEmail Form__LabelText--required">{{ 'recipient.form.email_label' | t }}</span>
+          <span class="Form__LabelText Form__LabelText--recipientEmail Form__LabelText--optional">{{ 'recipient.form.email_label_optional' | t }}</span>
+        </label> 
+      </div>
+    </div>
+
+    <div class="ProductForm__GiftCardRecipientItem">
+      <div class="Form__Item Form__Item--floatingLabel">
+        <input id="GiftCardRecipient-name-{{ section.id }}-{{ block.id }}" aria-label="{{ 'recipient.form.name' | t }}" class="Form__Input" type="text" name="properties[Recipient name]" placeholder="{{ 'recipient.form.name' | t }}" form="{{ product_form_id }}"> 
+        <label for="GiftCardRecipient-name-{{ section.id }}-{{ block.id }}">{{ 'recipient.form.name_label' | t }}</label> 
+      </div>
+    </div>
+
+    <div class="ProductForm__GiftCardRecipientItem">
+      <div class="Form__Item Form__Item--floatingLabel">
+        {%- assign max_chars_message = 200 -%}
+        {%- assign max_chars_message_rendered = 'recipient.form.max_characters' | t: max_chars: max_chars_message -%}
+        {%- assign message_label_rendered = 'recipient.form.message_label' | t -%}
+        <textarea id="GiftCardRecipient-message-{{ section.id }}-{{ block.id }}" class="Form__Input" name="properties[Message]" cols="30" rows="10" maxlength="{{ max_chars_message }}" aria-label="{{ message_label_rendered }} {{ max_chars_message_rendered }}" placeholder="{{ 'recipient.form.message' | t }}" style="height: 200px" form="{{ product_form_id }}"></textarea>
+        <label for="GiftCardRecipient-message-{{ section.id }}-{{ block.id }}">{{ message_label_rendered }}</label>
+        <div class="Form__Text">{{ max_chars_message_rendered }}</div>
+      </div>
+    </div>
+
+    <input type="hidden" id="GiftCardRecipient-control-{{ section.id }}-{{ block.id }}" name="{{ gift_card_recipient_control_flag }}" value="if_present" form="{{ product_form_id }}">
+  </div>
+</gift-card-recipient>

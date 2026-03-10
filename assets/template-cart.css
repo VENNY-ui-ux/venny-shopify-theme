@@ -1,0 +1,66 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Template Cart
+ * ----------------------------------------------------------------------------
+ */
+.Template--cart .Cart__Summary {
+  margin-top: 2rem;
+}
+@media screen and (min-width: 641px) {
+  .Template--cart .Cart__Summary {
+    margin-bottom: 4rem;
+    justify-content: flex-end;
+  }
+}
+.Template--cart .Cart__Footer {
+  margin-top: 5rem;
+}
+@media screen and (min-width: 641px) {
+  .Template--cart .Cart__Footer {
+    margin-bottom: 6rem;
+  }
+}
+.Template--cart .Cart__Checkout {
+  min-width: 17rem;
+  margin-bottom: 1rem;
+}
+@media screen and (max-width: 640px) {
+  .Template--cart .Cart__Checkout {
+    width: 100%;
+  }
+}
+.Template--cart .Cart__DynamicCheckoutButtons {
+  margin-bottom: 1rem;
+}
+@media screen and (max-width: 640px) {
+  .Template--cart .Cart__DynamicCheckoutButtons {
+    margin-bottom: 0.5rem;
+  }
+}
+.Template--cart .Cart__DynamicCheckoutButtons [data-shopify-buttoncontainer] {
+  justify-content: flex-end;
+}
+.Template--cart .Cart__DynamicCheckoutButtons shopify-accelerated-checkout-cart {
+  --shopify-accelerated-checkout-inline-alignment: end;
+  --shopify-accelerated-checkout-button-border-radius: var(--tg-sys-button-border-radius);
+}
+.Template--cart .Cart__DynamicCheckoutButtons shopify-accelerated-checkout-cart:hover {
+  --shopify-accelerated-checkout-button-box-shadow: var(--tg-sys-shadow);
+}
+.Template--cart .Cart__Discount {
+  margin-bottom: 0.25rem;
+  margin-top: 1rem;
+}
+.Template--cart .Cart__Discount .Icon--sale {
+  -webkit-margin-end: 0.25rem;
+          margin-inline-end: 0.25rem;
+}
+.Template--cart .Cart__ShippingAmountNotice {
+  margin-bottom: 1rem;
+}
+.Template--cart .Cart__ShippingNotice {
+  margin-bottom: 1.5rem;
+}
+.Template--cart .Cart__ShippingNotice + .Cart__ShippingAmountNotice {
+  margin-top: -0.5rem;
+}

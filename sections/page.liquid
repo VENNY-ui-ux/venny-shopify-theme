@@ -1,0 +1,140 @@
+<div class="Container Container--specialSpacingFirstSection
+{% if section.settings.section_width == 'full_width' %}Container--fluid {% endif %}
+{% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' and section.settings.section_width == 'full_width' %}
+Container--{{ section.settings.section_spacing }}Padding Container--noGutter Container--specialSpacingLastSection 
+{% elsif section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}
+Container--{{ section.settings.section_spacing }}Padding Container--{{ section.settings.section_spacing }} 
+{% else %}
+Container--{{ section.settings.section_spacing }}
+{% endif %}" 
+{% if section.settings.background %}style="background: {{ section.settings.background }}"{% endif %}>
+  <div class="Container Container--narrow" style="text-align: {{ section.settings.content_align }}; {% if section.settings.text_color != blank and section.settings.text_color != 'rgba(0,0,0,0)' %}color: {{ section.settings.text_color }};{% endif %}">
+    <h2 class="{{ section.settings.heading_font_size }}">
+        {%- if section.settings.page.title != blank -%}
+            {{ section.settings.page.title | escape }}
+        {%- else -%}
+            {{ 'page.title' | t }}
+        {%- endif -%}
+    </h2>
+    <div class="RTE">
+        {%- if section.settings.page.content != blank -%}
+            {{ section.settings.page.content }}
+        {%- else -%}
+          <div class="Ratio" style="--tg-aspect-ratio: 1.8;">
+              {{ 'page' | placeholder_svg_tag }}
+          </div>
+        {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "page",
+      "id": "page",
+      "label": "Page"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "HeadlineSmall",
+          "label": "Small"
+        },
+        {
+          "value": "HeadlineMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "HeadlineLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "HeadlineSmall"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "end",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page"
+    }
+  ]
+}
+{% endschema %}

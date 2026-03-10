@@ -1,0 +1,55 @@
+{%- liquid 
+    assign animation_image_loading_tag = 'div'
+    assign animation_image_loading_class = 'TextOnImage__Image Image--fadeIn'
+    if settings.animation_image_loading == 'circle_icon'
+        assign animation_image_loading_tag = 'feature-img'
+        assign animation_image_loading_class = 'Image--withLoader Image--fadeIn TextOnImage__Image'
+    endif
+-%}
+<div id="block{{ block.id }}"  class="CollageCard CollageCard--image"
+    style="{% if block.settings.image != blank %}--tg-component-text-on-image-image-ratio-mobile: {{ block.settings.image.aspect_ratio }};--tg-component-text-on-image-image-ratio: {{ block.settings.image.aspect_ratio }};
+    {% else %} --tg-component-text-on-image-image-ratio-mobile: 1.65; --tg-component-text-on-image-image-ratio: 1.65;
+  {% endif %}">
+    {%- if block.settings.heading_url != blank -%}
+        <a href="{{ block.settings.heading_url }}" class="TextOnImage TextOnImage--{{ block.settings.content_position }}">
+    {%- else -%}
+         <div class="TextOnImage TextOnImage--{{ block.settings.content_position }}">
+    {%- endif -%}
+        {%- if block.settings.image != blank -%}
+            <{{- animation_image_loading_tag }} class="TextOnImage__ImageWrapper Ratio">
+
+                {%- capture tg_sizes -%}(min-width: 641px) calc(100vw / 2), 100vw{%- endcapture -%}
+                {{ block.settings.image | image_url: width: 3840 | image_tag:
+                    loading: 'lazy',
+                    sizes: tg_sizes,
+                    widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+                    class: animation_image_loading_class
+                }}
+
+                {%- if settings.animation_image_loading != 'none' -%}
+                    <span class="Image--loader"></span>
+                  {%- endif -%}
+            </{{- animation_image_loading_tag }}>
+        {%- else -%}
+            <div class="TextOnImage__ImageWrapper Ratio">
+                {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                {{ 'product-' | append: current | placeholder_svg_tag: 'TextOnImage__Image SvgPlaceholder' }}
+            </div>
+        {%- endif -%}
+        
+        {%- if block.settings.heading != blank -%}
+            <div class="TextOnImage__Content">
+                <div class="TextOnImage__ContentInner">
+                    <h2 class="CollageCard__Heading">
+                        <button type="button" class="Button Button--{{ block.settings.heading_style }}">{{ block.settings.heading }}</button>
+                    </h2>
+                </div>
+            </div>
+        {%- endif -%}
+
+    {%- if block.settings.heading_url != blank -%}
+            </a>
+    {%- else -%}
+         </div>
+    {%- endif -%}
+</div>

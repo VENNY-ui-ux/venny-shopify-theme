@@ -1,0 +1,294 @@
+{{ 'section-icon-boxes.css' | asset_url | stylesheet_tag }}
+
+<section class="Container Container--specialSpacingFirstSection Container--fluid Container--{{ section.settings.section_spacing }} IconBoxes" data-section-id="{{ section.id }}">
+  <div class="Container {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}">
+    {%- assign item_block_count = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'icon_box' -%}
+          {%- assign item_block_count = item_block_count | plus: 1 -%}
+        {%- when 'section_header' -%}
+          <header class="SectionHeader SectionHeader--{{ block.settings.header_align }}"  {{ block.shopify_attributes }}>
+            <div class="SectionHeader__Text">
+              {%- if block.settings.heading != blank -%}
+                  <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+
+              {%- if block.settings.subheading != blank -%}
+                  <div class="SectionHeader__Subheading TextMuted">{{ block.settings.subheading }} </div>
+              {%- endif -%}
+            </div>
+          </header>
+      {%- endcase -%}
+    {%- endfor -%}
+
+    {%- liquid 
+      assign desktop_items_per_row = section.settings.grid_desktop_items_per_row 
+      if desktop_items_per_row > item_block_count 
+        assign desktop_items_per_row = item_block_count 
+      endif 
+      assign mobile_items_per_row  = section.settings.grid_mobile_items_per_row | times: 1 
+    -%}
+
+    <div class="IconBoxes__Body" style="--tg-icon-box-icon-with:{{ section.settings.icon_width }}px;">
+      <div class="Grid">
+        {%- if item_block_count > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'icon_box' -%}
+                <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up" {{ block.shopify_attributes }}>
+                    <div class="IconBox{% if section.settings.icon_position == 'left' %} IconBox--aside{% else %} IconBox--center{% endif %}">
+                      {%- if block.settings.image != blank -%}
+                        <div class="IconBox__Icon IconBox__Icon--image Ratio" style="--tg-aspect-ratio: {{ block.settings.image.aspect_ratio }}" >
+                          {%- assign image_width = section.settings.icon_width | times: 2 -%}
+                          {{ block.settings.image | image_url: width: image_width | image_tag:
+                              loading: 'lazy',
+                              class: 'IconBox__Image'
+                          }}
+                        </div>
+                      {%- else -%}
+                        <div class="IconBox__Icon IconBox__Icon--image Ratio" style="--tg-aspect-ratio: 1;">
+                          {{ 'image' | placeholder_svg_tag: 'IconBox__Image SvgPlaceholder' }}
+                        </div>
+                      {%- endif -%}
+                      <div class="IconBox__Text">
+                        {%- if block.settings.heading != blank -%}
+                          <h3 class="IconBox__Title">{{ block.settings.heading }}</h3>
+                        {%- endif -%}
+                        {%- if block.settings.content != blank -%}
+                          <div class="IconBox__Content RTE">{{ block.settings.content }}</div>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        {%- else -%} 
+          {%- for i in (1..section.settings.grid_desktop_items_per_row) -%}
+            <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up">
+                <div class="IconBox{% if section.settings.icon_position == 'left' %} IconBox--aside{% else %} IconBox--center{% endif %}">
+                  <div class="IconBox__Icon IconBox__Icon--image Ratio" style="--tg-aspect-ratio: 1;">
+                    {{ 'image' | placeholder_svg_tag: 'IconBox__Image SvgPlaceholder' }}
+                  </div>
+                  <div class="IconBox__Text">
+                    <h3 class="IconBox__Title">{{ 'sections.onboarding.block_title' | t }}</h3>
+                    <div class="IconBox__Content"><p>{{ 'sections.onboarding.block_content' | t }}</p></div>
+                  </div>
+                </div>
+            </div>
+          {%- endfor -%}
+      {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Icon boxes",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "id": "grid_desktop_items_per_row",
+      "label": "Number of columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "id": "grid_mobile_items_per_row",
+      "label": "Number of columns on mobile",
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "min": 80,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Image width",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "section_header",
+      "name": "Section header",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Tell your story"
+        },
+        {
+          "type": "select",
+          "id": "header_align",
+          "label": "Header alignment",
+          "options": [
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineMedium"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        }
+      ]
+    },
+    {
+      "type": "icon_box",
+      "name": "Icon box",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Description</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icon boxes",
+      "settings": {
+      },
+      "blocks": [
+        {
+          "type": "icon_box"
+        },
+        {
+          "type": "icon_box"
+        },
+        {
+          "type": "icon_box"
+        },
+        {
+          "type": "icon_box"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

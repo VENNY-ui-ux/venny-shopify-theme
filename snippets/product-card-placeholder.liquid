@@ -1,0 +1,42 @@
+{%- if settings.product_image_size == 'natural'  -%}
+    {%- assign use_natural_size = true -%}
+{%- else -%}
+    {%- assign use_natural_size = false -%}
+{%- endif -%}
+<div class="ProductCard Animate__Item">
+     <div class="ProductCard__Inner">
+        <div class="ProductCard__ImageWrapper Ratio {% unless use_natural_size %}Ratio--{{ settings.product_image_size }}{% endunless %}" 
+        {% if use_natural_size %}style="--tg-aspect-ratio: 0.6666666666"{% endif %}>
+            {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+            {{ 'product-' | append: current | placeholder_svg_tag: 'ProductCard__Image ProductItem__Image--placeholder SvgPlaceholder' }}
+        </div>
+
+        {%- if show_product_info -%}
+        <div class="ProductCard__Info ProductCard__Info--{{ settings.product_info_alignment }}">
+            {%- if show_vendor -%}
+                <div class="ProductCard__Vendor TextMuted">{{ 'sections.onboarding.vendor_title' | t }}</div>
+            {%- endif -%}
+            <h3 class="ProductCard__Title">
+               {{ 'sections.onboarding.product_title' | t }}
+            </h3>
+            
+            <div class="ProductCard__Meta">
+                <div class="Product__PriceList">
+                    <span class="Price">
+                        {%- if settings.price_currency_format == 'money' -%}
+                            {{ 6800 | money }}
+                        {%- elsif settings.price_currency_format == 'money_with_currency' -%}
+                            {{ 6800 | money_with_currency }}
+                        {%- elsif settings.price_currency_format == 'money_without_currency' -%}
+                            {{ 6800 | money_without_currency }}
+                        {%- else -%}
+                            {{ 6800 | money_without_trailing_zeros }}
+                        {%- endif -%}
+                    </span>
+                </div>
+            </div>
+            
+        </div>
+        {%- endif -%}
+    </div>
+</div>

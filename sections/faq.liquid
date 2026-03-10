@@ -1,0 +1,246 @@
+{{ 'section-faq.css' | asset_url | stylesheet_tag }}
+
+<div class="Container Container--specialSpacingFirstSection{% if section.settings.section_width == 'full_width' %} Container--fluid{% endif %} Container--spacing{{ section.settings.spacing }} FAQSection">
+
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'section_header' -%}
+        <header class="SectionHeader SectionHeader--{{ block.settings.header_align }}" {{ block.shopify_attributes }}>
+          <div class="SectionHeader__Text">
+            {%- if block.settings.heading != blank -%}
+                <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}"> {{ block.settings.heading | default: block.settings.page.title }}</h2>
+            {%- endif -%}
+
+            {%- if block.settings.subheading != blank -%}
+                <div class="SectionHeader__Subheading TextMuted">{{ block.settings.subheading }} </div>
+            {%- endif -%}
+          </div>
+
+          {%- if block.settings.header_align == 'left' and block.settings.button_label != blank -%} 
+            <div class="SectionHeader__Button"> 
+              <a href="{{ block.settings.button_link }}" class="SectionHeader__Button Button Button--outline">{{ block.settings.button_label | escape }}</a>        
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.header_align == 'center' and block.settings.button_label != blank -%} 
+            {%- capture section_footer -%}
+              <footer class="SectionFooter Collage__Footer TextCenter">
+                  <a class="SectionFooter__Button Button Button--outline" href="{{ block.settings.button_link }}">{{ block.settings.button_label | escape }}</a>
+              </footer>
+            {%- endcapture -%}
+          {%- endif -%}
+        </header>
+
+    {%- endcase -%}
+  {%- endfor -%}
+
+  <div class="SectionBody FAQSection__Body">
+    <div class="Accordion">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'question' -%}
+            {%- if block.settings.heading != blank or block.settings.answer != blank or block.settings.page.content != blank -%}
+              <div class="Accordion__Item" {{ block.shopify_attributes }}>
+                <div class="Accordion__Header">
+                  <button class="Accordion__Button {% unless block.settings.expand %}Collapsed{% endunless %}" type="button" data-tg-toggle="Collapse" data-tg-target="#FAQAccordion-{{ section.id }}-{{ block.id }}" {% if block.settings.expand %}aria-expanded="true"{% else %}aria-expanded="false"{% endif %}>
+                    {{ block.settings.heading | escape }}
+                  </button>
+                </div>
+                <div id="FAQAccordion-{{ section.id }}-{{ block.id }}" class="Accordion__Collapse Collapse {% if block.settings.expand %}Show{% endif %}">
+                  <div class="Accordion__Body RTE"
+                    {% if section.settings.answer_background != blank and section.settings.answer_background != 'rgba(0,0,0,0)' %}
+                      style="--tg-component-accordion-body-background:{{ section.settings.answer_background }}"
+                    {% endif %}>
+                    {{ block.settings.answer }}
+                    {{ block.settings.page.content }}
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+      {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {{ section_footer }}
+
+</div>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing",
+      "options": [
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Section spacing"
+    },
+    {
+      "type": "color",
+      "id": "answer_background",
+      "label": "Answer background color"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "section_header",
+      "name": "Section header",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Frequently asked questions"
+        },
+        {
+          "type": "select",
+          "id": "header_align",
+          "label": "Header alignment",
+          "options": [
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineMedium"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    },
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Question title"
+        },
+        {
+          "type": "header",
+          "content": "Answer"
+        },
+        {
+          "type": "checkbox",
+          "id": "expand",
+          "label": "Expand answer",
+          "default": false
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer content"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Answer content from page"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

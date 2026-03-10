@@ -1,0 +1,111 @@
+.ArticleCard__ImageWrapper {
+  margin-bottom: 1rem;
+}
+
+.ArticleCard--big .ArticleCard__ImageWrapper {
+  margin-bottom: 1.5rem;
+}
+
+.ArticleCard__Content {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.ArticleCard__Content .ArticleCard__Title:not(.CustomSize) {
+  font-family: var(--tg-sys-typescale-title-large-font);
+  font-style: var(--tg-sys-typescale-title-large-style);
+  font-weight: var(--tg-sys-typescale-title-large-weight);
+  font-size: var(--tg-sys-typescale-title-large-size);
+  line-height: var(--tg-sys-typescale-title-large-line-height);
+  letter-spacing: var(--tg-sys-typescale-title-large-tracking);
+}
+
+.ArticleCard__Link {
+  -webkit-padding-start: 0;
+          padding-inline-start: 0;
+  text-transform: uppercase;
+}
+
+.ArticleCard--center {
+  text-align: center;
+}
+
+.ArticleCard__Excerpt {
+  margin-bottom: 0.25rem;
+}
+
+.ArticleCard--contentOnImage {
+  position: relative;
+}
+.ArticleCard--contentOnImage .ArticleCard__Content {
+  position: absolute;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  bottom: 1rem;
+  word-break: break-all;
+}
+@media screen and (min-width: 1008px) {
+  .ArticleCard--contentOnImage .ArticleCard__Content {
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+    bottom: 2rem;
+  }
+}
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Title a,
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Title a:hover,
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Excerpt,
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Excerpt a,
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Excerpt a:hover,
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Category,
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Link,
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Link:hover {
+  color: #fff;
+}
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Excerpt a,
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Excerpt a:hover {
+  -webkit-text-decoration-color: #fff;
+          text-decoration-color: #fff;
+}
+.ArticleCard--contentOnImage .ArticleCard__Content .ArticleCard__Category {
+  color: #fff !important;
+}
+@media screen and (max-width: 640px) {
+  .ArticleCard--contentOnImage .ArticleCard__Excerpt {
+    display: none;
+  }
+}
+.ArticleCard--contentOnImage .ArticleCard__ImageWrapper {
+  margin-bottom: 0;
+}
+
+.ArticleCard--left {
+  text-align: start;
+}
+.ArticleCard--left.ArticleCard--contentOnImage .ArticleCard__Content {
+  left: 0;
+}
+
+.ArticleCard--center {
+  text-align: center;
+}
+.ArticleCard--center.ArticleCard--contentOnImage .ArticleCard__Content {
+  left: 0;
+  right: 0;
+}
+
+.ArticleCard--right {
+  text-align: end;
+}
+.ArticleCard--right.ArticleCard--contentOnImage .ArticleCard__Content {
+  right: 0;
+}
+
+.ArticleCard--search {
+  height: 100%;
+}
+.ArticleCard--search .ArticleCard__ImageWrapper {
+  height: 100%;
+}
+.ArticleCard--search .ProductCard__LabelList {
+  right: 1rem;
+  left: auto;
+}

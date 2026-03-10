@@ -1,0 +1,217 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}" dir="{% render 'direction' %}">
+  <head>
+    <meta charset="utf-8"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+
+    <title>
+      {{ page_title }}
+      {% if current_tags %}
+        {% assign meta_tags = current_tags | join: ', ' %} &ndash; 
+        {{ 'general.meta.tags' | t: tags: meta_tags }}
+      {% endif %}
+      {% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}
+      {% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 96 }}" type="image/png">
+    {%- endif -%}
+
+    <link rel="preconnect" href="https://cdn.shopify.com">
+    
+    {%- unless settings.text_font.system? or settings.heading_font.system? or settings.display_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.text_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.text_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.heading_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.heading_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.display_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.display_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {% render 'social-meta-tags' %}
+    {% render 'css-variables' %}
+
+    <script src="{{ 'libs.min.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'helpers.min.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'components.min.js' | asset_url }}" defer="defer"></script>
+     <script src="{{ 'global.js' | asset_url }}" defer></script>
+     
+    {{ content_for_header }}
+
+    {{ 'component-accordion.css' | asset_url | stylesheet_tag }}
+    {{ 'component-drawer.css' | asset_url | stylesheet_tag }}
+    {{ 'component-dropdown.css' | asset_url | stylesheet_tag }}
+    {{ 'component-tab.css' | asset_url | stylesheet_tag }}
+
+    {{ 'component-product-swatches.css' | asset_url | stylesheet_tag }}
+    {{ 'component-product-price.css' | asset_url | stylesheet_tag }}
+    {{ 'component-product-rating.css' | asset_url | stylesheet_tag }}
+    {{ 'component-product-card.css' | asset_url | stylesheet_tag }}
+
+    {{ 'component-modal.css' | asset_url | stylesheet_tag }}
+    
+    {{ 'theme.css' | asset_url | stylesheet_tag: preload: true }}
+ 
+    <link rel="stylesheet" href="{{ 'component-predictive-search-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
+
+    {%- if template.directory == 'customers' -%}
+      {{ 'template-account.css' | asset_url | stylesheet_tag }}
+    {%- elsif template.name == 'product' -%}
+      {{ 'template-product.css' | asset_url | stylesheet_tag }}
+    {%- elsif template.name == 'collection' -%}
+      {{ 'template-collection.css' | asset_url | stylesheet_tag }}
+    {%- elsif template.name == 'cart' -%}
+      {{ 'template-cart.css' | asset_url | stylesheet_tag }}
+    {%- elsif template.name == 'search' -%}
+      {{ 'template-search.css' | asset_url | stylesheet_tag }}
+    {%- elsif template.name == 'blog' -%}
+      {{ 'template-blog.css' | asset_url | stylesheet_tag }}
+    {%- elsif template.name == 'article' -%}
+      {{ 'template-article.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    
+    <link rel="stylesheet" href="{{ 'custom.css' | asset_url }}" media="print" onload="this.media='all'">
+    <noscript>{{ 'custom.css' | asset_url | stylesheet_tag }}</noscript>
+
+    {%- if settings.custom_code_css != blank -%}
+      <style>
+        {{ settings.custom_code_css }}
+      </style>
+    {%- endif -%}
+
+    <script>
+      window.theme = {
+        pageType: {{ request.page_type | json }},
+        moneyFormat: {{ shop.money_format | json }},
+        moneyWithCurrencyFormat: {{ shop.money_with_currency_format | json }},
+        productImageSize: {{ settings.product_image_size | json }},
+        cartType: {{ settings.cart_type | json }}
+      };
+
+      window.routes = {
+        rootUrl: {{ routes.root_url | json }},
+        rootUrlWithoutSlash: {% if routes.root_url == '/' %}''{% else %}{{ routes.root_url | json }}{% endif %},
+        cartUrl: {{ routes.cart_url | json }},
+        cartAddUrl: {{ routes.cart_add_url | json }},
+        cartChangeUrl: {{ routes.cart_change_url | json }},
+        searchUrl: {{ routes.search_url | json }},
+        productRecommendationsUrl: {{ routes.product_recommendations_url | json }},
+        predictiveSearchUrl: {{ routes.predictive_search_url | json }}
+      };
+
+      window.languages = {
+        productFormAddToCart: {{ 'product.form.add_to_cart' | t | json }},
+        productFormUnavailable: {{ 'product.form.unavailable' | t | json }},
+        productFormSoldOut: {{ 'product.form.sold_out' | t | json }},
+        shippingEstimatorOneResult: {{ 'cart.shipping_estimator.one_result_title' | t | json }},
+        shippingEstimatorMoreResults: {{ 'cart.shipping_estimator.more_results_title' | t | json }},
+        shippingEstimatorNoResults: {{ 'cart.shipping_estimator.no_results_title' | t | json }}
+      };
+    </script>
+   
+    <script>
+      (function () {
+        window.onpageshow = function() {
+          document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', {
+            bubbles: true
+          }));
+        };
+      })();
+
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      document.documentElement.style.setProperty('--tg-window-height', window.innerHeight + 'px');
+    </script>
+
+    {% render 'microdata-schema' %}
+  </head>
+
+  <body class="ChordTheme Template {% if template.directory %}Template--{{ template.directory | handle }}{% endif %} Template--{{ template.name | handle }} {% if template.suffix %}Template--{{ template.suffix | handle }}{% endif %}">
+
+    <a class="SkipToContentLink VisuallyHidden" href="#MainContent">{{ 'header.navigation.skip_to_content' | t }}</a>
+    {%- render 'loading-bar' -%}
+
+    {%- liquid 
+      section 'menu-drawer'
+
+      if template.name != 'cart' and settings.cart_type == 'drawer' 
+        section 'cart-drawer' 
+      endif 
+
+      section 'search-drawer'
+    -%}
+
+    {%- sections 'header-group' -%}
+
+    <main id="MainContent" class="focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    <div class="FooterGroup">
+      {% sections 'footer-group' %}
+    </div>
+
+    {% section 'product-quickview' %}
+    {% section 'newsletter-popup' %}
+    {% section 'privacy-banner' %}
+    
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'custom.js' | asset_url }}" defer="defer"></script>
+    {%- if request.design_mode -%}
+
+      <script src="{{ 'section-featured-collection.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-featured-columns.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-featured-nav.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-featured-product.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-slideshow.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-testimonials.js' | asset_url }}" defer="defer"></script>
+
+      <script src="{{ 'section-cart-drawer.js' | asset_url }}" defer="defer"></script>
+
+      <script src="{{ 'section-product-recently-viewed.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-product-recommendations.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-announcement-bar.js' | asset_url }}" defer="defer"></script>
+      
+      <script src="{{ 'section-scrolling-bar.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'component-gift-card-recipient.js' | asset_url }}" defer="defer"></script>
+     
+      <script src="{{ 'component-quick-add-to-cart-button.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'component-toast.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'privacy-banner.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-newsletter-popup.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-tab-collections.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-vertical-accordion.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-image-comparison.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-interactive-links.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-search-drawer.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-countdown-timer-bar.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'section-counters.js' | asset_url }}" defer="defer"></script>
+
+       {% comment %} bug fixed {% endcomment %}
+       {{ 'section-testimonials.css' | asset_url | stylesheet_tag }}
+       {{ 'section-announcement-bar.css' | asset_url | stylesheet_tag }}
+
+      <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- if settings.custom_code_javascript != blank -%}
+      <script>
+        {{ settings.custom_code_javascript }}
+      </script>
+    {%- endif -%}
+
+  </body>
+</html>

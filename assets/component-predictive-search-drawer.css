@@ -1,0 +1,182 @@
+.SearchDrawer {
+  height: auto;
+  bottom: unset;
+  top: 0;
+}
+.SearchDrawer.Show {
+  top: calc(var(--tg-header-height, 0px) + var(--tg-announcement-bar-height, 0px) + var(--tg-search-drawer-top-other-elements-height, 0px));
+}
+.SearchDrawer.Drawer--top {
+  max-height: calc(100% - var(--tg-header-height, 0px) - var(--tg-announcement-bar-height, 0px) - var(--tg-search-drawer-top-other-elements-height, 0px));
+}
+.SearchDrawer .Drawer__Header {
+  margin-bottom: -1px;
+  z-index: 1;
+}
+@media screen and (max-width: 640px) {
+  .SearchDrawer .Drawer__Header {
+    -webkit-padding-start: 1rem;
+            padding-inline-start: 1rem;
+    -webkit-padding-end: 0.25rem;
+            padding-inline-end: 0.25rem;
+  }
+}
+@media screen and (min-width: 1008px) {
+  .SearchDrawer .Drawer__Header {
+    padding: 1rem 2rem;
+    -webkit-padding-end: 1.25rem;
+            padding-inline-end: 1.25rem;
+  }
+}
+
+.SearchDrawer__Form {
+  display: flex;
+  align-items: center;
+  flex: 1 0 auto;
+}
+
+.SearchDrawer__Form .Icon--search {
+  width: 20px;
+  height: 20px;
+}
+
+.SearchDrawer__InputIconWrapper {
+  position: relative;
+  top: -1px;
+  -webkit-margin-end: 12px;
+          margin-inline-end: 12px;
+  color: var(--tg-sys-color-on-surface-variant);
+}
+
+.SearchDrawer__Input {
+  background: none;
+  width: auto;
+  border: none;
+  vertical-align: middle;
+  flex-grow: 1;
+  min-height: 42px;
+}
+
+.PredictiveSearch:focus-visible {
+  box-shadow: none;
+  border-width: 2px;
+}
+
+.SearchDrawer__Submit {
+  min-height: 42px;
+}
+
+.SearchDrawer__Input::-moz-placeholder {
+  color: var(--tg-sys-color-on-surface-variant);
+}
+
+.SearchDrawer__Input:-ms-input-placeholder {
+  color: var(--tg-sys-color-on-surface-variant);
+}
+
+.SearchDrawer__Input::placeholder {
+  color: var(--tg-sys-color-on-surface-variant);
+}
+
+.SearchDrawer__Input::-ms-clear {
+  display: none;
+}
+
+.PredictiveSearch__Body {
+  padding: 0;
+}
+
+.SearchDrawer__Results {
+  display: none;
+}
+.SearchDrawer__Results .CollectionToolBar {
+  display: none;
+}
+
+.PredictiveSearch__Summary {
+  background: var(--tg-component-drawer-background);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 52px;
+  box-shadow: 0 -1px var(--tg-component-drawer-shadow-color) inset;
+}
+
+.PredictiveSearch__Status {
+  position: relative;
+  min-height: 52px;
+  display: none;
+  box-shadow: 0 -1px var(--tg-component-drawer-shadow-color) inset;
+}
+
+.SearchDrawer__Results[aria-hidden=false] {
+  display: block;
+}
+
+input[type=search],
+input[type=search]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+          appearance: none;
+}
+
+@media screen and (min-width: 641px) {
+  .SearchDrawer__InputIconWrapper {
+    -webkit-margin-end: 20px;
+            margin-inline-end: 20px;
+  }
+}
+.PredictiveSearchDrawerDrawer {
+  background: var(--tg-component-drawer-background);
+}
+
+.PredictiveSearchDrawer__ResultsGroupsWrapper {
+  margin: 0;
+}
+
+.PredictiveSearchDrawer__Heading {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: 0;
+}
+@media screen and (max-width: 640px) {
+  .PredictiveSearchDrawer__Heading {
+    padding-top: 0;
+  }
+}
+
+.PredictiveSearchDrawer__ResultsGroup--others {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.PredictiveSearchDrawer__ResultsGroup--others .PredictiveSearchDrawer__Heading {
+  padding: 0;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+.PredictiveSearchDrawer__ResultsGroup--others .PredictiveSearchDrawer__ResultsList {
+  padding: 0;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.PredictiveSearchDrawer__ResultsList--products {
+  padding-bottom: 1.5rem;
+}
+@media screen and (max-width: 640px) {
+  .PredictiveSearchDrawer__ResultsList--products {
+    padding-bottom: 1rem;
+  }
+}
+
+.SearchDrawer .FeaturedCollection {
+  display: none;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+.SearchDrawer.Show .FeaturedCollection {
+  display: block;
+}
+.SearchDrawer .SectionHeader.SectionHeader--horizontal {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}

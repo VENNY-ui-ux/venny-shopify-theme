@@ -1,0 +1,231 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Page header
+ * ----------------------------------------------------------------------------
+ */
+:root {
+  --tg-sys-component-page-header-background: var(--tg-sys-color-surface1);
+  --tg-sys-component-page-header-color-text: var(--tg-sys-color-on-surface);
+}
+
+.PageHeader {
+  margin-bottom: calc(var(--tg-container-gutter-x) * 2);
+}
+@media screen and (min-width: 641px) {
+  .PageHeader {
+    margin-bottom: calc(var(--tg-container-gutter-x) * 3);
+  }
+}
+@media screen and (min-width: 1280px) {
+  .PageHeader {
+    margin-bottom: calc(var(--tg-container-gutter-x) * 4);
+  }
+}
+.PageHeader .PageHeader__Badge {
+  background-color: rgba(0, 0, 0, 0.47);
+}
+
+.PageHeader__Background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.PageHeader__Background--image {
+  background-size: cover;
+  background-position: center;
+}
+
+.PageHeader__Background--color {
+  background: var(--tg-sys-component-page-header-background);
+  background-position: 80% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.PageHeader__ContentWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  padding-bottom: 4rem;
+}
+@media screen and (min-width: 641px) {
+  .PageHeader__ContentWrapper {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+}
+@media screen and (min-width: 1280px) {
+  .PageHeader__ContentWrapper {
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+  }
+}
+@media screen and (min-width: 641px) {
+  .PageHeader__ContentWrapper.PageHeader__ContentWrapper--withNoBottom {
+    padding-bottom: 2rem;
+  }
+}
+@media screen and (min-width: 1280px) {
+  .PageHeader__ContentWrapper.PageHeader__ContentWrapper--withNoBottom {
+    padding-bottom: 3rem;
+  }
+}
+
+.PageHeader__Content {
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.PageHeader__Title {
+  font-weight: 600;
+  margin-top: 10px;
+  font-family: var(--tg-sys-typescale-display-medium-font);
+  font-style: var(--tg-sys-typescale-display-medium-style);
+  font-weight: var(--tg-sys-typescale-display-medium-weight);
+  font-size: var(--tg-sys-typescale-display-medium-size);
+  line-height: var(--tg-sys-typescale-display-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-display-medium-tracking);
+  word-break: break-word;
+}
+@media screen and (min-width: 1280px) {
+  .PageHeader__Title {
+    margin-bottom: 16px;
+  }
+}
+
+.PageHeader__Subtitle {
+  font-family: var(--tg-sys-typescale-title-large-font);
+  font-style: var(--tg-sys-typescale-title-large-style);
+  font-weight: var(--tg-sys-typescale-title-large-weight);
+  font-size: var(--tg-sys-typescale-title-large-size);
+  line-height: var(--tg-sys-typescale-title-large-line-height);
+  letter-spacing: var(--tg-sys-typescale-title-large-tracking);
+}
+
+.PageHeader__Bottom {
+  position: absolute;
+  bottom: 1rem;
+  width: 100%;
+}
+@media screen and (min-width: 641px) {
+  .PageHeader__Bottom {
+    bottom: 2rem;
+  }
+}
+@media screen and (min-width: 1280px) {
+  .PageHeader__Bottom {
+    bottom: 3rem;
+  }
+}
+.PageHeader__Bottom .Container {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.PageHeader__Breadcrumb {
+  font-family: var(--tg-sys-typescale-label-medium-font);
+  font-style: var(--tg-sys-typescale-label-medium-style);
+  font-weight: var(--tg-sys-typescale-label-medium-weight);
+  font-size: var(--tg-sys-typescale-label-medium-size);
+  line-height: var(--tg-sys-typescale-label-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-label-medium-tracking);
+  text-transform: uppercase;
+}
+
+.PageHeader__ActionWrapper {
+  position: absolute;
+  right: 0;
+  bottom: 40px;
+  width: 100%;
+}
+
+.PageHeader__Action {
+  text-align: end;
+}
+
+.PageHeader .Form__Input::-moz-placeholder {
+  color: var(--tg-sys-component-page-header-color-text);
+}
+
+.PageHeader .Form__Input:-ms-input-placeholder {
+  color: var(--tg-sys-component-page-header-color-text);
+}
+
+.PageHeader .PageHeader__Title,
+.PageHeader .PageHeader__Content,
+.PageHeader .PageHeader__Breadcrumb .Breadcrumb__Item,
+.PageHeader .PageHeader__Breadcrumb .Breadcrumb__Item a,
+.PageHeader .Breadcrumb__Item::before,
+.PageHeader .PageHeader__Subtitle,
+.PageHeader .Button--accountLogout,
+.PageHeader .Form__Input,
+.PageHeader .Form__Input::placeholder {
+  color: var(--tg-sys-component-page-header-color-text);
+}
+
+.PageHeader--withBackgroundImage .Form__Input::-moz-placeholder {
+  color: #fff;
+}
+
+.PageHeader--withBackgroundImage .Form__Input:-ms-input-placeholder {
+  color: #fff;
+}
+
+.PageHeader--withBackgroundImage .PageHeader__Title,
+.PageHeader--withBackgroundImage .PageHeader__Content,
+.PageHeader--withBackgroundImage .PageHeader__Breadcrumb .Breadcrumb__Item,
+.PageHeader--withBackgroundImage .PageHeader__Breadcrumb .Breadcrumb__Item a,
+.PageHeader--withBackgroundImage .Breadcrumb__Item::before,
+.PageHeader--withBackgroundImage .PageHeader__Subtitle,
+.PageHeader--withBackgroundImage .Button--accountLogout,
+.PageHeader--withBackgroundImage .Form__Input,
+.PageHeader--withBackgroundImage .Form__Input::placeholder {
+  color: #fff;
+}
+.PageHeader--withBackgroundImage .Form__Submit {
+  border: 1px solid var(--tg-sys-color-outline);
+  margin-left: -1px;
+}
+
+.PageHeader--withGap {
+  margin-top: calc(var(--use-separate-header) * var(--tg-container-gutter-x) * 2);
+  margin-right: calc(var(--tg-container-gutter-x) * 2);
+  margin-left: calc(var(--tg-container-gutter-x) * 2);
+  width: calc(100% - var(--tg-container-gutter-x) * 4);
+}
+@media screen and (min-width: 641px) {
+  .PageHeader--withGap {
+    margin-top: calc(var(--use-separate-header) * var(--tg-container-gutter-x) * 3);
+    margin-right: calc(var(--tg-container-gutter-x) * 3);
+    margin-left: calc(var(--tg-container-gutter-x) * 3);
+    width: calc(100% - var(--tg-container-gutter-x) * 6);
+  }
+}
+@media screen and (min-width: 1280px) {
+  .PageHeader--withGap {
+    margin-top: calc(var(--use-separate-header) * var(--tg-container-gutter-x) * 4);
+    margin-right: calc(var(--tg-container-gutter-x) * 4);
+    margin-left: calc(var(--tg-container-gutter-x) * 4);
+    width: calc(100% - var(--tg-container-gutter-x) * 8);
+  }
+}
+
+.PageHeader--text {
+  padding-top: 1rem;
+}
+@media screen and (min-width: 1008px) {
+  .PageHeader--text {
+    padding-top: 3rem;
+  }
+}

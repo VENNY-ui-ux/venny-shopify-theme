@@ -1,0 +1,27 @@
+{{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+{{ 'component-product-gallery.css' | asset_url | stylesheet_tag }}
+
+{%- assign has_3d_model = product.media | where: "media_type", "model" | first -%}
+
+{%- if has_3d_model -%}
+  {{ 'component-product-model.css' | asset_url | stylesheet_tag }}
+  <link id="ModelViewerStyle" rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css" media="print" onload="this.media='all'">
+  <link id="ModelViewerOverride" rel="stylesheet" href="{{ 'component-model-viewer-ui.css' | asset_url }}" media="print" onload="this.media='all'">
+{%- endif -%}
+
+{%- liquid
+  if section.settings.gallery_design == 'carousel'
+    render 'product-gallery-carousel', section: section
+  elsif section.settings.gallery_design == 'stack_images'
+    render 'product-gallery-stack', section: section
+  elsif section.settings.gallery_design == 'stack_carousel'
+    render 'product-gallery-stack-carousel', section: section
+  endif 
+-%}
+
+{%- if has_3d_model -%}
+  <script type="application/json" id="ProductJSON-{{ product.id }}">
+    {{ product.media | where: 'media_type', 'model' | json }}
+  </script>
+  <script src="{{ 'product-model.js' | asset_url }}" defer></script>
+{%- endif -%}

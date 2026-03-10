@@ -1,0 +1,54 @@
+section-tab-collections {
+  display: block;
+}
+
+.TabCollections__SectionHeader {
+  align-items: center;
+}
+.TabCollections__SectionHeader.SectionHeader--left .Nav--tabs {
+  margin-top: -0.5rem;
+}
+.TabCollections__SectionHeader .Nav__Item {
+  -webkit-margin-end: 1rem;
+          margin-inline-end: 1rem;
+  margin-top: 0.5rem;
+}
+.TabCollections__SectionHeader .Nav__Item:last-child {
+  -webkit-margin-end: 0;
+          margin-inline-end: 0;
+}
+.TabCollections__SectionHeader .Nav__Item:first-child {
+  -webkit-margin-start: 0;
+          margin-inline-start: 0;
+}
+.TabCollections__SectionHeader.SectionHeader--center {
+  flex-direction: column;
+}
+.TabCollections__SectionHeader.SectionHeader--center .Nav--tabs {
+  justify-content: center;
+}
+.TabCollections__SectionHeader.SectionHeader--center .Nav__Item {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+.TabCollections__SectionHeader.SectionHeader--center .Nav__Item:first-child {
+  -webkit-margin-start: 0;
+          margin-inline-start: 0;
+}
+.TabCollections__SectionHeader.SectionHeader--center .Nav__Item:last-child {
+  -webkit-margin-end: 0;
+          margin-inline-end: 0;
+}
+.TabCollections__SectionHeader .Button--underline {
+  opacity: 0.6;
+}
+.TabCollections__SectionHeader .Button--underline:hover, .TabCollections__SectionHeader .Button--underline:active, .TabCollections__SectionHeader .Button--underline.Active {
+  opacity: 1;
+  font-weight: 600;
+}
+.TabCollections__SectionHeader .Button--underline::after {
+  height: 0px;
+}
+.TabCollections__SectionHeader .Button--underline:hover:after, .TabCollections__SectionHeader .Button--underline:active:after, .TabCollections__SectionHeader .Button--underline.Active:after {
+  height: 2px;
+}

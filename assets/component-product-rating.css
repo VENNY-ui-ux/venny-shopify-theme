@@ -1,0 +1,55 @@
+@charset "UTF-8";
+.Rating {
+  display: inline-block;
+  margin: 0;
+}
+
+.Product__Block .Rating__Star {
+  --letter-spacing: 0.4;
+  --font-size: 1.7;
+}
+
+.ProductCard__Info .Rating__Star {
+  --letter-spacing: 0.3;
+  --font-size: 1.4;
+}
+
+.Rating__Star {
+  --percent: calc(
+      (
+          var(--rating) / var(--rating-max) + var(--rating-decimal) *
+          var(--font-size) /
+          (var(--rating-max) * (var(--letter-spacing) + var(--font-size)))
+      ) * 100%
+  );
+  letter-spacing: calc(var(--letter-spacing) * 1rem);
+  line-height: 1;
+  display: inline-block;
+  font-family: Times;
+  margin: 0;
+}
+
+.Rating__Star::before {
+  content: "★★★★★";
+  background: linear-gradient(90deg, var(--tg-sys-color-on-background) var(--percent), rgba(var(--tg-sys-color-on-background-rgb), 0.15) var(--percent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.Rating__Text {
+  display: none;
+}
+
+.Rating__Count {
+  display: inline-block;
+  margin: 0;
+}
+
+@media (forced-colors: active) {
+  .Rating {
+    display: none;
+  }
+  .Rating__Text {
+    display: block;
+  }
+}

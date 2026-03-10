@@ -1,0 +1,17 @@
+{%- assign variant = card_product.selected_or_first_available_variant -%}
+{%- if variant != blank and card_product.available -%}
+  <quick-add-to-cart-button>
+    <form method="post"
+          action="/cart/add"
+          class="ProductCard__AddToCartForm ProductQuickAddToCardForm"
+          data-tg-action="add-to-cart"
+          style="margin-top: 2px; margin-bottom: 2px;">
+      <input type="hidden" name="id" value="{{ variant.id }}">
+      <button type="submit"
+              class="Button Button--secondary ProductQuickAddToCardForm__AddToCart"
+              style="width: 100%;">
+        ADD TO CART
+      </button>
+    </form>
+  </quick-add-to-cart-button>
+{%- endif -%}

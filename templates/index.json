@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "banner_YyNHTw": {
+      "type": "banner",
+      "blocks": {
+        "heading_NNH7CJ": {
+          "type": "heading",
+          "settings": {
+            "text": "SIMPLE CHOISE, LASTING IMPRESSION",
+            "heading_font_size": "DisplaySmall",
+            "color": "#ffffff",
+            "link": ""
+          }
+        },
+        "button_QpP3By": {
+          "type": "button",
+          "settings": {
+            "label": "Men",
+            "link": "shopify://pages/men",
+            "style": "secondary"
+          }
+        },
+        "button_q9hkJt": {
+          "type": "button",
+          "settings": {
+            "label": "Women",
+            "link": "shopify://pages/women",
+            "style": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_NNH7CJ",
+        "button_QpP3By",
+        "button_q9hkJt"
+      ],
+      "custom_css": [],
+      "settings": {
+        "section_width": "full_width",
+        "section_spacing": "spacingMedium",
+        "image": "shopify://shop_images/VENNY_-_test_banner_pc.png",
+        "image_mobile": "shopify://shop_images/VENNY_-_banner_test_mobil.png",
+        "overlay_opacity": 50,
+        "image_link": "",
+        "content_position": "middleCenter"
+      }
+    }
+  },
+  "order": [
+    "banner_YyNHTw"
+  ]
+}

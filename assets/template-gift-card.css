@@ -1,0 +1,67 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Template Gift card
+ * ----------------------------------------------------------------------------
+ */
+.Template--giftCard {
+  min-height: 100vh;
+}
+.Template--giftCard .Header {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.Template--giftCard #PrintGiftCard {
+  -webkit-margin-end: 0;
+          margin-inline-end: 0;
+}
+.Template--giftCard .Button--shopping {
+  border-radius: 8px;
+  text-transform: uppercase;
+}
+.Template--giftCard .GiftCard {
+  text-align: center;
+}
+.Template--giftCard .GiftCard__Wrapper {
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto;
+}
+.Template--giftCard .GiftCard__Redeem {
+  margin-bottom: 30px;
+}
+.Template--giftCard .GiftCard__ImageWrapper {
+  position: relative;
+  margin: 40px 0;
+}
+.Template--giftCard .GiftCard__Image {
+  max-width: 100%;
+  height: auto;
+  border-style: none;
+  vertical-align: top;
+  border-radius: 18px;
+}
+.Template--giftCard .GiftCard__CodeHolder {
+  position: absolute;
+  display: inline-block;
+  margin: 0 auto;
+  bottom: 20px;
+  left: 50%;
+  white-space: nowrap;
+  padding: 12px 20px;
+  background: var(--tg-sys-color-background);
+  border-radius: 3px;
+  transform: translateX(-50%);
+}
+.Template--giftCard .GiftCard__QRCode {
+  margin: 1rem 0;
+}
+.Template--giftCard .GiftCard__QRCode img {
+  margin: 0 auto;
+}
+.Template--giftCard .GiftCard__AppleWallet {
+  -webkit-margin-end: 1rem;
+          margin-inline-end: 1rem;
+}
+.Template--giftCard .GiftCard__AppleWallet img {
+  vertical-align: middle;
+}

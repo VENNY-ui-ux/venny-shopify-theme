@@ -1,0 +1,53 @@
+.CartDrawer__Checkout {
+  margin-top: 12px;
+}
+
+.CartDrawer .Form--cart {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.CartDrawer__Total {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.CartDrawer__NoteToggleButton {
+  font-family: var(--tg-sys-typescale-label-medium-font);
+  font-style: var(--tg-sys-typescale-label-medium-style);
+  font-weight: var(--tg-sys-typescale-label-medium-weight);
+  font-size: var(--tg-sys-typescale-label-medium-size);
+  line-height: var(--tg-sys-typescale-label-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-label-medium-tracking);
+}
+
+.CartDrawer__Note {
+  margin-top: 0.75rem;
+}
+.CartDrawer__Note .Form__Item {
+  margin-bottom: 0.5rem;
+}
+.CartDrawer__Note textarea.Form__Input {
+  height: auto;
+}
+
+.CartDrawer__Discount {
+  margin-bottom: 0.25rem;
+  margin-top: 1rem;
+}
+.CartDrawer__Discount .Icon--sale {
+  -webkit-margin-end: 0.25rem;
+          margin-inline-end: 0.25rem;
+}
+
+.CartDrawer__ShippingAmountNotice {
+  margin-bottom: 1rem;
+}
+
+.CartDrawer__ShippingNotice {
+  margin-bottom: 1rem;
+}
+.CartDrawer__ShippingNotice + .CartDrawer__ShippingAmountNotice {
+  margin-top: -0.5rem;
+}

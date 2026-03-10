@@ -1,0 +1,23 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "parent": "product.json",
+  "context": {
+    "market": "dk"
+  },
+  "sections": {},
+  "order": [
+    "main",
+    "product_recommendations_wz8iAN",
+    "image_with_text_AneXFg",
+    "video_with_text_overlay_Kb7bJp",
+    "rich_text_7hATVe"
+  ]
+}

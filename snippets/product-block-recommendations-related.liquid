@@ -1,0 +1,41 @@
+{{ 'component-carousel.css' | asset_url | stylesheet_tag }}
+
+{%- capture carousel_options -%}
+{
+    "freeMode": true,
+    "slidesPerView": "auto",
+    "navigation": {
+        "enabled": false,
+        "nextEl": ".Carousel__NavNext",
+        "prevEl": ".Carousel__NavPrev"
+    },
+    "breakpoints": {
+        "640": {
+            "slidesPerView": "auto",
+            "freeMode": false,
+            "navigation": {
+            "enabled": true,
+            "nextEl": ".Carousel__NavNext",
+            "prevEl": ".Carousel__NavPrev"
+            }
+        }
+    }
+}
+{%- endcapture -%}
+
+<div class="Product__Block Product__Block--recommendations ProductBlockRecommendations {% if recommendations_type == 'complementary' %}ProductBlockRecommendations--complementary{% else %}ProductBlockRecommendations--related{% endif %}">
+
+    {%- if block.settings.heading != blank -%}
+        <header class="SectionHeader SectionHeader--{{ block.settings.header_align }}">
+            <div class="SectionHeader__Text">
+                <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h2>
+            </div>
+        </header>
+    {%- endif -%}
+
+    <div class="ProductBlockRecommendations__Body ProductListWrapper">
+        <div class="ProductList ProductList--carousel Carousel" data-carousel-config='{{ carousel_options }}'>
+            
+        </div>
+    </div>
+</div>

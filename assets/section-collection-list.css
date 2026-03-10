@@ -1,0 +1,33 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Collection list
+ * ----------------------------------------------------------------------------
+ */
+@media screen and (max-width: 1007px) {
+  .CollectionList.CollectionList--horizontal .CollectionList__Body {
+    overflow: hidden;
+  }
+  .CollectionList.CollectionList--horizontal .CollectionList__Body .Grid {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: -1rem;
+    padding-bottom: 1rem;
+  }
+  .CollectionList.CollectionList--horizontal .CollectionList__Body .Grid .Grid__Item {
+    white-space: normal;
+    display: inline-block !important;
+    width: 42%;
+  }
+  .CollectionList:not(.CollectionList--horizontal) .Grid .Grid__Item {
+    padding-top: calc(var(--tg-grid-gutter-x) * .5);
+    padding-bottom: calc(var(--tg-grid-gutter-x) * .5);
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .CollectionList.CollectionList--horizontal .CollectionList__Body .Grid .Grid__Item {
+    width: 88%;
+  }
+}

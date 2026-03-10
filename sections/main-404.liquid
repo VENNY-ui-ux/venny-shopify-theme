@@ -1,0 +1,116 @@
+{%- liquid
+  assign add_gap =  true 
+  if section.settings.page_header_width == 'full_width_no_gap'
+      assign add_gap =  false 
+  endif 
+-%}
+
+{% render 'page-header', 
+    page_header_title: section.settings.heading,
+    background_image: section.settings.page_header_bg_image,
+    background_color: section.settings.page_header_bg_color,
+    page_header_height: section.settings.page_header_height,
+    add_gap: add_gap
+%}
+
+<div class="Container Container--{{ section.settings.section_spacing }}">
+  <div class="TextCenter">
+    <p>{{ section.settings.description }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="Button Button--primary">{{ 'general.continue_shopping' | t }}</a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "404 page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "404"
+    },
+    {
+      "type": "html",
+      "id": "description",
+      "label": "Text",
+      "default": "<p>Page not found. Please try going to shopping by using the button below.</p>"
+    }
+  ]
+}
+{% endschema %}

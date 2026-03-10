@@ -1,0 +1,95 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Scrolling bar
+  * ----------------------------------------------------------------------------
+  */
+section-scrolling-bar {
+  display: block;
+}
+
+.ScrollingBar {
+  overflow: hidden;
+  --tg-scrolling-bar-animation-scroll-speed: 1;
+  --tg-scrolling-bar-animation-direction: normal;
+}
+.ScrollingBar.ScrollingBar--pauseOnHover:hover .ScrollingBar__Item {
+  -webkit-animation-play-state: paused;
+          animation-play-state: paused;
+}
+.ScrollingBar.ScrollingBar--animate .ScrollingBar__Item {
+  -webkit-animation-duration: calc(120s / var(--tg-scrolling-bar-animation-scroll-speed));
+          animation-duration: calc(120s / var(--tg-scrolling-bar-animation-scroll-speed));
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-name: scrolling-items;
+          animation-name: scrolling-items;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+  -webkit-animation-direction: var(--tg-scrolling-bar-animation-direction);
+          animation-direction: var(--tg-scrolling-bar-animation-direction);
+}
+
+[dir=rtl] .ScrollingBar.ScrollingBar--animate .ScrollingBar__Item {
+  -webkit-animation-name: scrolling-items-rtl;
+          animation-name: scrolling-items-rtl;
+}
+
+.ScrollingBar__Item {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@-webkit-keyframes scrolling-items {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes scrolling-items {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@-webkit-keyframes scrolling-items-rtl {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes scrolling-items-rtl {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+.ScrollingBar__Text {
+  white-space: nowrap;
+  -webkit-margin-end: 1rem;
+          margin-inline-end: 1rem;
+}
+
+.ScrollingBar__Image {
+  width: 60px;
+  -webkit-margin-end: 1rem;
+          margin-inline-end: 1rem;
+}
+
+.ScrollingBar__ItemInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ScrollingBar__Inner {
+  white-space: nowrap;
+}

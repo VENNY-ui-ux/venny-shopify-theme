@@ -1,0 +1,106 @@
+<link rel="stylesheet" href="{{ 'photoswipe.css' | asset_url }}" media="print" onload="this.media='all'">
+{% liquid
+    assign media_size = product.images.size
+    assign enable_media_grouping = false 
+    if section.settings.enable_media_grouping and product.metafields.themegoal.media_grouping_set.value != blank
+        assign enable_media_grouping = true
+    endif
+    if enable_media_grouping
+        assign set_start_index = 1
+        assign set_end_index = product.media.size
+        assign current_first_option_value = product.selected_or_first_available_variant.options | first | downcase
+        for item in product.metafields.themegoal.media_grouping_set.value
+            assign item_set = item | split: ','
+            assign item_set_key = item_set | first | downcase
+            if current_first_option_value == item_set_key
+                if item_set.size != 3
+                    break;
+                endif
+                assign set_start_index = item_set[1] | times: 1
+                assign set_end_index = item_set | last | times: 1
+                break
+            endif
+        endfor
+        assign media_size = set_end_index | minus: set_start_index | plus: 1
+    endif
+    assign c_index = 0
+
+    assign pswp_bg_opacity = section.settings.image_zoom_bg_opacity | divided_by: 100.0
+    assign pswp_placeholder_bg_opacity = pswp_bg_opacity | plus: 0.1
+    if pswp_placeholder_bg_opacity > 1
+        assign pswp_placeholder_bg_opacity = 1
+    endif
+ %}
+
+{%- if section.settings.image_zoom_bg_color != blank and section.settings.image_zoom_bg_color != 'rgba(0,0,0,0)' -%}
+    <style>
+       .pswp {
+           --pswp-bg: {{ section.settings.image_zoom_bg_color }};
+           --pswp-bg-opacity: {{ pswp_bg_opacity }};
+           --pswp-placeholder-bg: {{ section.settings.image_zoom_bg_color }};
+           --pswp-placeholder-bg-opacity: {{ pswp_placeholder_bg_opacity }}
+       }
+    </style>
+{% endif %}
+<script type="module" id="MediaLightbox-{{ section.id }}">
+  import PhotoSwipeLightbox from '{{ "photoswipe-lightbox.esm.min.js" | asset_url }}';
+    const leftArrowSVGString = '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 100 100" width="80" height="80"><path d="m19.396765,50.965636l66.403248,0l0,-1.931267l-67.943033,0l22.134416,-22.209574l-1.347312,-1.351887l-23.866675,23.754587l-0.57742,0.772507l0.57742,0.772507l23.866675,23.754587l1.347312,-1.351887l-22.134416,-22.209574l0.57742,0l0.962366,0z"/></svg>';
+    const options = {
+        arrowPrevSVG: leftArrowSVGString,
+        arrowNextSVG: leftArrowSVGString,
+        dataSource: [
+            {%- for media in product.media -%}
+                
+                {%- case media.media_type -%}
+                {%- when 'image' -%}
+                    {% liquid
+                        if enable_media_grouping
+                            if media.position < set_start_index or media.position > set_end_index
+                                continue
+                            endif
+                        endif
+                        assign c_index = c_index | plus: 1
+                     %}
+                    {
+                        srcset:"{%- if media.preview_image.width >= 375 -%}{{ media.preview_image | image_url: width: 375 }} 375w,{%- endif -%}
+                        {%- if media.preview_image.width >= 550 -%}{{ media.preview_image | image_url: width: 550 }} 550w,{%- endif -%}
+                        {%- if media.preview_image.width >= 750 -%}{{ media.preview_image | image_url: width: 750 }} 750w,{%- endif -%}
+                        {%- if media.preview_image.width >= 1100 -%}{{ media.preview_image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                        {%- if media.preview_image.width >= 1500 -%}{{ media.preview_image | image_url: width: 1500 }} 1500w,{%- endif -%}
+                        {%- if media.preview_image.width >= 1800 -%}{{ media.preview_image | image_url: width: 1800 }} 1800w,{%- endif -%}
+                        {{ media.preview_image | image_url }} {{ media.preview_image.width }}w",
+                        src: '{{ media | image_url: width: 550, height: 550 }}',
+                        width: {{media.preview_image.width}},
+                        height: {{media.preview_image.height}},
+                        alt: '{{ media.preview_image.alt }}'
+                    }
+                    {% unless media_size == c_index %},{% endunless %}
+                {%- endcase -%}
+            {%- endfor -%}
+        ],
+        showHideAnimationType: 'none',
+        pswpModule: () => import('{{ "photoswipe.esm.min.js" | asset_url }}'),
+        bgOpacity: 0.6
+    };
+
+    window.productGalleryZoomLightboxTG = new PhotoSwipeLightbox(options);
+    window.productGalleryZoomLightboxTG.init();
+    if (typeof themegoal.libs.Delegate !== 'undefined') {
+        let productDelegateElement = new themegoal.libs.Delegate(document.querySelector('.ProductGallery--{{ section.id }}'));
+
+        productDelegateElement.on('click', '.MediaModalOpener--image', openCarousel, true);
+        function openCarousel(event, target){
+            let m_position = target.getAttribute('data-media-position');
+            window.productGalleryZoomLightboxTG.loadAndOpen(parseInt(m_position) - 1 )
+        }
+    }else{
+        document.querySelectorAll('.ProductGallery--{{ section.id }} .MediaModalOpener--image').forEach(function (item) {
+            item.addEventListener('click', function (event) {
+                let m_position = item.getAttribute('data-media-position');
+                if(m_position){
+                    window.productGalleryZoomLightboxTG.loadAndOpen(parseInt(m_position) - 1 )
+                }
+            });
+        });
+    }
+</script>

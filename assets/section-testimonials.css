@@ -1,0 +1,191 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Testimonials
+  * ----------------------------------------------------------------------------
+  */
+section-testimonials {
+  display: block;
+}
+
+.Testimonials {
+  position: relative;
+}
+
+.Testimonials__BackgroundImageWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.Testimonials__BackgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.Testimonials__Body {
+  margin-right: calc(var(--tg-grid-gutter-x) * -0.5);
+  margin-left: calc(var(--tg-grid-gutter-x) * -0.5);
+}
+@media screen and (max-width: 640px) {
+  .Testimonials__Body {
+    padding-bottom: 2rem;
+    --tg-component-carousel-pagination-bottom: 0;
+  }
+}
+
+.TestimonialWrapper {
+  padding-left: calc(var(--tg-grid-gutter-x) * 0.5);
+  padding-right: calc(var(--tg-grid-gutter-x) * 0.5);
+}
+
+.Testimonial {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 15px 20px;
+}
+.Testimonial .Testimonial__Content {
+  border-radius: 2px;
+  position: relative;
+}
+.Testimonial .Testimonial__Content::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 30px;
+  display: block;
+  width: 12px;
+  height: 12px;
+  transform: rotate(-45deg) translateY(60%);
+}
+.Testimonial.Testimonial--thumbnailTop .Testimonial__Content {
+  order: 3;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+.Testimonial.Testimonial--thumbnailTop .Testimonial__Content::after {
+  left: 36px;
+  top: 0;
+  bottom: auto;
+  transform: rotate(-45deg) translateY(-60%);
+}
+
+.Testimonial__Content {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.Testimonial__ThumbnailWrapper {
+  -webkit-margin-start: 16px;
+          margin-inline-start: 16px;
+  width: 48px;
+  height: 48px;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.Testimonial__Thumbnail {
+  border-radius: 2000px;
+}
+
+.Testimonial__Author {
+  -webkit-margin-start: 12px;
+          margin-inline-start: 12px;
+}
+.Testimonial__Author .Testimonial__AuthorName {
+  margin-bottom: 0;
+}
+
+.Testimonial--right .Testimonial__Author {
+  order: 2;
+  flex-grow: 1;
+  text-align: end;
+  -webkit-margin-start: 0;
+          margin-inline-start: 0;
+  -webkit-margin-end: 12px;
+          margin-inline-end: 12px;
+}
+.Testimonial--right .Testimonial__ThumbnailWrapper {
+  -webkit-margin-end: 16px;
+          margin-inline-end: 16px;
+  -webkit-margin-start: auto;
+          margin-inline-start: auto;
+  order: 3;
+}
+.Testimonial--right .Testimonial__Content {
+  text-align: end;
+}
+.Testimonial--right .Testimonial__Content::after {
+  left: auto;
+  right: 36px;
+}
+.Testimonial--right.Testimonial--thumbnailTop .Testimonial__ThumbnailWrapper {
+  order: 2;
+}
+.Testimonial--right.Testimonial--thumbnailTop .Testimonial__Author {
+  order: 1;
+  margin-bottom: 0;
+}
+.Testimonial--right.Testimonial--thumbnailTop .Testimonial__Content::after {
+  left: auto;
+  right: 30px;
+  top: 0;
+  bottom: auto;
+}
+
+.Testimonial--center {
+  text-align: center;
+  justify-content: center;
+}
+.Testimonial--center .Testimonial__Author {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  order: 2;
+}
+.Testimonial--center .Testimonial__Content::after {
+  display: none;
+}
+.Testimonial--center .Testimonial__ThumbnailWrapper {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 12px;
+  order: 1;
+}
+.Testimonial--center.Testimonial--thumbnailTop .Testimonial__ThumbnailWrapper {
+  margin-bottom: 16px;
+  order: 1;
+}
+.Testimonial--center.Testimonial--thumbnailTop .Testimonial__Content {
+  margin-top: 0;
+  margin-bottom: 20px;
+  order: 2;
+}
+.Testimonial--center.Testimonial--thumbnailTop .Testimonial__Author {
+  order: 3;
+}
+
+.Testimonial--border {
+  padding: 32px 20px;
+}
+
+[dir=rtl] .Testimonial .Testimonial__Content::after {
+  right: 36px;
+  left: auto;
+}
+[dir=rtl] .Testimonial.Testimonial--thumbnailTop .Testimonial__Content::after {
+  right: 30px;
+  left: auto;
+}
+[dir=rtl] .Testimonial.Testimonial--right .Testimonial__Content::after {
+  right: auto;
+  left: 30px;
+}
+[dir=rtl] .Testimonial.Testimonial--right.Testimonial--thumbnailTop .Testimonial__Content::after {
+  right: auto;
+  left: 36px;
+}

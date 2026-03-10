@@ -1,0 +1,622 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Chord",
+    "theme_author": "ThemeGoal",
+    "theme_version": "4.1.1",
+    "theme_documentation_url": "https://themegoal.com/pages/documentation",
+    "theme_support_url": "https://support.themegoal.com/hc/en-us/requests/new"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Base"
+      },
+      {
+        "type": "color",
+        "id": "color_on_background",
+        "label": "Text",
+        "default": "#1c1b1b"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#f8f7f5"
+      },
+      {
+        "type": "color",
+        "id": "color_outline",
+        "label": "Border",
+        "default": "#cac7c7"
+      },
+      {
+        "type": "header",
+        "content": "Color schemes"
+      },
+      {
+        "type": "paragraph",
+        "content": "Primary"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Background",
+        "default": "#7f5700"
+      },
+      {
+        "type": "color",
+        "id": "color_on_primary",
+        "label": "Text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "paragraph",
+        "content": "Secondary"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary_container",
+        "label": "Background",
+        "default": "#f8dfbb"
+      },
+      {
+        "type": "color",
+        "id": "color_on_secondary_container",
+        "label": "Text",
+        "default": "#261904"
+      },
+      {
+        "type": "paragraph",
+        "content": "Tertiary"
+      },
+      {
+        "type": "color",
+        "id": "color_tertiary",
+        "label": "Background",
+        "default": "#ba1b1b"
+      },
+      {
+        "type": "color",
+        "id": "color_on_tertiary",
+        "label": "Text",
+        "default": "#ffffff"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Body text"
+      },
+      {
+        "type": "font_picker",
+        "id": "text_font",
+        "default": "assistant_n3",
+        "label": "Font",
+        "info": "Selecting a different font can affect the speed of your store. [Learn more about system fonts.](https:\/\/help.shopify.com\/en\/manual\/online-store\/os\/store-speed\/improving-speed#fonts)"
+      },
+      {
+        "type": "range",
+        "id": "text_font_scale",
+        "min": 60,
+        "max": 200,
+        "step": 5,
+        "unit": "%",
+        "label": "Font size scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Headings"
+      },
+      {
+        "type": "font_picker",
+        "id": "heading_font",
+        "default": "assistant_n4",
+        "label": "Font",
+        "info": "Selecting a different font can affect the speed of your store. [Learn more about system fonts.](https:\/\/help.shopify.com\/en\/manual\/online-store\/os\/store-speed\/improving-speed#fonts)"
+      },
+      {
+        "type": "range",
+        "id": "heading_font_scale",
+        "min": 60,
+        "max": 200,
+        "step": 5,
+        "unit": "%",
+        "label": "Font size scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Display text"
+      },
+      {
+        "type": "font_picker",
+        "id": "display_font",
+        "default": "assistant_n4",
+        "label": "Font",
+        "info": "Selecting a different font can affect the speed of your store. [Learn more about system fonts.](https:\/\/help.shopify.com\/en\/manual\/online-store\/os\/store-speed\/improving-speed#fonts)"
+      },
+      {
+        "type": "range",
+        "id": "display_font_scale",
+        "min": 60,
+        "max": 200,
+        "step": 5,
+        "unit": "%",
+        "label": "Font size scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Custom fonts"
+      },
+      {
+        "type": "paragraph",
+        "content": "[Learn how to](https://themegoal.com/products/add-custom-fonts) upload your fonts."
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "container_max_width",
+        "min": 1008,
+        "max": 2608,
+        "step": 16,
+        "default": 1280,
+        "unit": "px",
+        "label": "Container max width"
+      }, 
+      {
+        "type": "header",
+        "content": "Grid"
+      },
+      {
+        "type": "paragraph",
+        "content": "Affects areas with a multicolumn layout."
+      },
+      {
+        "type": "range",
+        "id": "spacing_grid_horizontal",
+        "min": 4,
+        "max": 40,
+        "step": 4,
+        "default": 8,
+        "unit": "px",
+        "label": "Horizontal space"
+      },
+      {
+        "type": "range",
+        "id": "spacing_grid_vertical",
+        "min": 4,
+        "max": 60,
+        "step": 4,
+        "default": 16,
+        "unit": "px",
+        "label": "Vertical space"
+      }
+    ]
+  },
+  {
+    "name": "Animations",
+    "settings": [
+      {
+        "type": "select",
+        "id": "animation_image_loading",
+        "label": "Image loading",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "circle_icon",
+            "label": "Circle icon"
+          }
+        ],
+        "default": "circle_icon"
+      }
+    ]
+  },
+  {
+    "name": "Product",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Product card"
+      },
+      {
+        "type": "select",
+        "id": "product_info_alignment",
+        "label": "Text alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "select",
+        "id": "product_image_size",
+        "label": "Image ratio",
+        "options": [
+          {
+            "value": "natural",
+            "label": "Adapt to image"
+          },
+          {
+            "value": "2x3",
+            "label": "2:3"
+          },
+          {
+            "value": "3x4",
+            "label": "3:4"
+          },
+          {
+            "value": "1x1",
+            "label": "1:1"
+          },
+          {
+            "value": "4x3",
+            "label": "4:3"
+          },
+          {
+            "value": "16x9",
+            "label": "16:9"
+          },
+          {
+            "value": "21x9",
+            "label": "21:9"
+          }
+        ],
+        "default": "natural"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_media_fit_cover",
+        "label": "Image fit container",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_secondary_image",
+        "label": "Show secondary image on hover",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_labels",
+        "label": "Show labels",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_color_image_swatch",
+        "label": "Show color image swatch",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_hide_sold_out_swatch",
+        "label": "Hide sold out swatch",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Quick view"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_enable_quickview",
+        "label": "Enable quick view",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "quick_view_button_style",
+        "label": "Style",
+        "options": [
+          {
+            "value": "primary",
+            "label": "Primary"
+          },
+          {
+            "value": "secondary",
+            "label": "Secondary"
+          },
+          {
+            "value": "outline",
+            "label": "Outline"
+          },
+          {
+            "value": "icon",
+            "label": "Icon"
+          }
+        ],
+        "default": "icon"
+      },
+      {
+        "type": "header",
+        "content": "Quick add button"
+      },
+      {
+        "type": "paragraph",
+        "content": "You can enable ‘Quick add button’ in every section that contains product cards."
+      },
+      {
+        "type": "select",
+        "id": "quick_add_button_position",
+        "label": "Position",
+        "options": [
+          {
+            "value": "card_image_top",
+            "label": "Card image top"
+          },
+          {
+            "value": "card_image_bottom",
+            "label": "Card image bottom"
+          },
+          {
+            "value": "card_bottom",
+            "label": "Card bottom"
+          }
+        ],
+        "default": "card_image_top"
+      },
+      {
+        "type": "select",
+        "id": "quick_add_button_style",
+        "label": "Style",
+        "options": [
+          {
+            "value": "primary",
+            "label": "Primary"
+          },
+          {
+            "value": "secondary",
+            "label": "Secondary"
+          },
+          {
+            "value": "outline",
+            "label": "Outline"
+          },
+          {
+            "value": "icon",
+            "label": "Icon"
+          }
+        ],
+        "default": "icon"
+      },
+      {
+        "type": "checkbox",
+        "id": "quick_add_button_full_width",
+        "label": "Enable full width button",
+        "default": true,
+        "info": "Visible when the ‘Position‘ setting is set to ‘Card bottom‘."
+      },
+      {
+        "type": "header",
+        "content": "Labels"
+      },
+      {
+        "type": "range",
+        "id": "product_badge_corner_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Corner radius",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Drawer"
+          },
+          {
+            "value": "page",
+            "label": "Page"
+          },
+          {
+            "value": "notification",
+            "label": "Notification"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "header",
+        "content": "Cart notification"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cart_notification_auto_hide",
+        "label": "Eable auto-hide",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cart_notification_hide_after",
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "unit": "sec",
+        "label": "Auto-hide after",
+        "default": 5
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social accounts"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter",
+        "info": "https://x.com/shopify",
+        "label": "X / Twitter"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "info": "https://facebook.com/shopify",
+        "label": "Facebook"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest",
+        "info": "https://pinterest.com/shopify",
+        "label": "Pinterest"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "info": "http://instagram.com/shopify",
+        "label": "Instagram"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "info": "https://tiktok.com/@shopify",
+        "label": "TikTok"
+      },
+      {
+        "type": "text",
+        "id": "social_tumblr",
+        "info": "https://shopify.tumblr.com",
+        "label": "Tumblr"
+      },
+      {
+        "type": "text",
+        "id": "social_snapchat",
+        "info": "https://www.snapchat.com/add/shopify",
+        "label": "Snapchat"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "info": "https://www.youtube.com/shopify",
+        "label": "YouTube"
+      },
+      {
+        "type": "text",
+        "id": "social_vimeo",
+        "info": "https://www.vimeo.com/shopify",
+        "label": "Vimeo"
+      },
+      {
+        "type": "text",
+        "id": "social_whatsapp",
+        "info": "https://wa.me/<number>",
+        "label": "WhatsApp"
+      },
+      {
+        "type": "text",
+        "id": "social_linkedin",
+        "info": "https://www.linkedin.com/in/shopify",
+        "label": "Linkedin"
+      },
+      {
+        "type": "text",
+        "id": "social_messenger",
+        "info": "https://m.me/shopify",
+        "label": "Messenger"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Will be scaled down to 96 x 96px"
+      }
+    ]
+  },
+  {
+    "name": "Currency format",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Cart and checkout prices always show currency codes. Example: $1.00 USD."
+      },
+      {
+        "type": "select",
+        "id": "price_currency_format",
+        "label": "Currency format",
+        "options": [
+          {
+            "value": "money",
+            "label": "Money"
+          },
+          {
+            "value": "money_with_currency",
+            "label": "Money with currency codes"
+          },
+          {
+            "value": "money_without_currency",
+            "label": "Money without currency codes"
+          },
+          {
+            "value": "money_without_trailing_zeros",
+            "label": "Money without trailing zeros"
+          }
+        ],
+        "default": "money_without_trailing_zeros"
+      }
+    ]
+  },
+  {
+    "name": "Custom code",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "If you want to update this theme in the future, we suggest that you do not edit theme files manually or you might lose your edits. Instead use this section for your custom CSS and JavaScript code."
+      },
+      {
+        "type": "textarea",
+        "id": "custom_code_css",
+        "label": "CSS code",
+        "info": "Your CSS code will be loaded in site's head and will be available sitewide on all pages. Do not include <style></style> tag."
+      },
+      {
+        "type": "textarea",
+        "id": "custom_code_javascript",
+        "label": "Javascript code",
+        "info": "Your inline JavaScript will be loaded in site's footer and will be available sitewide on all pages. Do not include <script></script> tag."
+      }
+    ]
+  }
+]

@@ -1,0 +1,190 @@
+{%- liquid
+    assign color_label = 'color,colour,couleur,colore,farbe,färg,farve,kleur,barva,väri,색상,색,色,farge,kolor,cor,สี,renk,màu sắc,颜色,顏色' | split: ','
+
+    assign products_sort_by = search.sort_by | default: search.default_sort_by 
+    assign products_sort_options = search.sort_options
+    assign products_filters = search.filters
+
+    if template.name == 'collection'
+        assign products_sort_by = collection.sort_by | default: collection.default_sort_by
+         assign products_sort_options = collection.sort_options
+        assign products_filters = collection.filters
+    endif 
+-%}
+{{ 'component-collection-filter-item.css' | asset_url | stylesheet_tag }}
+{{ 'component-collection-filter-drawer.css' | asset_url | stylesheet_tag }}
+
+<div class="Drawer Drawer--end FilterProducts__Drawer" tabindex="-1" id="FilterProductsDrawer" {{ block.shopify_attributes }}>
+    <div class="Drawer__Header">
+        <h5 class="Drawer__Title">{{ 'collection.general.filter_sorting' | t }}</h5>
+        <button type="button" class="ButtonClose" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}"></button>
+    </div>
+    <div class="Drawer__Body">
+        <div class="Accordion">
+            {%- if enable_sorting -%}
+                <div class="Accordion__Item Drawer__Sorting">
+                    <div class="Accordion__Header">
+                        <button class="Accordion__Button Collapsed" type="button" data-tg-toggle="Collapse" data-tg-target="#DrawerFilterSorting" aria-expanded="false">
+                            {{ 'collection.sorting.title' | t }} 
+                        </button>
+                    </div>
+                    <div id="DrawerFilterSorting" class="Accordion__Collapse Collapse">
+                        <ul class="List List--unstyle Accordion__Body">
+                            {%- for option in products_sort_options -%}
+                                <li class="List__Item {% if option.value == products_sort_by -%}Active{%- endif %}" data-value="{{ option.value }}" data-filter-from="drawer" data-tg-action="change-sort">{{ option.name }}</li>
+                            {%- endfor -%}
+                        </ul>
+                    </div>
+                </div> 
+            {%- endif -%}
+
+            {%- if enable_filtering -%}
+                <form class="FilterProducts__Form FilterProducts__Form--drawer Drawer__Filters">
+                    {%- if template.name == 'search' -%}
+                        <input type="hidden" name="q" value="{{ search.terms }}">
+                    {%- endif -%}
+                    
+                    {%- for filter in products_filters -%}
+                        {% liquid
+                            assign downcase_filter_label = filter.label | downcase
+                            assign default_presentation = 'text'
+                            assign presentation = filter.presentation | default: default_presentation
+                        %}
+                        <div class="Accordion__Item">
+                            <div class="Accordion__Header">
+                                <button class="Accordion__Button Collapsed" id="DrawerFilterHeader-{{ filter.param_name | handle }}" type="button" data-tg-toggle="Collapse" data-tg-target="#DrawerFilter-{{ filter.param_name | handle }}" aria-expanded="false">
+                                    {{ filter.label }}
+                                </button>
+                            </div>
+                            {%- case filter.type -%}
+                                {%- when 'boolean', 'list' -%}
+                                    <div id="DrawerFilter-{{ filter.param_name | handle }}" class="Accordion__Collapse Collapse">
+                                        <ul class="List List--unstyle Accordion__Body {% if presentation == 'image' %}FilterProductsImageWrapper{% endif %}">
+                                            {% assign parent_forloop = forloop.index %}
+                                            {%- for filter_value in filter.values -%}
+                                                {%- if filter_value.label contains '__label' -%}
+                                                    {%- continue -%}
+                                                {%- endif -%}
+                                                <li class="List__Item ProductFilters__Item {% if filter_value.active -%}Active{%- endif %}" data-filter-from="drawer">
+                                                    <label for="Filter-drawer-{{ filter.param_name }}-{{ forloop.index }}">
+                                                        {%- render 'icons', icon: 'checkbox-checked' -%}
+                                                        {%- render 'icons', icon: 'checkbox-unchecked' -%}
+                                                        {%- if presentation == 'swatch' -%}
+                                                            {%- if filter_value.swatch.color -%}
+                                                                <span class="FilterProductsColorSwatch FilterProductsColorSwatch--metaobjectColors" title="{{ filter_value.value | escape }}" style="background: {{'rgb(' | append: filter_value.swatch.color.rgb | append: ')'}};">&nbsp;</span>
+                                                            {%- elsif filter_value.swatch.image -%}
+                                                                <span class="FilterProductsColorSwatch FilterProductsColorSwatch--metaobjectImage" title="{{ filter_value.value | escape }}" style="{% if filter_value.swatch.image != blank %}background-image: url({{ filter_value.swatch.image | image_url: width: 64, height: 64 }}){% endif %}">&nbsp;</span>
+                                                            {%- else -%}
+                                                                <div class="VisuallyHidden"></div>
+                                                            {%- endif -%}
+                                                        {%- elsif presentation == 'image' -%}
+                                                            <div class="Ratio" style="--tg-aspect-ratio: {{ filter_value.image.aspect_ratio }};">
+                                                                {{
+                                                                    filter_value.image
+                                                                    | image_url: width: 300
+                                                                    | image_tag: class: 'FilterProductsImage FilterProductsImage--metaobjectImage', alt: filter_value.alt
+                                                                }}
+                                                            </div>
+                                                        {%- elsif color_label contains downcase_filter_label and show_filter_color_swatch -%}
+                                                            {%- liquid 
+                                                                assign downcase_value = filter_value.value | downcase
+                                                                assign color_swatch_name = filter_value.value | handle | append: '.jpg'
+                                                                assign color_swatch_image = images[color_swatch_name]
+
+                                                                if color_swatch_image == blank
+                                                                    assign color_swatch_name = filter_value.value | handle | append: '.png'
+                                                                    assign color_swatch_image = images[color_swatch_name]
+                                                                endif 
+                                                            -%}
+
+                                                            <span class="FilterProductsColorSwatch {% if downcase_value == 'white' and color_swatch_image == blank %}FilterProductsColorSwatch--white{% endif %}" title="{{ filter_value.value | escape }}" style="background-color: {{ filter_value.value | replace: ' ', '' | downcase }}; {% if color_swatch_image != blank %}background-image: url({{ color_swatch_image | image_url: width: 64, height: 64 }}){% endif %}">&nbsp;</span>
+                                                        {%- endif -%}
+                                                        <input type="checkbox" 
+                                                            name="{{ filter_value.param_name }}"
+                                                            value="{{ filter_value.value }}"
+                                                            id="Filter-drawer-{{ filter.param_name }}-{{ forloop.index }}"
+                                                            {% if filter_value.active -%}checked{%- endif %}
+                                                            {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                                                            style="margin-right: 6px;"
+                                                        ><span class="ProductFilters__ItemLabel">{{ filter_value.label }}{%-if presentation == 'image' -%}({{ filter_value.count }}){%- endif -%}</span>
+                                                    </label>
+                                                    <span id="ProductFilters__ItemCount--{{ parent_forloop }}--{{ forloop.index }}" class="ProductFilters__ItemCount">{{ filter_value.count }}</span>
+                                                </li>
+                                            {%- endfor -%}
+                                        </ul>
+                                    </div>
+                                {%- when 'price_range' -%}
+                                    {{ 'nouislider.css' | asset_url | stylesheet_tag }}
+                                    <script src="{{ 'nouislider.js' | asset_url }}" defer></script>
+                                    {% liquid
+                                        assign currencies_using_comma_decimals = 'ANG,ARS,BRL,BYN,BYR,CLF,CLP,COP,CRC,CZK,DKK,EUR,HRK,HUF,IDR,ISK,MZN,NOK,PLN,RON,RUB,SEK,TRY,UYU,VES,VND' | split: ','
+                                        assign uses_comma_decimals = false
+                                        if currencies_using_comma_decimals contains cart.currency.iso_code
+                                          assign uses_comma_decimals = true
+                                        endif
+                                    %}
+
+                                    <div id="DrawerFilter-{{ filter.param_name | handle }}" class="Accordion__Collapse Collapse">
+                                        <div class="Accordion__Body Accordion__Body--priceRange">
+                                            <div class="Form__Item Form__Item--floatingLabel">
+
+                                                <input name="{{ filter.min_value.param_name }}" class="Form__Input Form__Input--price Form__Input--priceMin"
+                                                id="Filter-Drawer-Min-Price"
+                                                {% if filter.min_value.value %}
+                                                    {% if uses_comma_decimals %}value="{{ filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' }}"{% else %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                                                {% endif %}
+                                                type="number"
+                                                placeholder="0"
+                                                min="0"
+                                                {% if uses_comma_decimals %}max="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"{% else %}max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"{% endif %}
+                                                step="0.01"
+                                                >
+
+                                                <label class="Form__Label" for="Filter-Drawer-Min-Price">{{ 'collection.filter.price_from' | t }} {{ cart.currency.symbol }}</label>
+                                            </div>
+                                            <div class="Form__Item Form__Item--floatingLabel">
+
+                                                <input name="{{ filter.max_value.param_name }}" class="Form__Input Form__Input--price Form__Input--priceMax"
+                                                id="Filter-Drawer-Max-Price"
+                                                {% if filter.max_value.value %}
+                                                    {% if uses_comma_decimals %}value="{{ filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' }}"{% else %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                                                {% endif %}
+                                                type="number"
+                                                min="0"
+                                                step="0.01" 
+                                                {% if uses_comma_decimals %} 
+                                                    placeholder="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}" 
+                                                    max="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                                                {% else %}
+                                                    placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                                    max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                                {% endif %}
+                                                >
+
+                                                <label class="Form__Label" for="Filter-Drawer-Max-Price">{{ 'collection.filter.price_to' | t }} {{ cart.currency.symbol }}</label>
+                                            </div>
+
+                                            <div id="Drawer-Price-Slider" style="margin-bottom: 1rem;" 
+                                                {% if uses_comma_decimals %}
+                                                    data-tg-max-price="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                                                {% else %}
+                                                    data-tg-max-price="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                                {% endif %} 
+                                            ></div>
+
+                                            <button class="Button Button--secondary Button--small" type="button" data-filter-from="drawer" data-tg-action="apply-price">{{ 'collection.filter.apply' | t }}</button>
+                                        </div>
+                                    </div>
+                            {%- endcase -%}
+                        </div>
+                    {%- endfor -%}
+
+                </form>
+            {%- endif -%}
+        </div>
+    </div>
+
+    <div class="Drawer__Footer">
+        <button class="Button Button--primary Button--full" data-tg-dismiss="Drawer">{{ 'general.drawer.see_results' | t }}</button>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Template Article
+ * ----------------------------------------------------------------------------
+ */
+.Template--article .Article__Comments {
+  margin-top: 4rem;
+}
+.Template--article .PageHeader__Content .Aiticle__PublishedAt ~ .Article__Author {
+  -webkit-margin-start: 0.75rem;
+          margin-inline-start: 0.75rem;
+}
+.Template--article .Article__Footer {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+}
+.Template--article .Article__CommentFormWrapper {
+  margin-top: 5rem;
+}
+.Template--article .Article__CommentFormWrapper .Article__CommentFormTitle {
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  font-family: var(--tg-sys-typescale-title-medium-font);
+  font-style: var(--tg-sys-typescale-title-medium-style);
+  font-weight: var(--tg-sys-typescale-title-medium-weight);
+  font-size: var(--tg-sys-typescale-title-medium-size);
+  line-height: var(--tg-sys-typescale-title-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-title-medium-tracking);
+}
+.Template--article .ArticleComment {
+  margin-top: 1rem;
+  padding-bottom: 0.25rem;
+}
+.Template--article .Article__CommentsCount {
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-family: var(--tg-sys-typescale-title-medium-font);
+  font-style: var(--tg-sys-typescale-title-medium-style);
+  font-weight: var(--tg-sys-typescale-title-medium-weight);
+  font-size: var(--tg-sys-typescale-title-medium-size);
+  line-height: var(--tg-sys-typescale-title-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-title-medium-tracking);
+}
+.Template--article .ArticleComment__Meta {
+  margin-top: 0.5rem;
+}
+.Template--article .ArticleComment__Meta .ArticleComment__Date {
+  font-style: oblique;
+}
+.Template--article .ArticleComment__Author {
+  text-transform: uppercase;
+}

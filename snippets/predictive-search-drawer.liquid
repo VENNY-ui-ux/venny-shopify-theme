@@ -1,0 +1,88 @@
+{%- if predictive_search.performed -%}
+  {% assign first_column_results_size = predictive_search.resources.queries.size
+    | plus: predictive_search.resources.collections.size
+    | plus: predictive_search.resources.pages.size
+    | plus: predictive_search.resources.articles.size
+    %}
+
+    {%- assign desktop_items_per_row = section.settings.grid_desktop_items_per_row -%}
+    {%- assign mobile_items_per_row  = section.settings.grid_mobile_items_per_row | times: 1 -%}
+
+  <div class="PredictiveSearchDrawer__ResultsGroupsWrapper Grid">
+    {%- if first_column_results_size > 0 -%}
+      <div class="PredictiveSearchDrawer__ResultsGroup PredictiveSearchDrawer__ResultsGroup--others Grid__Item 1/4--medium-up">
+        {%- if predictive_search.resources.queries.size > 0 or predictive_search.resources.collections.size > 0 -%}
+          <div class="Container Container--fluid">
+            <h2 id="predictive-search-queries" class="PredictiveSearchDrawer__Heading TitleLarge">
+              {{- 'search.predictive.suggestions' | t -}}
+            </h2>
+            <ul class="PredictiveSearchDrawer__ResultsList List List--unstyle" role="group" aria-labelledby="predictive-search-queries">
+              {%- for query in predictive_search.resources.queries -%}
+                <li class="PredictiveSearchDrawer__ListItem" role="option" aria-selected="false">
+                  <a href="{{ query.url }}" class="PredictiveSearchDrawer__Item PredictiveSearchDrawer__Item--suggestion" tabindex="-1">
+                    <div class="PredictiveSearchDrawer__ItemContent">
+                      <p class="PredictiveSearchDrawer__ItemHeading" aria-label="{{ query.text }}">{{ query.styled_text }}</p>
+                    </div>
+                  </a>
+                </li>
+              {%- endfor -%}
+              {%- for collection in predictive_search.resources.collections -%}
+                <li class="PredictiveSearchDrawer__ListItem" role="option" aria-selected="false">
+                  <a href="{{ collection.url }}" class="PredictiveSearchDrawer__Item PredictiveSearchDrawer__Item--collection" tabindex="-1">
+                    <div class="PredictiveSearchDrawer__ItemContent">
+                      <p class="PredictiveSearchDrawer__ItemHeading">{{ collection.title }}</p>
+                    </div>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+        {%- if predictive_search.resources.articles.size > 0 or predictive_search.resources.pages.size > 0 -%}
+          <div class="Container Container--fluid">
+            <h2 id="predictive-search-pages-desktop" class="PredictiveSearchDrawer__Heading TitleLarge">
+              {{- 'search.predictive.pages' | t -}}
+            </h2>
+            <ul class="PredictiveSearchDrawer__ResultsList List List--unstyle" role="group" aria-labelledby="predictive-search-pages-desktop">
+              {%- for page in predictive_search.resources.pages -%}
+                <li class="PredictiveSearchDrawer__ListItem" role="option" aria-selected="false">
+                  <a href="{{ page.url }}" class="PredictiveSearchDrawer__Item PredictiveSearchDrawer__Item--page" tabindex="-1">
+                    <div class="PredictiveSearchDrawer__ItemContent">
+                      <p class="PredictiveSearchDrawer__ItemHeading">{{ page.title }}</p>
+                    </div>
+                  </a>
+                </li>
+              {%- endfor -%}
+              {%- for article in predictive_search.resources.articles -%}
+                <li class="PredictiveSearchDrawer__ListItem" role="option" aria-selected="false">
+                  <a href="{{ article.url }}" class="PredictiveSearchDrawer__Item PredictiveSearchDrawer__Item--article" tabindex="-1">
+                    <div class="PredictiveSearchDrawer__ItemContent">
+                      <p class="PredictiveSearchDrawer__ItemHeading">{{ article.title }}</p>
+                    </div>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if predictive_search.resources.products.size > 0 -%}
+      <div class="PredictiveSearchDrawer__ResultsGroup PredictiveSearchDrawer__ResultsGroup--products Grid__Item 3/4--medium-up">
+        <div class="Container Container--fluid">
+          <h2 id="predictive-search-products" class="PredictiveSearchDrawer__Heading TitleLarge">
+              {{- 'search.predictive.products' | t -}}
+          </h2>
+          <ul id="predictive-search-results-products-list" class="PredictiveSearchDrawer__ResultsList Grid List List--unstyle PredictiveSearchDrawer__ResultsList--products" role="group" aria-labelledby="predictive-search-products">
+          {%- for product in predictive_search.resources.products -%}
+              <li class="PredictiveSearchDrawer__ListItem Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up" role="option" aria-selected="false">
+                {% render 'product-card', product: product, show_rating: section.settings.show_rating, show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor, show_swatches: section.settings.show_swatches, show_quick_add: section.settings.enable_quick_add %}
+              </li>
+          {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

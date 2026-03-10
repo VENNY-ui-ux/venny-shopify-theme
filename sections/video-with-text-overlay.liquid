@@ -1,0 +1,504 @@
+{{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+{{ 'component-text-on-image.css' | asset_url | stylesheet_tag }}
+<style>
+  .VideoWithTextOverlaySection .VideoWithTextOverlaySection__Media{
+    position: absolute;
+  }
+
+  {% if section.settings.overlay_opacity > 0 %}
+    #section-{{ section.id }} .HiddenSmall.ImageOverlay::after{
+      {%- assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0 -%}
+      background-color: rgba(0,0,0,{{ overlay_opacity }});
+    }
+  {% endif %}
+
+  {% if section.settings.overlay_opacity_mobile > 0 %}
+    #section-{{ section.id }} .HiddenMediumUp.ImageOverlay::after{
+      {%- assign overlay_opacity_mobile = section.settings.overlay_opacity_mobile | divided_by: 100.0 -%}
+      background-color: rgba(0,0,0,{{ overlay_opacity_mobile }});
+    }
+  {% endif %}
+
+  {% if section.settings.text_color_mobile != blank and  section.settings.text_color_mobile != 'rgba(0,0,0,0)' %}
+    @media screen and (max-width: 640px) {
+      #section-{{ section.id }} .SectionHeader__Heading,
+      #section-{{ section.id }} .SectionHeader__Heading a,
+      #section-{{ section.id }} .SectionHeader__Subheading,
+      #section-{{ section.id }} .SectionHeader__Description,
+      #section-{{ section.id }} .SectionHeader__Description a,
+      #section-{{ section.id }} .Button--outline,
+      #section-{{ section.id }} .Button--underline{
+        color: {{ section.settings.text_color_mobile }};
+      }
+
+      #section-{{ section.id }} .SectionHeader__Description a{
+        text-decoration-color: {{ section.settings.text_color_mobile }};
+      }
+
+      #section-{{ section.id }} .Button--outline{
+        border-color: {{ section.settings.text_color_mobile }};
+        background-color: transparent;
+      }
+    }
+  {% endif %}
+
+  {% if section.settings.text_color != blank and  section.settings.text_color != 'rgba(0,0,0,0)' %}
+    @media screen and (min-width: 641px) {
+      #section-{{ section.id }} .SectionHeader__Heading,
+      #section-{{ section.id }} .SectionHeader__Heading a,
+      #section-{{ section.id }} .SectionHeader__Subheading,
+      #section-{{ section.id }} .SectionHeader__Description,
+      #section-{{ section.id }} .SectionHeader__Description a,
+      #section-{{ section.id }} .Button--outline,
+      #section-{{ section.id }} .Button--underline{ 
+        color: {{ section.settings.text_color }};
+      }
+
+      #section-{{ section.id }} .SectionHeader__Description a{
+        text-decoration-color: {{ section.settings.text_color }};
+      }
+
+      #section-{{ section.id }} .Button--outline{
+        border-color: {{ section.settings.text_color }};
+        background-color: transparent;
+      }
+    }
+  {% endif %}
+</style>
+{% liquid 
+  assign section_has_image = false
+  if section.settings.self_hosted_video != blank or section.settings.self_hosted_video_mobile != blank
+    assign section_has_image = true
+    if section.settings.self_hosted_video != blank 
+      assign section_image_ratio = section.settings.self_hosted_video.preview_image.aspect_ratio
+      assign section_image_ratio_mobile = section.settings.self_hosted_video.preview_image.aspect_ratio
+    endif
+
+    if section.settings.self_hosted_video_mobile != blank
+      assign section_image_ratio_mobile = section.settings.self_hosted_video_mobile.preview_image.aspect_ratio
+    endif
+
+  endif 
+-%}
+
+<section id="section-{{ section.id }}" class="VideoWithTextOverlaySection Container--specialSpacingFirstSection Container {% if section.settings.section_width == 'full_width' %}Container--fluid Container--spacingContainerGutter Container--specialSpacingLastSection{% elsif section.settings.section_width ==  'full_width_no_gap' %}Container--fluid Container--noGutter Container--specialSpacingLastSection{% else %}Container--{{ section.settings.section_spacing }}{% endif %}">
+  <div class="TextOnImage TextOnImage--{{ section.settings.content_position }}"
+    style="{% if section_has_image %}--tg-component-text-on-image-image-ratio-mobile: {{ section_image_ratio_mobile }}; --tg-component-text-on-image-image-ratio: {{section_image_ratio}};
+    {% else %} --tg-component-text-on-image-image-ratio-mobile: 0.8; --tg-component-text-on-image-image-ratio: 1.8;
+    {% endif %}">
+
+    <!-- mobile host video -->
+    {%- if section.settings.self_hosted_video_mobile != blank -%}
+
+      {%- liquid
+        assign video_alt = section.settings.self_hosted_video_mobile.alt
+        assign poster = section.settings.self_hosted_video_mobile.preview_image 
+      -%}
+
+      <deferred-media class="DeferredMedia VideoWithTextOverlaySection__Media HiddenMediumUp TextOnImage__ImageWrapper Ratio {% if section.settings.overlay_opacity_mobile > 0 %}ImageOverlay{% endif %}" data-tg-video-auto="1">
+        <div class="DeferredMedia__CoverImageWrapper Ratio" 
+          style="--tg-aspect-ratio: {{ poster.aspect_ratio }};">
+
+          {{ poster | image_url: width: 3840 | image_tag:
+            loading: 'lazy',
+            sizes: '100vw',
+            widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+            class: 'DeferredMedia__CoverImage',
+            alt: video_alt
+          }}          
+        </div>
+
+        <template>
+          {{ section.settings.self_hosted_video_mobile
+            | video_tag:
+              class: 'DeferredMedia__SelfVideo',
+              image_size: "1100x",
+              autoplay: true,
+              loop: true,
+              controls: false,
+              muted: true,
+              playsinline: ""
+          }}
+        </template>
+      </deferred-media>
+    {%- endif -%}
+
+    {%- liquid
+      assign video_alt = section.settings.self_hosted_video.alt
+      assign poster = section.settings.self_hosted_video.preview_image
+    -%}
+    <deferred-media class="TextOnImage__ImageWrapper Ratio DeferredMedia VideoWithTextOverlaySection__Media{% if section.settings.self_hosted_video_mobile != blank %} HiddenSmall{% endif %} {% if section.settings.overlay_opacity > 0 %}ImageOverlay{% endif %}" data-tg-video-auto="1">
+      {%- if poster != blank -%}
+        <div class="DeferredMedia__CoverImageWrapper Ratio" 
+          style="--tg-aspect-ratio: {{ poster.aspect_ratio }};">
+
+          {{ poster | image_url: width: 3840 | image_tag:
+            loading: 'lazy',
+            sizes: '100vw',
+            widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+            class: 'DeferredMedia__CoverImage',
+            alt: video_alt
+          }}
+        </div>
+      {%- endif -%}
+
+      {%- if poster == blank -%}
+        <div class="DeferredMedia__CoverImageWrapper Ratio" style="--tg-aspect-ratio:  1.7777777777778;">
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'DeferredMedia__CoverImage SvgPlaceholder' }}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.self_hosted_video != null -%}
+        <template>
+          {{ section.settings.self_hosted_video
+            | video_tag:
+              class: 'DeferredMedia__SelfVideo',
+              image_size: "1100x",
+              autoplay: true,
+              loop: true,
+              controls: false,
+              muted: true,
+              playsinline: ""
+          }}
+        </template>
+      {%- endif -%}
+
+    </deferred-media>
+
+    <!-- content -->
+    {%- assign has_button = false -%}
+    {%- assign has_two_buttons = false -%}
+    {%- assign heading_has_link = false -%}
+    <div class="TextOnImage__Content">
+      <div class="TextOnImage__ContentInner">
+        <header class="SectionHeader">
+
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'button' -%}
+                {%- liquid
+                  if has_button
+                    assign has_two_buttons = true
+                  endif
+                  assign has_button = true 
+                -%}
+                
+              {%- when 'heading' -%}
+                <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}" {{ block.shopify_attributes }}>
+                  {%- if block.settings.link != blank -%} 
+                    <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+                    {%- assign heading_has_link = true -%}
+                  {%- else -%}
+                    {{ block.settings.text }}
+                  {%- endif -%}
+                </h2>
+
+              {%- when 'subheading' -%}
+                <h3 class="SectionHeader__Subheading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h3>
+                
+              {%- when 'description' -%}
+                <div class="SectionHeader__Description RTE" {{ block.shopify_attributes }}>
+                  {{ block.settings.text }}
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+
+          {%- if has_button -%}
+            <div class="SectionHeader__ButtonWrapper">
+              <div class="ButtonGroup {% if has_two_buttons %}ButtonGroup--smallSize{% endif %}">
+                {%- for block in section.blocks -%}
+                  {%- case block.type -%}
+                    {%- when 'button' -%}
+                      <a href="{{ block.settings.link }}" id="Button{{ block.id }}" class="Button Button--{{ block.settings.style }}" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</a>
+                  {%- endcase -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </header>
+      </div>
+
+      {%- unless has_button or heading_has_link -%}
+        {%- if section.settings.video_link != blank -%}
+          <a class="StretchedLink" href="{{ section.settings.video_link }}"></a>
+        {%- endif -%}
+      {%- endunless -%}
+    </div>
+
+    {%- if section.settings.video_link != blank -%}
+      <a class="StretchedLink" href="{{ section.settings.video_link }}"></a>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Video with text overlay",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium",
+      "info": "Visible when the ‘Section width’ setting is set to Grid."
+    },
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "video",
+      "id": "self_hosted_video",
+      "label": "Video"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "video",
+      "id": "self_hosted_video_mobile",
+      "label": "Video mobile"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity_mobile",
+      "label": "Overlay opacity mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "url",
+      "id": "video_link",
+      "label": "Link",
+      "info": "Give the video a link when there is no content on it."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "options": [
+        {
+          "value": "topLeft",
+          "label": "Top left"
+        },
+        {
+          "value": "topCenter",
+          "label": "Top center"
+        },
+        {
+          "value": "topRight",
+          "label": "Top right"
+        },
+        {
+          "value": "middleLeft",
+          "label": "Middle left"
+        },
+        {
+          "value": "middleCenter",
+          "label": "Middle center"
+        },
+        {
+          "value": "middleRight",
+          "label": "Middle right"
+        },
+        {
+          "value": "bottomLeft",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottomCenter",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottomRight",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "middleCenter"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color desktop",
+      "default": "#1C1B1B"
+    },
+    {
+      "type": "color",
+      "id": "text_color_mobile",
+      "label": "Text color mobile",
+      "default": "#FFFFFF"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Tell your story"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "DisplaySmall",
+              "label": "Small"
+            },
+            {
+              "value": "DisplayMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "DisplayLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "DisplaySmall"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "subheading",
+      "name": "Subeading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Add your own custom content to give more information</p>"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            },
+            {
+              "value": "outline",
+              "label": "Outline"
+            },
+            {
+              "value": "underline",
+              "label": "Underline"
+            }
+          ],
+          "default": "secondary"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video with text overlay",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "description"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,8 @@
+<div class="CollageCard CollageCard--image">
+    <div class="TextOnImage TextOnImage--bottomCenter" style="--tg-component-text-on-image-image-ratio-mobile: 1.65; --tg-component-text-on-image-image-ratio: 1.65;">
+        <div class="TextOnImage__ImageWrapper Ratio">
+            {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+            {{ 'product-' | append: current | placeholder_svg_tag: 'TextOnImage__Image SvgPlaceholder' }}
+        </div>
+    </div>
+</div>

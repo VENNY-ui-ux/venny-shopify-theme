@@ -1,0 +1,84 @@
+{%- if cart != empty -%}
+  {%- for line_item in cart.items -%}
+    <div class="CartItem__Wrapper" id="cart-notification-product-{{ line_item.key }}">
+      <div class="CartItem">
+        <div class="CartItem__ImageWrapper">
+          {%- if line_item.image -%}
+            <div class="Ratio" style="--tg-aspect-ratio: {{ line_item.image.aspect_ratio }}">
+              <img class="CartItem__Image"
+                loading="lazy"
+                width="{{ line_item.image.width }}"
+                height="{{ line_item.image.height }}"
+                src="{{ line_item.image | image_url: width: 400 }}" alt="{{ line_item.image.alt | escape }}">
+            </div>
+          {%- endif -%}
+        </div>
+  
+        <div class="CartItem__Info">
+          <h2 class="CartItem__Title">
+            <a href="{{ line_item.url }}" class="Nav__Link">{{ line_item.product.title }}</a>
+          </h2>
+  
+          <div class="CartItem__Meta">
+            {%- unless line_item.product.has_only_default_variant -%}
+              <div class="CartItem__VariantTitle TextMuted">{{ line_item.variant.title }}</div>
+            {%- endunless -%}
+  
+            {%- if line_item.properties != empty -%}
+              <ul class="CartItem__PropertyList List List--unstyle">
+                {%- for property in line_item.properties -%}
+                  {%- assign first_character_in_key = property.first | truncate: 1, '' -%}
+  
+                  {%- if property.last == blank or first_character_in_key == '_' -%}
+                    {%- continue -%}
+                  {%- endif -%}
+                  <li class="List__Item TextMuted">{{ property.first }}: {{ property.last }}</li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+  
+            {%- if line_item.selling_plan_allocation -%}
+              <div class="CartItem__PlanAllocation">{{ line_item.selling_plan_allocation.selling_plan.name }}</div>
+            {%- endif -%}
+            
+  
+            <div class="CartItem__PriceList">
+              <div class="RegularPrice">
+                {%- if line_item.original_price != line_item.final_price -%}
+                  <span class="CartItem__Price CartItem__Price--original Price Price--saleRegular">{{ line_item.original_price | money }}</span>
+                  <span class="CartItem__Price Price Price--sale">{{ line_item.final_price | money }}</span>
+                {%- else -%}
+                  <span class="CartItem__Price Price">{{ line_item.final_price | money }}</span>
+                {%- endif -%}
+              </div>
+              {%- if line_item.unit_price_measurement -%}
+                <div class="UnitPrice TextMuted">
+                  <span class="UnitPrice__Price">{{ line_item.unit_price | money }}</span>
+                  <span class="UnitPrice__Separator">/ </span>
+  
+                  {%- if line_item.unit_price_measurement.reference_value != 1 -%}
+                    <span class="UnitPrice__ReferenceValue">{{ line_item.unit_price_measurement.reference_value }}</span>
+                  {%- endif -%}
+  
+                  <span class="UnitPrice__ReferenceUnit">{{ line_item.unit_price_measurement.reference_unit }}</span>
+                </div>
+              {%- endif -%}
+            </div>
+  
+            {%- if line_item.line_level_discount_allocations != blank -%}
+              <ul class="CartItem__DiscountList List List--unstyle TextMuted">
+                {%- for discount_allocation in line_item.line_level_discount_allocations -%}
+                  <li class="CartItem__Discount">
+                    {% render 'icons', icon: 'sale' %}{{ discount_allocation.discount_application.title }}: - {{ discount_allocation.amount | money }}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div><!--CartItem__Meta-->
+  
+        </div><!--CartItem__Info-->
+  
+      </div><!--CartItem-->
+    </div><!--CartItem__Wrapper-->
+    {%- endfor -%}
+{%- endif -%}

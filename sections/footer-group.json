@@ -1,0 +1,67 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "footer-block-link-1": {
+          "type": "links",
+          "settings": {
+            "heading": "QUICK LINKS",
+            "menu": "footer"
+          }
+        },
+        "footer-block-newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "NEWSLETTER",
+            "content": "<p>SIGN UP FOR GREAT OFFERS, BIG<br/>NEWS AND MORE.</p>"
+          }
+        },
+        "footer-block-text": {
+          "type": "text",
+          "settings": {
+            "heading": "VENNY",
+            "logo_max_width": 50,
+            "mobile_logo_max_width": 50,
+            "content": "",
+            "enable_follow_on_shop": true,
+            "show_social_media": true
+          }
+        }
+      },
+      "block_order": [
+        "footer-block-link-1",
+        "footer-block-newsletter",
+        "footer-block-text"
+      ],
+      "custom_css": [
+        ".Footer {margin-top: -55px !important; /* Juster negativ margin for at reducere afstanden */}"
+      ],
+      "settings": {
+        "footer_width": "default",
+        "background_color": "#eeeeee",
+        "text_color": "#1c1b1b",
+        "footer_bottom_desktop_layout": "stacked",
+        "show_payment_methods": true,
+        "enable_country_selector": true,
+        "show_country_name": true,
+        "show_country_flag": true,
+        "enable_language_selector": false
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

@@ -1,0 +1,74 @@
+{%- liquid
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class = 'FeaturedColumnsCard__Image Image--fadeIn'
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class = 'Image--withLoader Image--fadeIn FeaturedColumnsCard__Image'
+  endif
+-%}
+
+<div class="FeaturedColumnsCard Animate__Item {% if block.settings.badge != blank %}FeaturedColumnsCard--withBadge{% endif %} 
+ FeaturedColumnsCard--image{{ block.settings.image_position }}" {% if block %}{{ block.shopify_attributes }}{% endif %}
+ style="{% if block.settings.badge_text_color != blank and block.settings.badge_text_color != 'rgba(0,0,0,0)' %}--tg-featured-columns-card-badge-text-color: {{ block.settings.badge_text_color }};{% endif %}
+{% if block.settings.badge_background != blank and block.settings.badge_background != 'rgba(0,0,0,0)' %}--tg-featured-columns-card-badge-background-color: {{ block.settings.badge_background }};{% endif %}
+"> 
+  {%- if block.settings.image != blank -%}
+
+    {%- assign image_aspect_ratio = block.settings.image.aspect_ratio | default: 1 -%}
+
+    {%- if block.settings.link_url != blank -%}
+      <a href="{{ block.settings.link_url }}" class="FeaturedColumnsCard__ImageWrapper">
+    {%- endif -%}
+    <{{- animation_image_loading_tag }} class="{% unless block.settings.link_url != blank %}FeaturedColumnsCard__ImageWrapper{% endunless %} Ratio" style="--tg-aspect-ratio: {{ image_aspect_ratio }};">
+      {%- capture tg_sizes -%}
+        {%- if section.settings.section_width == 'default' -%}
+          (min-width: 641px) calc((min(100vw, {{ settings.container_max_width }}px) - 64px) / {{ section.settings.grid_desktop_items_per_row | default: 2 }}), calc((100vw - 32px) / {% if section.settings.layout_mobile == 'horizontal' %}1.136{% else %}{{ section.settings.grid_mobile_items_per_row }}{%- endif -%})
+        {%- else -%}
+          (min-width: 641px) calc((100vw - 64px) / {{ section.settings.grid_desktop_items_per_row | default: 2 }}), calc((100vw - 32px) / {% if section.settings.layout_mobile == 'horizontal' %}1.136{% else %}{{ section.settings.grid_mobile_items_per_row }}{%- endif -%})
+        {%- endif -%}
+      {%- endcapture -%}
+
+      {{ block.settings.image | image_url: width: 3000 | image_tag:
+          sizes: tg_sizes,
+          widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000',
+          class: animation_image_loading_class
+      }}
+      {%- if settings.animation_image_loading != 'none' -%}
+        <span class="Image--loader"></span>
+      {%- endif -%}
+    </{{- animation_image_loading_tag }}>
+    {%- if block.settings.link_url != blank -%}</a>{%- endif -%}
+  {%- else -%}
+    {%- capture placeholder -%}{% cycle 'lifestyle-1', 'lifestyle-2' %}{%- endcapture -%}
+    <div class="FeaturedColumnsCard__ImageWrapper Ratio" style="--tg-aspect-ratio: 1.6">
+      {{ placeholder | placeholder_svg_tag: 'FeaturedColumnsCard__Image SvgPlaceholder' }}
+    </div>
+  {%- endif -%}
+
+  {%- if block.settings.heading != blank or block.settings.excerpt != blank or block.settings.badge != blank -%} 
+    <div class="FeaturedColumnsCard__Content">
+      {%- if block.settings.badge != blank -%}
+      <div class="FeaturedColumnsCard__BadgeWrapper">
+        <div class="FeaturedColumnsCard__Badge">
+          <span>{{ block.settings.badge }}</span>
+        </div>
+      </div>
+      {%- endif -%}
+      {%- if block.settings.heading != blank -%}
+        <h2 class="FeaturedColumnsCard__Heading CustomSize {{ block.settings.heading_font_size }}">
+          {%- if block.settings.link_url != blank -%}
+            <a href="{{ block.settings.link_url }}">{{ block.settings.heading }}</a>
+          {%- else -%}
+            {{ block.settings.heading }}
+          {%- endif -%}
+        </h2>
+      {%- endif -%}
+
+      {%- if block.settings.excerpt != blank -%}<div class="FeaturedColumnsCard__Excerpt RTE">{{ block.settings.excerpt }}</div>{%- endif -%}
+
+      {%- if block.settings.button_label != blank -%}
+        <a href="{{ block.settings.link_url }}" class="Button Button--{{ block.settings.button_style }}">{{ block.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div> 

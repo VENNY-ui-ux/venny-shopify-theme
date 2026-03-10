@@ -1,0 +1,665 @@
+{%- capture carousel_options -%}
+{
+  "loop": true,
+  "slidesPerView": 1,
+  {% unless request.design_mode or section.blocks.size < 4 -%}
+    "virtual":{
+      "enabled": true
+    },
+  {%- endunless %}
+  "effect": "fade",
+  "fadeEffect": {
+    "crossFade": true
+  },
+  "autoplay": {
+    "enabled": {% if section.settings.autoplay and section.blocks.size > 1 %}true{% else %}false{% endif %},
+    "delay": {{ section.settings.cycle_speed | times: 1000 }},
+    "disableOnInteraction": false,
+    "pauseOnMouseEnter": true
+  },
+  "navigation": {
+    "enabled": {% if section.settings.show_navigation_arrows and section.blocks.size > 1 %}true{% else %}false{% endif %},
+    "nextEl": ".Carousel__NavNext",
+    "prevEl": ".Carousel__NavPrev"
+  },
+  "pagination": {
+    "enabled": {% if section.settings.show_navigation_dots and section.blocks.size > 1 %}true{% else %}false{% endif %},
+    "el": ".Carousel__Pagination",
+    "clickable": true
+  }
+}
+{%- endcapture -%}
+
+{{ 'component-carousel.css' | asset_url | stylesheet_tag }}
+{{ 'component-text-on-image.css' | asset_url | stylesheet_tag }}
+{{ 'section-slideshow.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'section-slideshow.js' | asset_url }}" defer="defer"></script>
+<style>
+  {%- if  section.settings.controls_color != blank and  section.settings.controls_color != 'rgba(0,0,0,0)' -%}
+    #section-{{ section.id }}{
+      --tg-component-carousel-navigation-color: {{ section.settings.controls_color }};
+      --tg-component-carousel-pagination-color: {{ section.settings.controls_color }};
+    }
+  {%- endif -%}
+
+  {% for block in section.blocks %}
+  
+    {% if block.settings.overlay_opacity > 0 %}
+      #section-{{ section.id }} #Slide{{ block.id }} .Slideshow__ImageWrapper--medium-up.ImageOverlay::after{
+        {%- assign overlay_opacity = block.settings.overlay_opacity | divided_by: 100.0 -%}
+        background-color: rgba(0,0,0,{{ overlay_opacity }});
+      }
+    {% endif %}
+
+    {% if block.settings.overlay_opacity_mobile > 0 %}
+      #section-{{ section.id }} #Slide{{ block.id }} .Slideshow__ImageWrapper--small.ImageOverlay::after{
+        {%- assign overlay_opacity = block.settings.overlay_opacity_mobile | divided_by: 100.0 -%}
+        background-color: rgba(0,0,0,{{ overlay_opacity }});
+      }
+    {% endif %}
+
+    @media screen and (max-width: 640px) {
+        #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Heading,
+        #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Subheading,
+        #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Description,
+        #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Description a,
+        #section-{{ section.id }} #Slide{{ block.id }} .Button--outline,
+        #section-{{ section.id }} #Slide{{ block.id }} .Button--underline{
+          color: {{ block.settings.text_color_mobile }};
+        }
+
+        #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Description a{
+          text-decoration-color: {{ block.settings.text_color_mobile }};
+        }
+
+        #section-{{ section.id }} #Slide{{ block.id }} .Button--outline{
+          border-color: {{ block.settings.text_color_mobile }};
+          background-color: transparent;
+        }
+    }
+
+    @media screen and (min-width: 641px) {
+      #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Heading,
+      #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Subheading,
+      #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Description,
+      #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Description a,
+      #section-{{ section.id }} #Slide{{ block.id }} .Button--outline,
+      #section-{{ section.id }} #Slide{{ block.id }} .Button--underline{
+        color: {{ block.settings.text_color }};
+      }
+
+      #section-{{ section.id }} #Slide{{ block.id }} .SectionHeader__Description a{
+        text-decoration-color: {{ block.settings.text_color }};
+      }
+
+      #section-{{ section.id }} #Slide{{ block.id }} .Button--outline{
+        border-color: {{ block.settings.text_color }};
+        background-color: transparent;
+      }
+    }
+
+  {% endfor %}
+</style>
+
+{% liquid 
+  assign section_has_image = false
+  assign slide_index0 = 0
+  if section.settings.slide_height == 'adaptImage'
+    if section.blocks.first.settings.image != blank or section.blocks.first.settings.mobile_image != blank
+      assign section_has_image = true
+      if section.blocks.first.settings.image != blank 
+        assign section_image_ratio = section.blocks.first.settings.image.aspect_ratio
+        assign section_image_ratio_mobile = section.blocks.first.settings.image.aspect_ratio
+      endif
+
+      if section.blocks.first.settings.mobile_image != blank
+        assign section_image_ratio_mobile = section.blocks.first.settings.mobile_image.aspect_ratio
+      endif
+    endif 
+  endif
+
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class_mobile = 'Slideshow__Image TextOnImage__Image Slideshow__Image--small'
+  assign animation_image_loading_class_desktop = 'Slideshow__Image TextOnImage__Image Slideshow__Image--medium-up'
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class_mobile = 'Slideshow__Image TextOnImage__Image Slideshow__Image--small Image--withLoader'
+    assign animation_image_loading_class_desktop = 'Slideshow__Image TextOnImage__Image Slideshow__Image--medium-up Image--withLoader'
+  endif
+
+-%}
+
+{%- capture tg_sizes -%}
+  {%- if section.settings.section_width == 'default' -%}
+    (min-width: 641px) calc(min(100vw, {{ settings.container_max_width }}px) - 64px), 100vw
+  {%- else -%}
+    100vw
+  {%- endif -%}
+{%- endcapture -%}
+
+<section-slideshow id="section-{{ section.id }}" class="Container--relative Container--specialSpacingFirstSection Container Slideshow {% if section.settings.section_width == 'full_width' %}Container--fluid Container--spacingContainerGutter Container--specialSpacingLastSection{% elsif section.settings.section_width ==  'full_width_no_gap' %}Container--fluid Container--noGutter Container--specialSpacingLastSection{% else %}Container--{{ section.settings.section_spacing }}{% endif %}" data-section-id="{{ section.id }}" 
+  role="region" aria-roledescription="{{ 'sections.slideshow.carousel' | t }}" aria-label="{{ section.settings.accessibility_info | escape }}">
+ 
+<div class="Carousel Carousel--fadeIn Carousel--insideDots" data-carousel-config='{{ carousel_options }}'>
+  <div class="CarouselWrapper">
+    {%- for block in section.blocks -%}
+      {%- capture slide_content -%}
+
+        {%- liquid 
+          assign mobile_image = block.settings.mobile_image | default: block.settings.image 
+          assign fetch_priority = 'auto'
+          assign lazy_load = 'lazy'
+
+          if section.index == 1 and forloop.first and section.location != 'footer'
+            assign fetch_priority = 'high'
+            assign lazy_load = 'eager'
+          endif
+        -%}
+
+        {%- if mobile_image -%}
+          <{{- animation_image_loading_tag }} class="TextOnImage__ImageWrapper Ratio HiddenMediumUp Slideshow__ImageWrapper Slideshow__ImageWrapper--small {% if block.settings.overlay_opacity_mobile > 0 %}ImageOverlay{% endif %}">
+
+            {{ mobile_image | image_url: width: 1500 | image_tag:
+              sizes: tg_sizes,
+              widths: '375, 550, 750, 1100, 1500',
+              class: animation_image_loading_class_mobile,
+              loading: lazy_load,
+              fetchpriority: fetch_priority
+            }}
+
+            {%- if settings.animation_image_loading != 'none' -%}
+              <span class="Image--loader"></span>
+            {%- endif -%}
+          </{{- animation_image_loading_tag }}>
+    	  {%- else -%}
+          <div class="TextOnImage__ImageWrapper Ratio HiddenMediumUp {% if block.settings.overlay_opacity > 0 %}ImageOverlay{% endif %}" style = "--tg-aspect-ratio: 0.65;">
+            {%- capture placeholder -%}{% cycle 'lifestyle-1', 'lifestyle-2' %}{%- endcapture -%}
+            {{ placeholder | placeholder_svg_tag: 'TextOnImage__Image Slideshow__Image SvgPlaceholder' }}
+          </div>
+        {%- endif -%}
+
+        {%- if block.settings.image -%}
+          <{{- animation_image_loading_tag }} class="TextOnImage__ImageWrapper Ratio HiddenSmall Slideshow__ImageWrapper Slideshow__ImageWrapper--medium-up {% if block.settings.overlay_opacity > 0 %}ImageOverlay{% endif %}">
+
+            {{ block.settings.image | image_url: width: 3840 | image_tag:
+              sizes: tg_sizes,
+              widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+              class: animation_image_loading_class_desktop,
+              loading: lazy_load,
+              fetchpriority: fetch_priority
+            }}
+
+            {%- if settings.animation_image_loading != 'none' -%}
+              <span class="Image--loader"></span>
+            {%- endif -%}
+          </{{- animation_image_loading_tag }}>
+        {%- else -%}
+          <div class="TextOnImage__ImageWrapper Ratio HiddenSmall {% if block.settings.overlay_opacity > 0 %}ImageOverlay{% endif %}" style = "--tg-aspect-ratio: 1.5;">
+            {%- capture placeholder -%}{% cycle 'lifestyle-1', 'lifestyle-2' %}{%- endcapture -%}
+            {{ placeholder | placeholder_svg_tag: 'TextOnImage__Image Slideshow__Image SvgPlaceholder' }}
+          </div>
+        {%- endif -%}
+
+        {%- capture slideshow_content -%}
+          {%- if block.settings.subheading != blank -%}
+            <h3 class="SectionHeader__Subheading">{{ block.settings.subheading }}</h3>
+          {%- endif -%}
+
+          {%- if block.settings.heading != blank -%} 
+            <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h2>
+          {%- endif -%}
+
+          {%- if block.settings.description != blank -%} 
+            <div class="SectionHeader__Description RTE">{{ block.settings.description }}</div>
+          {%- endif -%}
+
+          {%- if block.settings.button_1_label != blank and block.settings.button_2_label != blank -%}
+            {%- assign has_two_buttons = true -%}
+          {%- else -%}
+            {%- assign has_two_buttons = false -%}
+          {%- endif -%}
+
+          {%- if block.settings.button_1_label != blank or block.settings.button_2_label != blank -%}
+            <div class="SectionHeader__ButtonWrapper">
+              <div class="ButtonGroup {% if has_two_buttons %}ButtonGroup--smallSize{% endif %}">
+                {%- if block.settings.button_1_label != blank -%}
+                  <a href="{{ block.settings.button_1_link }}" class="Button Button--{{ block.settings.button_1_style }}">{{ block.settings.button_1_label | escape }}</a>
+                {%- endif -%}
+
+                {%- if block.settings.button_2_label != blank -%}
+                  <a href="{{ block.settings.button_2_link }}" class="Button Button--{{ block.settings.button_2_style }}">{{ block.settings.button_2_label | escape }}</a>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endcapture -%}
+
+        {%- if slideshow_content != blank -%}
+          <div class="TextOnImage__Content">
+            <div class="TextOnImage__ContentInner">
+              <div class="SectionHeader">
+                {{ slideshow_content }}
+              </div>
+            </div>
+            {%- if block.settings.button_1_label == blank and block.settings.button_2_label == blank and block.settings.image_link != blank -%}
+              <a class="StretchedLink" href="{{ block.settings.image_link }}"></a>
+            {%- endif -%} 
+          </div>
+        {%- endif -%}
+      {%- endcapture -%}
+
+      <div id="Slide{{ block.id }}" class="SlideItem--{{ block.id }} swiper-slide Carousel__Item {% if forloop.first %}is-selected{% endif %}" {% if forloop.first %}style="visibility: visible"{% endif %} data-slide-index="{% increment slide_index0 %}" {{ block.shopify_attributes }}>
+        <div class="TextOnImage TextOnImage--{{ block.settings.content_position }} TextOnImage--{{ section.settings.slide_height }}"
+          style="{% if section_has_image %}--tg-component-text-on-image-image-ratio-mobile: {{ section_image_ratio_mobile }};--tg-component-text-on-image-image-ratio: {{ section_image_ratio }};
+          {% elsif section.settings.slide_height == 'adaptImage' %} --tg-component-text-on-image-image-ratio-mobile: 0.65; --tg-component-text-on-image-image-ratio: 1.5;
+        {% endif %}">
+          {{- slide_content -}}
+
+          {%- if block.settings.image_link != blank -%}
+            <a class="StretchedLink" href="{{ block.settings.image_link }}"></a>
+          {%- endif -%}
+        </div>
+      </div>
+      
+    {%- endfor -%}
+  </div>
+
+  <div class="Carousel__Pagination"></div>
+
+  <div class="Carousel__NavPrev">
+    {%- render 'icons', icon: 'nav-right' -%}
+  </div>
+  <div class="Carousel__NavNext">
+    {%- render 'icons', icon: 'nav-right' -%}
+  </div>
+</div>
+  
+</section-slideshow>
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium",
+      "info": "Visible when the ‘Section width’ setting is set to Grid."
+    },
+    {
+      "type": "select",
+      "id": "slide_height",
+      "options": [
+        {
+          "value": "adaptImage",
+          "label": "Adapt to first image"
+        },
+        {
+          "value": "x-x-small",
+          "label": "Double Extra Small"
+        },
+        {
+          "value": "x-small",
+          "label": "Extra Small"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "adaptImage",
+      "label": "Slide height"
+    },
+    {
+      "type": "header",
+      "content": "Controls",
+      "info": "Visible when slideshow has at least two slides."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation_dots",
+      "label": "Show navigation dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation_arrows",
+      "label": "Show navigation arrows",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "controls_color",
+      "label": "Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-rotate slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "cycle_speed",
+      "min": 3,
+      "max": 16,
+      "step": 1,
+      "unit": "s",
+      "label": "Change slides every",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "accessibility_info",
+      "label": "Slideshow description",
+      "info": "Describe the slideshow for customers using screen readers.",
+      "default": "Slideshow about our brand"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "1800 x 1200px .jpg recommended."
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "Image overlay opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Mobile image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Image",
+          "info": "800 x 1200px .jpg recommended. The desktop image will be visible and cropped on mobile if left empty."
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity_mobile",
+          "label": "Image overlay opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Image Link"
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "Link",
+          "info": "Give the image a link when there is no content on it."
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Content position",
+          "options": [
+            {
+              "value": "topLeft",
+              "label": "Top left"
+            },
+            {
+              "value": "topCenter",
+              "label": "Top center"
+            },
+            {
+              "value": "topRight",
+              "label": "Top right"
+            },
+            {
+              "value": "middleLeft",
+              "label": "Middle left"
+            },
+            {
+              "value": "middleCenter",
+              "label": "Middle center"
+            },
+            {
+              "value": "middleRight",
+              "label": "Middle right"
+            },
+            {
+              "value": "bottomLeft",
+              "label": "Bottom left"
+            },
+            {
+              "value": "bottomCenter",
+              "label": "Bottom center"
+            },
+            {
+              "value": "bottomRight",
+              "label": "Bottom right"
+            }
+          ],
+          "default": "middleCenter"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Image slide"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "DisplaySmall",
+              "label": "Small"
+            },
+            {
+              "value": "DisplayMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "DisplayLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "DisplayMedium"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Tell your brand's story through images</p>"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color desktop",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "text_color_mobile",
+          "label": "Text color mobile",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "First Button"
+        },
+        {
+          "type": "text",
+          "id": "button_1_label",
+          "label": "Label",
+          "default": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_1_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "button_1_style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            },
+            {
+              "value": "outline",
+              "label": "Outline"
+            },
+            {
+              "value": "underline",
+              "label": "Underline"
+            }
+          ],
+          "default": "secondary"
+        },
+        {
+          "type": "header",
+          "content": "Secondary button"
+        },
+        {
+          "type": "text",
+          "id": "button_2_label",
+          "label": "Label"
+        },
+        {
+          "type": "url",
+          "id": "button_2_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "button_2_style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            },
+            {
+              "value": "outline",
+              "label": "Outline"
+            },
+            {
+              "value": "underline",
+              "label": "Underline"
+            }
+          ],
+          "default": "secondary"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slideshow",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

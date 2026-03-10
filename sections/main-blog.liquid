@@ -1,0 +1,245 @@
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+
+{% render 'page-header-blog' %}
+
+<div class="Blog Container{% if section.settings.section_width == 'full_width' %} Container--fluid{% endif %}">
+  {%- if blog.articles_count == 0 -%}
+    <div class="EmptyResult">
+      <h2 class="EmptyResult__Title">{{ 'blog.general.no_articles' | t: blog_title: blog.title }}</h2>
+      <a href="{{ routes.root_url }}" class="EmptyResult__Action Button Button--primary">{{ 'blog.general.empty_button' | t }}</a>
+    </div>
+  {%- else -%}
+    <div class="Blog__Content">   
+      {%- liquid
+        assign grid_items_per_page =  section.settings.grid_items_per_page | default: 12 
+        assign desktop_items_per_row = section.settings.grid_desktop_items_per_row | default: 4
+        assign mobile_items_per_row  = section.settings.grid_mobile_items_per_row | times: 1 
+      -%} 
+      {%- paginate blog.articles by grid_items_per_page -%}
+        <div class="Blog__Articles Grid">
+          {%- for article in blog.articles -%}
+            <div class="ArticleCard__Wrapper Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up">
+              {%- render 'article-card', article: article, big_card: true, card_desktop_items_per_row: desktop_items_per_row, card_mobile_items_per_row: mobile_items_per_row -%}
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Blog page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "info": "Leave the label blank to use blog's title."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_stroke_title",
+      "label": "Heading with stroke",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "range",
+      "id": "grid_items_per_page",
+      "label": "Articles per page",
+      "min": 4,
+      "max": 50,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "id": "grid_desktop_items_per_row",
+      "label": "Number of columns on desktop",
+      "default": 2
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "id": "grid_mobile_items_per_row",
+      "label": "Number of columns on mobile",
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Article card"
+    },
+    {
+      "type": "select",
+      "id": "featured_image_size",
+      "label": "Featured image ratio",
+      "options": [
+        {
+          "value": "natural",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "2x3",
+          "label": "2:3"
+        },
+        {
+          "value": "3x4",
+          "label": "3:4"
+        },
+        {
+          "value": "1x1",
+          "label": "1:1"
+        },
+        {
+          "value": "4x3",
+          "label": "4:3"
+        },
+        {
+          "value": "16x9",
+          "label": "16:9"
+        },
+        {
+          "value": "21x9",
+          "label": "21:9"
+        }
+      ],
+      "default": "natural"
+    },
+    {
+      "type": "select",
+      "id": "card_align",
+      "label": "Card alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "content_on_image",
+      "label": "Show content over image",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_category",
+      "label": "Show article category",
+      "info": "The first article's tag is used as the main category.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_more",
+      "label": "Show read more",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

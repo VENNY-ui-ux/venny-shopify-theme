@@ -1,0 +1,94 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Vertical Accordion
+ * ----------------------------------------------------------------------------
+ */
+section-vertical-accordion {
+  display: block;
+}
+
+.VerticalAccordion__Wrapper {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+@media screen and (max-width: 640px) {
+  .VerticalAccordion__Wrapper {
+    flex-wrap: wrap;
+  }
+}
+
+.VerticalAccordion__Item {
+  width: 4rem;
+  transition: all 1s ease;
+}
+.VerticalAccordion__Item .VerticalAccordion__Button {
+  width: 4rem;
+  -ms-writing-mode: tb-rl;
+      writing-mode: vertical-rl;
+  z-index: 2;
+  background: transparent;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  box-shadow: none;
+  position: absolute;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+@media screen and (max-width: 640px) {
+  .VerticalAccordion__Item {
+    width: 100%;
+  }
+  .VerticalAccordion__Item .VerticalAccordion__Button {
+    display: none;
+  }
+}
+@media screen and (min-width: 641px) {
+  .VerticalAccordion__Item .VerticalAccordion__Button--verticalAlignTop {
+    justify-content: start;
+  }
+  .VerticalAccordion__Item .VerticalAccordion__Button--verticalAlignBottom {
+    justify-content: end;
+  }
+  .VerticalAccordion__Item .TextOnImage__Content {
+    opacity: 0;
+    transition: all 1s ease;
+  }
+  .VerticalAccordion__Item.Active {
+    flex-grow: 2;
+  }
+  .VerticalAccordion__Item.Active .VerticalAccordion__Button {
+    opacity: 0;
+    display: none;
+  }
+  .VerticalAccordion__Item.Active .TextOnImage__Content {
+    opacity: 1;
+  }
+}
+.VerticalAccordion__Item .Image--withLoader + .Image--loader {
+  opacity: 0;
+  visibility: hidden;
+  z-index: -1;
+}
+.VerticalAccordion__Item.Active .Image--withLoader + .Image--loader {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
+}
+.VerticalAccordion__Item.Active .Image--withLoader.Image--loaded + .Image--loader {
+  opacity: 0;
+  visibility: hidden;
+  z-index: -1;
+}
+
+@media screen and (max-width: 640px) {
+  .VerticalAccordion--headingLeft:not(.Container--noGutter) .VerticalAccordion__Item:not(:first-child) {
+    padding-bottom: var(--tg-grid-gutter-x);
+  }
+  .VerticalAccordion--headingRight:not(.Container--noGutter) .VerticalAccordion__Item:not(:last-child) {
+    padding-bottom: var(--tg-grid-gutter-x);
+  }
+}

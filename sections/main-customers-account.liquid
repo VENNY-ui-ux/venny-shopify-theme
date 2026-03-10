@@ -1,0 +1,168 @@
+{%- liquid
+    assign account_header_title =  'customer.account.title' | t
+    assign account_header_subtitle =  'customer.account.welcome' | t: first_name: customer.first_name
+
+    assign add_gap =  true 
+    if section.settings.page_header_width == 'full_width_no_gap'
+        assign add_gap =  false 
+    endif 
+-%}
+
+{% render 'page-header', 
+    page_header_title: account_header_title,
+    page_header_description: account_header_subtitle,
+    background_image: section.settings.page_header_bg_image,
+    background_color: section.settings.page_header_bg_color,
+    page_header_height: section.settings.page_header_height,
+    add_gap: add_gap
+%}
+
+{{ 'component-widget.css' | asset_url | stylesheet_tag }}
+
+<section class="Container Container--customers Account">
+    <div class="Grid"> 
+      {%- comment -%}
+      -------------------------------------------------------------------------------------
+      ORDER HISTORY
+      -------------------------------------------------------------------------------------
+      {%- endcomment -%}
+
+      <div class="Grid__Item 2/3--large Account__Orders">
+        {%- if customer.orders.size == 0 -%}
+          <div class="Widget">
+            <h2 class="Widget__Title LabelLarge">{{ 'customer.account.no_orders_title' | t }}</h2>
+
+            <div class="Widget__Content">
+              <p>{{ 'customer.account.no_orders_content' | t }}</p>
+            </div>
+          </div>
+        {%- else -%}
+          {%- paginate customer.orders by 25 -%}
+            <div class="TableWrapper">
+              <table class="Table Table--hover">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'customer.orders.order_number' | t }}</th>
+                    <th scope="col">{{ 'customer.orders.date' | t }}</th>
+                    <th scope="col">{{ 'customer.orders.payment_status' | t }}</th>
+                    <th scope="col">{{ 'customer.orders.fulfillment_status' | t }}</th>
+                    <th scope="col" class="TextEnd">{{ 'customer.orders.total' | t }}</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {%- for order in customer.orders -%}
+                    <tr>
+                      <td><a href="{{ order.customer_url }}" class="Nav__Link Nav__Link--underline">{{ order.name }}</a></td>
+                      <td>{{ order.created_at | date: format: 'month_day_year' }}</td>
+                      <td>{{ order.financial_status_label }}</td>
+                      <td>{{ order.fulfillment_status_label }}</td>
+                      <td class="TextEnd">{{ order.total_price | money_with_currency }}</td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+            </div>
+
+            {%- render 'pagination', paginate: paginate -%}
+          {%- endpaginate -%}
+        {%- endif -%}
+      </div>
+
+      {%- comment -%}
+      -------------------------------------------------------------------------------------
+      ADDRESS
+      -------------------------------------------------------------------------------------
+      {%- endcomment -%}
+
+      <div class="Grid__Item 1/3--large Account__Addresses">
+        <div class="Widget">
+          {%- if customer.addresses_count == 0 -%}
+            <h2 class="Widget__Title LabelLarge">{{ 'customer.account.no_addresses_title' | t }}</h2>
+
+            <div class="Widget__Content">
+              <p>{{ 'customer.account.no_addresses_content' | t }}</p>
+
+              <div class="Widget__ButtonWrapper">
+                <a href="{{ routes.account_addresses_url }}" class="Button Button--underline">{{ 'customer.account.manage_addresses' | t }}</a>
+              </div>
+            </div>
+          {%- else -%}
+            <h2 class="Widget__Title LabelLarge">{{ 'customer.account.default_address' | t }}</h2>
+
+            <div class="Widget__Content">
+              {{ customer.default_address | format_address | replace: '<p>', '<p class="AccountAddress"><span>' | replace_first: '<br>', '</span><br>' }}
+              <div class="Widget__ButtonWrapper">
+                <a href="{{ routes.account_addresses_url }}" class="Button Button--underline">{{ 'customer.account.edit_addresses' | t }}</a>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "Account page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "page_header_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    }
+  ]
+}
+{% endschema %}

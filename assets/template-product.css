@@ -1,0 +1,48 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Template Product
+ * ----------------------------------------------------------------------------
+ */
+:root {
+  --tg-product-summary-background-color: var(--tg-sys-color-background);
+  --tg-product-reviews-background-color: var(--tg-sys-color-surface1);
+}
+
+.Template--product .Product.Product--noMedia .ProductDesign {
+  justify-content: center;
+}
+.Template--product .Product.Product--noMedia .ProductSummary__Wrapper {
+  max-width: 800px;
+}
+.Template--product .ProductSummary {
+  margin-top: 1rem;
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc(var(--tg-header-height, 0px) * var(--use-sticky-header, 0) + 1.5rem + var(--tg-other-sticky-elements-height, 0px));
+}
+@media screen and (min-width: 1008px) {
+  .Template--product .ProductSummary {
+    margin-top: 1rem;
+  }
+}
+@media screen and (min-width: 1008px) {
+  .Template--product .ProductSummary {
+    -webkit-padding-start: 1rem;
+            padding-inline-start: 1rem;
+  }
+  .Product--fullWidth .Template--product .ProductSummary {
+    -webkit-padding-end: 1rem;
+            padding-inline-end: 1rem;
+  }
+}
+.Template--product .ProductSummary--withBackgroundColor {
+  background-color: var(--tg-product-summary-background-color);
+  padding: 2rem;
+  margin-top: 2px;
+}
+.Template--product .ProductDesign.Grid {
+  margin-top: 0;
+}
+.Template--product .ProductDesign .Grid__Item {
+  padding-top: 0;
+}

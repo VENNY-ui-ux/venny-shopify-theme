@@ -1,0 +1,85 @@
+{%- liquid
+  assign page_header_bg_img = section.settings.image | default: collection.image
+  assign add_gap =  true 
+  if section.settings.page_header_width == 'full_width_no_gap'
+      assign add_gap =  false 
+  endif 
+-%}
+
+  {% render 'page-header', 
+      background_image: page_header_bg_img, 
+      background_color: section.settings.page_header_bg_color,
+      page_header_title: collection.title,
+      page_header_description: collection.description,
+      page_header_height: section.settings.page_header_height,
+      page_header_content_full_width: true,
+      add_gap: add_gap
+  %}
+
+{% schema %}
+{
+  "name": "Collection header",
+  "settings": [
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Small",
+      "label": "Section height"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image",
+      "info": "Leave it blank to use collection's featured image."
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank and the collection's featured image is blank."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection header"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["collection"]
+  }
+}
+{% endschema %}

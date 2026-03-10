@@ -1,0 +1,267 @@
+{%- liquid
+  assign predictive_search_enabled = section.settings.predictive_search_enabled
+-%}
+{%- if section.settings.enable_quick_add -%}
+  <script src="{{ 'component-quick-add-to-cart-button.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+<search-drawer class="Drawer Drawer--top SearchDrawer {% if predictive_search_enabled %}PredictiveSearch{% endif %}" tabindex="-1" id="SearchDrawer" data-section-id="{{ section.id }}">
+  <div class="Drawer__Header">
+    <form action="{{ routes.search_url }}" name="GET" role="search" class="SearchDrawer__Form">
+        <div class="SearchDrawer__InputIconWrapper"><span>{%- render 'icons', icon: 'search' -%}</span></div>
+        <input id="SearchDrawerQueryString" type="search" class="SearchDrawer__Input Form__Input" name="q" placeholder="{{ 'search.general.input_placeholder' | t }}" aria-label="{{ 'search.general.input_placeholder' | t }}">
+        <label class="VisuallyHidden" for="SearchDrawerQueryString">{{ 'search.general.input_placeholder' | t }}</label>
+        <input type="hidden" name="options[prefix]" value="last">
+        {%- unless predictive_search_enabled -%}<button type="submit" class="Button Button--primary Form__Submit Button--small SearchDrawer__Submit">{{ 'search.general.title' | t }}</button>{%- endunless -%}
+        <button type="button" class="Button Button--icon" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}">{% render 'icons', icon: 'close' %}</button>
+    </form>
+  </div>
+  {%- if predictive_search_enabled or section.settings.rec_product_list != blank -%}
+    <div class="Drawer__Body PredictiveSearch__Body" tabindex="-1">
+      {%- if predictive_search_enabled -%}
+        <div class="SearchDrawer__Results">
+          <div  class="PredictiveSearch__Summary Container Container--fluid LabelLarge" data-predictive-search-drawer-summary>
+            {%- if predictive_search.terms -%}
+              <a class="LabelLarge" href="{{ routes.search_url }}?q={{ predictive_search.terms }}&options[prefix]=last">
+                <span>{{ 'search.general.search_for' | t: terms: predictive_search.terms }}</span>
+              </a>
+              <a class="LabelLarge Button Button--underline" href="{{ routes.search_url }}?q={{ predictive_search.terms }}&options[prefix]=last">
+                <span>{{ 'search.general.view_all' | t }}</span>
+              </a>
+            {%- endif -%}
+          </div>
+          <div class="PredictiveSearch__Status Loading" data-predictive-search-drawer-status>
+            <div class="Image--loader"></div>
+          </div>
+          <div class="PredictiveSearch__Results" data-predictive-search-drawer-results>
+            {% render 'predictive-search-drawer', section: section %}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.rec_product_list != blank -%}
+        <div class="Container Container--fluid FeaturedCollection" data-section-id="{{ section.id }}">
+
+          {%- if section.settings.rec_heading != blank or section.settings.rec_button_label != blank -%}
+            <header class="SectionHeader SectionHeader--{{ section.settings.rec_header_align }}">
+              <div class="SectionHeader__Text">
+                {%- if section.settings.rec_heading != blank -%}
+                    <h2 class="SectionHeader__Heading CustomSize {{ section.settings.rec_heading_font_size }}">{{ section.settings.rec_heading }}</h2>
+                {%- endif -%}
+        
+                {%- if section.settings.rec_subheading != blank -%}
+                    <div class="SectionHeader__Subheading TextMuted">{{ section.settings.rec_subheading }} </div>
+                {%- endif -%}
+              </div>
+        
+              {%- if section.settings.rec_header_align == 'left' and section.settings.rec_button_label != blank -%} 
+                <div class="SectionHeader__Button"> 
+                  <a href="{{ section.settings.rec_button_link | default: '#' }}" class="SectionHeader__Button Button Button--outline">{{ section.settings.rec_button_label | escape }}</a>        
+                </div>
+              {%- endif -%}
+            </header>
+          {%- endif -%}
+
+          <div class="SectionBody FeaturedCollection__Body ProductListWrapper">
+            <div class="ProductList ProductList--grid Grid">
+              {%- for product in section.settings.rec_product_list -%}
+                <div class="Grid__Item 1/{{ section.settings.rec_grid_mobile_items_per_row }}--small 1/{{ section.settings.rec_grid_desktop_items_per_row }}--medium-up">
+                  {% render 'product-card', product: product, lazy_load: true, show_rating: section.settings.show_rating, show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor, show_swatches: section.settings.show_swatches, show_quick_add: section.settings.enable_quick_add %}
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+
+          {%- if section.settings.rec_header_align == 'center' and section.settings.rec_button_label != blank -%} 
+            <footer class="SectionFooter TextCenter">
+                <a class="SectionFooter__Button Button Button--outline" href="{{ section.settings.rec_button_link | default: '#' }}">{{ section.settings.rec_button_label | escape }}</a>
+            </footer>
+          {%- endif -%}
+        </div>
+  
+      {%- endif -%}
+
+    </div>
+  {%- endif -%}
+</search-drawer>
+
+<script src="{{ 'section-search-drawer.js' | asset_url }}" defer="defer"></script>
+  
+{% schema %}
+{
+  "name": "Search Drawer",
+  "class": "shopify-section--search-drawer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Search suggestions"
+    },
+    {
+      "type": "checkbox",
+      "id": "predictive_search_enabled",
+      "default": true,
+      "label": "Enable search suggestions"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "paragraph",
+      "content": "Visible when search suggestions enabled."
+    },
+    {
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "id": "grid_desktop_items_per_row",
+      "label": "Number of columns on desktop",
+      "default": 3
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "id": "grid_mobile_items_per_row",
+      "label": "Number of columns on mobile",
+      "default": "2",
+      "info": "Visible when the Layout setting is set to Grid."
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "paragraph",
+      "content": "Visible when search suggestions enabled."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_info",
+      "label": "Show product info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show product rating",
+      "default": false,
+      "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-collection-show-product-rating)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatches",
+      "label": "Show swatch",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_quick_add",
+      "default": false,
+      "label": "Enable quick add button",
+      "info": "You can set button style and position in [Theme settings](/editor?context=theme&category=product)."
+    },
+    {
+      "type": "header",
+      "content": "Recommended products"
+    },
+    {
+      "type": "product_list",
+      "id": "rec_product_list",
+      "label": "Products"
+    },
+    {
+      "type": "text",
+      "id": "rec_heading",
+      "label": "Heading",
+      "default": "Recommended products"
+    },
+    {
+      "type": "select",
+      "id": "rec_header_align",
+      "label": "Header alignment",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "rec_heading_font_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "HeadlineSmall",
+          "label": "Small"
+        },
+        {
+          "value": "HeadlineMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "HeadlineLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "HeadlineSmall"
+    },
+    {
+      "type": "url",
+      "id": "rec_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "rec_button_label",
+      "label": "Button label",
+      "default": "View more products"
+    },
+    {
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "id": "rec_grid_desktop_items_per_row",
+      "label": "Number of columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "id": "rec_grid_mobile_items_per_row",
+      "label": "Number of columns on mobile",
+      "default": "2"
+    }
+  ]
+}
+{% endschema %}

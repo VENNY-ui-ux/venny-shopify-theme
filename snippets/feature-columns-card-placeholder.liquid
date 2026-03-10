@@ -1,0 +1,16 @@
+<div class="FeaturedColumnsCard Animate__Item">
+  <div class="FeaturedColumnsCard__ImageWrapper Ratio" style="--tg-aspect-ratio: 1.6">
+    {%- capture placeholder -%}{% cycle 'lifestyle-1', 'lifestyle-2' %}{%- endcapture -%}
+    {{ placeholder | placeholder_svg_tag: 'FeaturedColumnsCard__Image SvgPlaceholder' }}
+  </div>
+
+  <div class="FeaturedColumnsCard__Content">
+    <h2 class="FeaturedColumnsCard__Heading HeadlineSmall">
+      <a href="#">{{ 'sections.onboarding.column_title' | t }}</a>
+    </h2>
+
+    <p class="FeaturedColumnsCard__Excerpt">{{ 'sections.onboarding.column_content' | t }}</p>
+
+    <a href="#" class="Button Button--underline">{{ 'sections.onboarding.read_more' | t }}</a>
+  </div>
+</div>

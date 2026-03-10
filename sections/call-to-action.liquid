@@ -1,0 +1,207 @@
+{{ 'section-call-to-action.css' | asset_url | stylesheet_tag }}
+
+<section class="Container Container--specialSpacingFirstSection Container--noGutter Container--fluid {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}Container--specialSpacingLastSection Container--{{ section.settings.section_spacing }}Padding{% else %}Container--{{ section.settings.section_spacing }}{% endif %} CallToAction" 
+ data-section-id="{{ section.id }}"style="{% if section.settings.text_color != blank and section.settings.text_color != 'rgba(0,0,0,0)' %}--tg-section-call-to-action-text-color: {{ section.settings.text_color }};--tg-section-header-text-color: {{ section.settings.text_color }};{% endif %}
+ {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}--tg-section-call-to-action-background-color: {{ section.settings.background }};{% endif %}
+ ">
+  <div class="Container {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}">
+    <header class="SectionHeader SectionHeader--horizontal">
+      <div class="SectionHeader__Text">
+        {%- if section.settings.heading != blank -%} 
+          <h2 class="SectionHeader__Heading CustomSize {{ section.settings.heading_font_size }}">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.description != blank -%} 
+          <div class="SectionHeader__Description RTE">{{ section.settings.description }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.button_1_label != blank and section.settings.button_2_label != blank -%}
+          {%- assign has_two_buttons = true -%}
+        {%- else -%}
+          {%- assign has_two_buttons = false -%}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.button_1_label != blank or section.settings.button_2_label != blank -%}
+        <div class="SectionHeader__ButtonWrapper">
+          <div class="ButtonGroup {% if has_two_buttons %}ButtonGroup--smallSize{% endif %}">
+            {%- if section.settings.button_1_label != blank -%}
+              <a href="{{ section.settings.button_1_link }}" class="Button Button--{{ section.settings.button_1_style }}">{{ section.settings.button_1_label | escape }}</a>
+            {%- endif -%}
+
+            {%- if section.settings.button_2_label != blank -%}
+              <a href="{{ section.settings.button_2_link }}" class="Button Button--{{ section.settings.button_2_style }}">{{ section.settings.button_2_label | escape }}</a>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </header>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Call to action",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "DisplaySmall",
+          "label": "Small"
+        },
+        {
+          "value": "DisplayMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "DisplayLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "DisplayMedium"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Tell something about your offers, sale or discounts.</p>"
+    },
+    {
+      "type": "header",
+      "content": "First Button"
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "Label",
+      "default": "View more"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Link"
+    },
+    {
+      "type": "select",
+      "id": "button_1_style",
+      "label": "Style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        },
+        {
+          "value": "outline",
+          "label": "Outline"
+        },
+        {
+          "value": "underline",
+          "label": "Underline"
+        }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Label"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Link"
+    },
+    {
+      "type": "select",
+      "id": "button_2_style",
+      "label": "Style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        },
+        {
+          "value": "outline",
+          "label": "Outline"
+        },
+        {
+          "value": "underline",
+          "label": "Underline"
+        }
+      ],
+      "default": "primary"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Call to action"
+    }
+  ]
+}
+{% endschema %}

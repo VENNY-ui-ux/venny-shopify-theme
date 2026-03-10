@@ -1,0 +1,223 @@
+{{ 'section-menu-drawer.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.logo -%}
+  <style>
+    .MenuDrawer__LogoImage {
+      max-width: {{ section.settings.logo_max_width }}px;
+      height: auto;
+    }
+  </style>
+{%- endif -%}
+
+<section id="MenuDrawer" class="MenuDrawer Drawer Drawer--start" aria-hidden="true" data-section-id="{{ section.id }}">
+  <header class="Drawer__Header">
+    {%- if section.settings.logo != blank -%}
+      {%- assign image_size = section.settings.logo_max_width -%}
+      {%- assign image_size_2x = section.settings.logo_max_width | times: 2 | at_most: 5760 -%}
+
+      <img srcset="{{ section.settings.logo | image_url: width: image_size }} 1x, {{ section.settings.logo | image_url: width: image_size_2x }} 2x"
+        src="{{ section.settings.logo | image_url: width: image_size }}"
+        loading="lazy"
+        class="MenuDrawer__LogoImage"
+        width="{{ section.settings.logo.width }}"
+        height="{{ section.settings.logo.height }}"
+        alt="{{ section.settings.logo.alt | default: shop.name | escape }}"
+      >
+    {%- else -%}
+      <h5 class="Drawer__Title">{{ shop.name }}</h5>
+    {%- endif -%}
+    <button type="button" class="ButtonClose" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}"></button>
+  </header>
+
+  <div class="Drawer__Body">
+    <nav class="MenuDrawer__Nav MenuDrawer__Nav--primary" aria-label="{{ 'header.navigation.sidebar_title' | t }}">
+      <div class="Accordion" id="MenuDrawerAccordion">
+
+        {%- for link in section.settings.primary_menu.links -%}
+          <div class="Accordion__Item">
+            {%- if link.links != blank -%}
+              <div class="Accordion__Header">
+                <button class="Accordion__Button Accordion__Button--levelOne Collapsed" type="button" data-tg-toggle="Collapse" data-tg-target="#MenuDrawerItem{{ forloop.index }}" aria-expanded="false">
+                    {{- link.title | escape -}}
+                </button>
+              </div>
+
+                <div id="MenuDrawerItem{{ forloop.index }}" class="Accordion__Collapse Collapse" data-tg-parent="#MenuDrawerAccordion">
+                <div class="Accordion__Body">
+
+                  {%- for sub_link in link.links -%}
+                      {%- if sub_link.links != blank -%}
+                        {%- if sub_link.url != '#' -%}
+                          <a href="{{ sub_link.url }}" class="MenuDrawer__Title Nav__Link">{{ sub_link.title | escape }}</a>
+                        {%- else -%}
+                          <h2 class="MenuDrawer__Title">
+                            {{- sub_link.title | escape -}}
+                          </h2>
+                        {%- endif -%}
+                        
+                        <ul class="Nav Nav--vertical">
+                          {%- for sub_sub_link in sub_link.links -%}
+                            <li class="Nav__Item">
+                              <a href="{{ sub_sub_link.url }}" class="Nav__Link">{{ sub_sub_link.title | escape }}</a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                        
+                      {%- else -%}
+                        <a href="{{ sub_link.url }}" class="Nav__Link">{{ sub_link.title | escape }}</a>
+                      {%- endif -%}
+                    
+                  {%- endfor -%}
+                </div>
+              </div>
+
+
+            {%- else -%}
+              <a href="{{ link.url }}" class="Accordion__Button Accordion__Button--levelOne Accordion__Button--noAction Nav__Link">{{ link.title | escape }}</a>
+            {%- endif -%}
+
+          </div>
+        {%- endfor -%}
+
+      </div>
+
+    </nav>
+
+    {%- if shop.customer_accounts_enabled or section.settings.secondary_menu != blank -%}
+      <nav class="MenuDrawer__Nav MenuDrawer__Nav--secondary">
+        <ul class="Nav Nav--vertical">
+          {%- for link in section.settings.secondary_menu.links -%}
+            <li class="Nav__Item">
+              <a href="{{ link.url }}" class="Nav__Link">{{ link.title | escape }}</a>
+            </li>
+          {%- endfor -%}
+
+          {%- comment -%}We automatically add some links to the secondary menu{%- endcomment -%}
+
+          {%- if shop.customer_accounts_enabled -%}
+            <li class="Nav__Item">
+              <a href="{{ routes.account_url }}" class="Nav__Link">{{ 'header.navigation.account' | t }}</a>
+            </li>
+          {%- endif -%}
+          
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- liquid
+      if section.settings.enable_country_selector and localization.available_countries.size > 1
+        assign country_selector = true
+      endif
+
+      if section.settings.enable_language_selector and localization.available_languages.size > 1
+          assign language_selector = true
+      endif 
+    -%}
+
+    {%- if country_selector or language_selector -%}
+      <div class="MenuDrawer__Localization">
+        {%- render 'localization-selector', country_selector: country_selector, language_selector: language_selector, show_country_flag: section.settings.show_country_flag, show_country_name: section.settings.show_country_name -%}
+      </div>
+    {%- endif -%}
+
+    <div class="usp-list">
+        <ul>
+            <li><i class="fas fa-shipping-fast"></i> Free Shipping on Orders Over $75</li>
+            <li><i class="fas fa-undo"></i> 24/7 Customer Support</li>
+            <li><i class="fas fa-headset"></i> Lifetime Warranty</li>
+        </ul>
+    </div>
+
+  </div>
+
+  {%- if section.settings.show_social_media -%}
+    <div class="Drawer__Footer">
+      {% render 'social-media', class: 'MenuDrawer__Social' %}
+    </div>
+  {%- endif -%}
+
+</section>
+
+{% schema %}
+{
+  "name": "Mobile menu",
+  "class": "shopify-section--menu-drawer",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "primary_menu",
+      "label": "Primary menu",
+      "default": "main-menu",
+      "info": "It is best practice to select the same menu used in the Header. [Learn More](https://developers.google.com/search/mobile-sites/mobile-first-indexing)"
+    },
+    {
+      "type": "link_list",
+      "id": "secondary_menu",
+      "label": "Secondary menu",
+      "default": "footer",
+      "info": "This menu won't show dropdown items."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_media",
+      "label": "Show social media",
+      "info": "Make sure you have properly configured your social media in the Theme settings.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Image",
+      "info": "80 x 36px .png recommended."
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "min": 50,
+      "max": 280,
+      "step": 5,
+      "unit": "px",
+      "label": "Image width",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Country/region selector",
+      "info": "To add a country/region, go to your [market settings.](/admin/settings/markets)."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "label": "Enable country/region selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_name",
+      "label": "Show country name",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_flag",
+      "label": "Show country flag",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Language selector",
+      "info": "To add a language, go to your [language settings.](/admin/settings/languages)."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "label": "Enable language selector",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

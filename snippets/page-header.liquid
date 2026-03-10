@@ -1,0 +1,88 @@
+{{ 'component-page-header.css' | asset_url | stylesheet_tag }}
+
+{% assign page_header_height = page_header_height | default: "Small" %}
+{% assign page_header_content_full_width = page_header_content_full_width | default: false %}
+<div class="Container Container--fluid Container--noGutter Container--relative PageHeader {% if template.directory %}PageHeader--customers{% endif %} {% if add_gap %}PageHeader--withGap{% endif %} {% if background_image != blank %}PageHeader--withBackgroundImage{% endif %}"
+    {% if background_color != blank and background_color != 'rgba(0,0,0,0)' %}style="--tg-sys-component-page-header-background: {{background_color}}"{% endif %} >
+    {%- if background_image != blank -%}
+        <div class="PageHeader__Background PageHeader__Background--image"
+            style="background-image: -webkit-image-set(
+                url({{ background_image | image_url: width: 1000 }}) 1x,
+                url({{ background_image | image_url: width: 1500 }}) 2x);
+              background-image:image-set(
+                url({{ background_image | image_url: width: 1000 }}) 1x,
+                url({{ background_image | image_url: width: 1500 }}) 2x);">
+        </div>
+        <div class="BackgroundOverlay"></div>
+    {%- else -%}
+        <div class="PageHeader__Background PageHeader__Background--color"></div>
+    {%- endif -%}
+
+    <div class="PageHeader__ContentWrapper Container {% if page_header_content_full_width %} Container--fluid{% endif %} Container--height{{ page_header_height }}">
+        <div class="PageHeader__Content">
+            {%- if badge != blank -%}
+                <span class="PageHeader__Badge Badge">{{ badge }}</span>
+            {%- endif -%}
+
+            {%- if page_header_title != blank -%}
+                <h1 class="PageHeader__Title">{{ page_header_title }}</h1>
+            {%- endif -%}
+
+            {%- if page_header_subtitle != blank -%}
+                <div class="PageHeader__Subtitle">{{ page_header_subtitle }}</div> 
+            {%- endif -%} 
+
+            {%- if page_header_description != blank -%}
+                <div class="PageHeader__Description">{{ page_header_description }}</div> 
+            {%- endif -%} 
+        </div>  
+    </div>
+
+    <div class="PageHeader__Bottom">
+        <div class="Container{% if page_header_content_full_width %} Container--fluid{% endif %}">
+            <ul class="PageHeader__Breadcrumb Breadcrumb">
+                <li class="Breadcrumb__Item"><a href="{{ routes.root_url }}" class="" title="{{ 'general.breadcrumb.home' | t }}">{{ 'general.breadcrumb.home' | t }}</a></li> 
+
+                {%- if template.name == 'product' -%}
+                    {%- if collection.url -%}
+                        {%- if collection.handle -%}
+                            <li class="Breadcrumb__Item">{{ collection.title | link_to: collection.url, class: "" }}</li>
+                        {%- endif -%}
+                    {%- endif -%}
+
+                    <li class="Breadcrumb__Item">{{ product.title | truncate: 24, "..." }}</li>  
+
+                {%- elsif template.name == 'blog' -%} 
+                    {%- if current_tags -%}
+                        <li class="Breadcrumb__Item">{{ blog.title | link_to: blog.url, class: "" }}</li>
+                        <li class="Breadcrumb__Item">{{ current_tags | join: " + " }}</li>
+                    {%- else -%}
+                        <li class="Breadcrumb__Item">{{ blog.title }}</li> 
+                    {%- endif -%}
+
+                {%- elsif template.name == 'article' -%}
+                    <li class="Breadcrumb__Item"> {{ blog.title | link_to: blog.url, class: "" }}</li>   
+                    <li class="Breadcrumb__Item">{{ article.title | truncate: 24, "..." }}</li>
+
+                {%- elsif template.name == 'page' -%} 
+                    <li class="Breadcrumb__Item">{{ page_title | truncate: 24, "..." }}</li> 
+                    
+                {%- elsif template.directory == 'customers' -%} 
+                    <li class="Breadcrumb__Item"><a href="{{ routes.account_url }}" class="" title="{{ 'general.breadcrumb.account' | t }}">{{ 'general.breadcrumb.account' | t }}</a></li> 
+
+                    {%- unless template.name == 'account' -%} 
+                        <li class="Breadcrumb__Item">{{ template.name }}</li>
+                    {%- endunless -%}
+
+                {%- else -%}  
+                    <li class="Breadcrumb__Item">{{ page_title | truncate: 24, "..." }}</li> 
+                {%- endif -%}
+            </ul>
+            {%- if template.directory == 'customers' and customer -%} 
+            <div class="PageHeader__ButtonWrapper">
+                <a href="{{ routes.account_logout_url }}" class="Button--accountLogout Button Button--underline">{{ 'customer.account.logout' | t }}</a>
+            </div>
+            {%- endif -%}
+        </div>
+    </div>
+</div>

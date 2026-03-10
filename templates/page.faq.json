@@ -1,0 +1,89 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "page_header_width": "full_width",
+        "page_header_height": "Small",
+        "page_header_bg_color": ""
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "question-0": {
+          "type": "question",
+          "settings": {
+            "heading": "Question title",
+            "answer": "",
+            "page": ""
+          }
+        },
+        "question-1": {
+          "type": "question",
+          "settings": {
+            "heading": "Question title",
+            "answer": "",
+            "page": ""
+          }
+        },
+        "question-2": {
+          "type": "question",
+          "settings": {
+            "heading": "Question title",
+            "answer": "",
+            "page": ""
+          }
+        },
+        "question-3": {
+          "type": "question",
+          "settings": {
+            "heading": "Question title",
+            "answer": "",
+            "page": ""
+          }
+        },
+        "question-4": {
+          "type": "question",
+          "settings": {
+            "heading": "Question title",
+            "answer": "",
+            "page": ""
+          }
+        },
+        "question-5": {
+          "type": "question",
+          "settings": {
+            "heading": "Question title",
+            "answer": "",
+            "page": ""
+          }
+        }
+      },
+      "block_order": [
+        "question-0",
+        "question-1",
+        "question-2",
+        "question-3",
+        "question-4",
+        "question-5"
+      ],
+      "settings": {
+        "spacing": "Medium"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
+}

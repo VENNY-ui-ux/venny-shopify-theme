@@ -1,0 +1,118 @@
+.Dropdown {
+  position: relative;
+}
+
+.Dropdown__Toggle {
+  white-space: nowrap;
+  color: var(--tg-sys-color-on-background);
+}
+.Dropdown__Toggle:hover {
+  color: var(--tg-sys-color-on-background);
+}
+
+.Dropdown__Toggle::after {
+  display: inline-block;
+  -webkit-margin-start: 0.255em;
+          margin-inline-start: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0.3em solid;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0;
+  border-left: 0.3em solid transparent;
+}
+
+.Dropdown__Toggle:empty::after {
+  -webkit-margin-start: 0;
+          margin-inline-start: 0;
+}
+
+:root {
+  --tg-component-dropdown-body-text-color: var(--tg-sys-color-on-surface);
+  --tg-component-dropdown-body-background: var(--tg-sys-color-surface1);
+  --tg-component-dropdown-body-background-hover: var(--tg-sys-color-surface3);
+}
+
+.Dropdown__Body {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0;
+  text-align: start;
+  list-style: none;
+  background-clip: padding-box;
+  border: 1px solid var(--tg-sys-color-outline);
+  background: var(--tg-component-dropdown-body-background);
+  color: var(--tg-component-dropdown-body-text-color);
+}
+
+.Dropdown__Body[data-tg-popper] {
+  top: 100%;
+  left: 0;
+  margin-top: 0.125rem;
+}
+
+.Dropdown__Divider {
+  height: 0;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  border-top: 1px solid rgba(var(--tg-sys-color-outline-rgb), 0.8);
+}
+
+.Dropdown__Item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  clear: both;
+  font-weight: 400;
+  color: var(--tg-component-dropdown-body-text-color);
+  text-align: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  margin-bottom: 2px;
+}
+.Dropdown__Item button {
+  font-weight: 400;
+  color: rgba(var(--tg-sys-color-on-background-rgb), 0.8);
+}
+
+.Dropdown__Item:hover, .Dropdown__Item:focus {
+  color: var(--tg-component-dropdown-body-text-color);
+  background: var(--tg-component-dropdown-body-background-hover);
+}
+.Dropdown__Item:hover button, .Dropdown__Item:focus button {
+  font-weight: 500;
+  color: var(--tg-sys-color-on-background);
+}
+
+.Dropdown__Item.Active, .Dropdown__Item:active {
+  color: var(--tg-component-dropdown-body-text-color);
+  text-decoration: none;
+  background: var(--tg-component-dropdown-body-background-hover);
+}
+.Dropdown__Item.Active button, .Dropdown__Item:active button {
+  font-weight: 500;
+  color: var(--tg-sys-color-on-background);
+}
+
+.Dropdown__Body.Show {
+  display: block;
+}
+
+.Dropdown__Header {
+  display: block;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  font-family: var(--tg-sys-typescale-label-medium-font);
+  font-style: var(--tg-sys-typescale-label-medium-style);
+  font-weight: var(--tg-sys-typescale-label-medium-weight);
+  font-size: var(--tg-sys-typescale-label-medium-size);
+  line-height: var(--tg-sys-typescale-label-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-label-medium-tracking);
+  color: var(--tg-component-dropdown-body-text-color);
+  white-space: nowrap;
+}

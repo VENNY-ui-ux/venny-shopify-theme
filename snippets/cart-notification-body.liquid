@@ -1,0 +1,23 @@
+<div class="ToastWrapper">
+    <div class="Toast__Header">
+        <div>
+            {%- render 'icons', icon: 'pickup-availability-in-stock' -%}
+            <span>{{ 'cart.general.item_added' | t }} </span>
+        </div>
+      <button type="button" class="ButtonClose" data-tg-dismiss="Toast" aria-label="{{ 'cart.general.close' | t }}"></button>
+    </div>
+    <div class="Toast__Body CartNotification__Body">
+        <div class="CartNotification__Product"></div>
+        <div class="CartNotification__Links">
+            <a href="{{ routes.cart_url }}"  class="CartNotification__Cart Button Button--outline Button--full">
+              {{- 'cart.general.view_cart' | t -}} ({{ cart.item_count }})
+            </a>
+            <form action="{{ routes.cart_url }}" method="post" class="CartNotification__Form" id="CartNotificationForm">
+                <button class="CartNotification__Checkout Button Button--primary Button--full" name="checkout">
+                    {{ 'cart.general.checkout' | t }}
+                </button>
+            </form>
+            <a href="{{ routes.all_products_collection_url }}" class="CartNotification__ContinueShopping Button Button--underline">{{ 'general.continue_shopping' | t }}</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+{%- liquid
+  assign add_gap =  true 
+  if section.settings.page_header_width == 'full_width_no_gap'
+      assign add_gap =  false 
+  endif 
+-%}
+
+{% render 'page-header', 
+    background_image: section.settings.image, 
+    background_color: section.settings.page_header_bg_color,
+    page_header_title: page.title,
+    page_header_height: section.settings.page_header_height,
+    add_gap: add_gap
+%}
+
+{%- if page.content != blank -%}
+  <div class="Container RTE">
+    {{ page.content }}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    }
+  ]
+}
+{% endschema %}

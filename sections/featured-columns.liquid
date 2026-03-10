@@ -1,0 +1,422 @@
+{{ 'section-featured-columns.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'section-featured-columns.js' | asset_url }}" defer="defer"></script>
+
+{%- capture section_settings -%}
+  {
+    "animationType": {{ section.settings.animation_type | json }}
+  }
+{%- endcapture -%}
+
+<section-featured-columns class="Container Container--specialSpacingFirstSection Container--fluid Container--noGutter FeaturedColumns FeaturedColumns--{{ section.settings.layout_mobile }} {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}Container--specialSpacingLastSection Container--{{ section.settings.section_spacing }}Padding{% else %}Container--{{ section.settings.section_spacing }}{% endif %}" id="section-{{ section.id }}" data-section-settings='{{ section_settings }}' data-section-id="{{ section.id }}"
+  style="{% if section.settings.text_color != blank and section.settings.text_color != 'rgba(0,0,0,0)' %}
+    --tg-featured-columns-text-color: {{ section.settings.text_color }};
+    --tg-section-header-text-color: {{ section.settings.text_color }};
+    --tg-compontent-button-outline-border-color: {{ section.settings.text_color }};
+    --tg-compontent-button-outline-text-color: {{ section.settings.text_color }};
+    --tg-compontent-button-underline-text-color: {{ section.settings.text_color }};
+    --tg-compontent-button-underline-text-color-active: {{ section.settings.text_color }};
+  {% endif %}
+  {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}--tg-featured-columns-background-color: {{ section.settings.background }};{% endif %}
+  "
+>
+  <div class="Container {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}">
+    {%- assign column_count = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'column' -%}
+          {%- assign column_count = column_count | plus: 1 -%}
+
+        {%- when 'section_header' -%}
+          <header class="SectionHeader SectionHeader--{{ block.settings.header_align }}"  {{ block.shopify_attributes }}>
+            <div class="SectionHeader__Text">
+              {%- if block.settings.heading != blank -%}
+                  <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+
+              {%- if block.settings.subheading != blank -%}
+                  <div class="SectionHeader__Subheading TextMuted">{{ block.settings.subheading }} </div>
+              {%- endif -%}
+            </div>
+
+            {%- if block.settings.header_align == 'left' and block.settings.button_label != blank -%} 
+              <div class="SectionHeader__Button"> 
+                <a href="{{ block.settings.button_link }}" class="SectionHeader__Button Button Button--outline">{{ block.settings.button_label | escape }}</a>        
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.header_align == 'center' and block.settings.button_label != blank -%} 
+              {%- capture section_footer -%}
+                <footer class="SectionFooter TextCenter">
+                    <a class="SectionFooter__Button Button Button--outline" href="{{ block.settings.button_link }}">{{ block.settings.button_label | escape }}</a>
+                </footer>
+              {%- endcapture -%}
+            {%- endif -%}
+          </header>
+      {%- endcase -%}
+    {%- endfor -%}
+
+    <div class="FeaturedColumns__Body Animate {% if section.settings.animation_type == 'staggering' %}Animate--staggering{% endif %}">
+      <div class="Grid" {% if section.settings.enable_wide_gape %}style="--tg-grid-gutter-x: 2rem;"{% endif %}>
+
+        {%- liquid
+          assign desktop_items_per_row = section.settings.grid_desktop_items_per_row
+          if desktop_items_per_row > column_count
+            assign desktop_items_per_row = column_count
+          endif
+          assign mobile_items_per_row  = section.settings.grid_mobile_items_per_row | times: 1 
+        -%}
+
+        {%- if column_count > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'column' -%}
+                <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up" {{ block.shopify_attributes }}>
+                  {%- render 'feature-columns-card', block: block -%}
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        {%- else -%} 
+          {%- for i in (1..section.settings.grid_desktop_items_per_row) -%}
+          <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ section.settings.grid_desktop_items_per_row }}--medium-up">
+              {%- render 'feature-columns-card-placeholder' -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {{ section_footer }}
+    
+  </div>
+</section-featured-columns>
+
+{% schema %}
+{
+  "name": "Multicolumn",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "select",
+      "id": "animation_type",
+      "label": "Animation type",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "staggering",
+          "label": "Staggering"
+        }
+      ],
+      "default": "staggering"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_wide_gape",
+      "label": "Use wider gap between columns",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "select",
+      "id": "layout_mobile",
+      "label": "Mobile layout",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "horizontal",
+          "label": "Horizontal"
+        }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "id": "grid_desktop_items_per_row",
+      "label": "Number of columns on desktop",
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "grid_mobile_items_per_row",
+      "label": "Number of columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1",
+      "info": "Visible when the ‘Mobile layout’ setting is set to Stacked."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "section_header",
+      "name": "Section header",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "select",
+          "id": "header_align",
+          "label": "Header alignment",
+          "options": [
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineMedium"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    },
+    {
+      "type": "column",
+      "name": "Column",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Image position",
+          "options": [
+            {
+              "value": "Top",
+              "label": "Top"
+            },
+            {
+              "value": "Bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "Top"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Badge"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge"
+        },
+        {
+          "type": "color",
+          "id": "badge_background",
+          "label": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "badge_text_color",
+          "label": "Text color"
+        },
+        {
+          "type": "header",
+          "content": "Text"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineSmall"
+        },
+        {
+          "type": "richtext",
+          "id": "excerpt",
+          "label": "Description",
+          "default": "<p>Add your own custom content to give more information about your store...</p>"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            },
+            {
+              "value": "outline",
+              "label": "Outline"
+            },
+            {
+              "value": "underline",
+              "label": "Underline"
+            }
+          ],
+          "default": "underline"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multicolumn",
+      "blocks": [
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

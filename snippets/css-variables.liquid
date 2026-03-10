@@ -1,0 +1,88 @@
+{%- assign text_font_bold = settings.text_font | font_modify: 'weight', 'bolder' -%}
+{%- assign text_font_italic = settings.text_font | font_modify: 'style', 'italic' -%}
+{%- assign text_font_bold_italic = text_font_bold | font_modify: 'style', 'italic' -%}
+
+<style>
+ 
+  {{ settings.heading_font | font_face: font_display: 'swap' }}
+  {{ settings.display_font | font_face: font_display: 'swap' }}
+  {{ settings.text_font | font_face: font_display: 'swap' }}
+
+  {{ text_font_bold | font_face: font_display: 'swap' }}
+  {{ text_font_italic | font_face: font_display: 'swap' }}
+  {{ text_font_bold_italic | font_face: font_display: 'swap' }}
+
+  :root {
+    --tg-grid-gutter-x: {{ settings.spacing_grid_horizontal }}px;
+    --tg-grid-gutter-y: {{ settings.spacing_grid_vertical }}px;
+
+    --tg-ref-typescale-text-font : {{ settings.text_font.family }}, {{ settings.text_font.fallback_families }};
+    --tg-ref-text-font-weight : {{ settings.text_font.weight }};
+    --tg-ref-text-font-style  : {{ settings.text_font.style }};
+    --tg-ref-text-font-scale  : {{ settings.text_font_scale | divided_by: 100.0 }};
+
+    --tg-ref-typescale-heading-font : {{ settings.heading_font.family }}, {{ settings.heading_font.fallback_families }};
+    --tg-ref-heading-font-weight : {{ settings.heading_font.weight }};
+    --tg-ref-heading-font-style  : {{ settings.heading_font.style }};
+    --tg-ref-heading-font-scale  : {{ settings.heading_font_scale | divided_by: 100.0 }};
+
+    --tg-ref-typescale-display-font : {{ settings.display_font.family }}, {{ settings.display_font.fallback_families }};
+    --tg-ref-display-font-weight : {{ settings.display_font.weight }};
+    --tg-ref-display-font-style  : {{ settings.display_font.style }};
+    --tg-ref-display-font-scale  : {{ settings.display_font_scale | divided_by: 100.0 }};
+
+
+    --tg-product-badge-corner-radius: {{ settings.product_badge_corner_radius | default: 0 }}px;
+    --tg-sys-button-border-radius:  {{ settings.button_corner_radius | default: 0 }}px;
+
+    {% comment %} source  color  use liquid settings
+    ref color is emit , same with sys light and darken {% endcomment %}
+
+    {% comment %} sys light color  {% endcomment %}
+    --tg-sys-color-primary-light: {{ settings.color_primary }};
+    --tg-sys-color-on-primary-light: {{ settings.color_on_primary }};;
+
+    --tg-sys-color-secondary-container-light: {{ settings.color_secondary_container }};
+    --tg-sys-color-on-secondary-container-light: {{ settings.color_on_secondary_container }};
+
+    {% comment %} role accent {% endcomment %}
+    --tg-sys-color-tertiary-light: {{ settings.color_tertiary }};
+    --tg-sys-color-on-tertiary-light: {{ settings.color_on_tertiary }};
+
+    --tg-sys-color-background-light:  {{ settings.color_background }};
+    --tg-sys-color-on-background-light:  {{ settings.color_on_background }};
+    
+    --tg-sys-color-surface-light: {{ settings.color_background }};
+    --tg-sys-color-on-surface-light: {{ settings.color_on_background }};
+    {% comment %} text light {% endcomment %}
+    --tg-sys-color-on-surface-variant-light: {{ settings.color_on_background | color_lighten: 25 }};
+
+    --tg-sys-color-outline-light: {{ settings.color_outline }};
+
+    --tg-sys-color-surface1-light: linear-gradient(0deg, rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.05), rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.05)), {{ settings.color_background }};
+    --tg-sys-color-surface2-light: linear-gradient(0deg, rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.08), rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.08)), {{ settings.color_background }};
+    --tg-sys-color-surface3-light: linear-gradient(0deg, rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.11), rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.11)), {{ settings.color_background }};
+    --tg-sys-color-surface4-light: linear-gradient(0deg, rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.12), rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.12)), {{ settings.color_background }};
+    --tg-sys-color-surface5-light: linear-gradient(0deg, rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.14), rgba({{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }}, 0.14)), {{ settings.color_background }};
+
+    {% comment %} error role should exeist {% endcomment %}
+    --tg-sys-color-error-light: {{ settings.color_tertiary }};
+    --tg-sys-color-on-error-light: {{ settings.color_on_tertiary }};
+
+    {% comment %} rgb used by shadow or animation {% endcomment %}
+    --tg-sys-color-primary-rgb-light: {{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }};
+    --tg-sys-color-tertiary-rgb-light: {{ settings.color_tertiary.red }}, {{ settings.color_tertiary.green }}, {{ settings.color_tertiary.blue }};
+    --tg-sys-color-outline-rgb-light: {{ settings.color_outline.red }}, {{ settings.color_outline.green }}, {{ settings.color_outline.blue }};
+    --tg-sys-color-on-background-rgb-light: {{ settings.color_on_background.red }}, {{ settings.color_on_background.green }}, {{ settings.color_on_background.blue }};
+    --tg-sys-color-on-surface-rgb-light: {{ settings.color_on_background.red }}, {{ settings.color_on_background.green }}, {{ settings.color_on_background.blue }};
+
+    {% comment %} background image icon color setting {% endcomment %}
+    --tg-component-icon-plus: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23{{ settings.color_on_background | remove_first: '#' }}'%3e%3cpath fill-rule='evenodd' d='M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z'/%3e%3c/svg%3e");
+    --tg-component-icon-minus: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23{{ settings.color_on_background | remove_first: '#' }}'%3e%3cpath fill-rule='evenodd' d='M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z'/%3e%3c/svg%3e");
+    --tg-component-icon-arrow-right: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23{{ settings.color_on_background | remove_first: '#' }}'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    --tg-component-icon-close: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23{{ settings.color_on_background | remove_first: '#' }}'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e");
+    --tg-component-icon-arrow-down: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23{{ settings.color_on_background | remove_first: '#' }}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+
+    --tg-container-max-width: {{ settings.container_max_width | default: 1280 }}px;
+  }
+</style>

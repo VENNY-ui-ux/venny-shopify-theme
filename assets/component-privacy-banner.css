@@ -1,0 +1,55 @@
+.PrivacyBanner.Toast {
+  bottom: 1rem;
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  width: calc(100% - 2rem);
+}
+@media screen and (min-width: 641px) {
+  .PrivacyBanner.Toast {
+    width: 400px;
+    right: auto;
+  }
+}
+.PrivacyBanner.Toast .PrivacyBanner__Content {
+  margin-bottom: 1rem;
+}
+.PrivacyBanner.Toast.PrivacyBanner--card .PrivacyBanner__Title {
+  margin-bottom: 0;
+}
+.PrivacyBanner.Toast.PrivacyBanner--banner {
+  width: 100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+@media screen and (max-width: 640px) {
+  .PrivacyBanner.Toast.PrivacyBanner--banner .Toast__Body .ButtonGroup {
+    position: static;
+  }
+  .PrivacyBanner.Toast.PrivacyBanner--banner .Toast__Body .ButtonClose {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+  }
+}
+@media screen and (min-width: 641px) {
+  .PrivacyBanner.Toast.PrivacyBanner--banner .Toast__Body {
+    flex-wrap: nowrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .PrivacyBanner.Toast.PrivacyBanner--banner .Toast__Body .PrivacyBanner__Content {
+    margin-bottom: 0;
+    -webkit-margin-end: 1rem;
+            margin-inline-end: 1rem;
+  }
+  .PrivacyBanner.Toast.PrivacyBanner--banner .Toast__Body .ButtonGroup {
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+}

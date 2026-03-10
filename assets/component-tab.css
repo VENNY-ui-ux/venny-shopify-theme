@@ -1,0 +1,6 @@
+.Tab__Content > .Tab__Pane {
+  display: none;
+}
+.Tab__Content > .Active {
+  display: block;
+}

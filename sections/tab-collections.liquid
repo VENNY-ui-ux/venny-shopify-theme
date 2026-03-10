@@ -1,0 +1,438 @@
+{%- if section.settings.layout_mode == 'carousel' -%}
+  {{ 'component-carousel.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+{{ 'section-tab-collections.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.enable_quick_add -%}
+  <script src="{{ 'component-quick-add-to-cart-button.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- if section.settings.layout_mode == 'carousel' -%}
+  {%- capture carousel_options -%}
+    {
+      "freeMode": true,
+      "slidesPerView": "auto",
+      "navigation": {
+        "enabled": false,
+        "nextEl": ".Carousel__NavNext",
+        "prevEl": ".Carousel__NavPrev"
+      },
+      "breakpoints": {
+        "640": {
+          "slidesPerView": "auto",
+          "freeMode": false,
+          "navigation": {
+            "enabled": true,
+            "nextEl": ".Carousel__NavNext",
+            "prevEl": ".Carousel__NavPrev"
+          }
+        }
+      }
+    }
+  {%- endcapture -%}
+{%- endif -%}
+{%- capture section_settings -%}
+{
+  "layout": {{ section.settings.layout_mode | json }},
+  "animationType": {{ section.settings.animation_type | json }}
+}
+{%- endcapture -%}
+
+{%- if request.visual_preview_mode -%}
+  <style>
+    #shopify-section-{{ section.id }} .Animate--staggering .Animate__Item {
+      opacity: 1;
+    }
+  </style>
+{%- endif -%}
+
+{%- assign desktop_items_per_row = section.settings.grid_desktop_items_per_row -%}
+{%- assign mobile_items_per_row  = section.settings.grid_mobile_items_per_row | times: 1 -%}
+
+{%- assign tablet_items_per_row = desktop_items_per_row | divided_by: 1.5 | floor | at_least: 2 -%}
+
+<script src="{{ 'section-tab-collections.js' | asset_url }}" defer="defer"></script>
+<section-tab-collections class="Container Container--specialSpacingFirstSection {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %} Container--{{ section.settings.section_spacing }} TabCollections" data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}'>
+
+  <header class="TabCollections__SectionHeader SectionHeader SectionHeader--{{ section.settings.header_align }}">
+    <div class="SectionHeader__Text">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="SectionHeader__Heading CustomSize {{ section.settings.heading_font_size }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.subheading != blank -%}
+        <div class="SectionHeader__Subheading TextMuted">{{ section.settings.subheading }} </div>
+      {%- endif -%}
+    </div>
+
+    <ul class="Nav Nav--tabs" role="tablist">
+      {%- assign collection_tab_index = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'collection' -%}
+            {%- assign collection_tab_index = collection_tab_index | plus: 1 -%}
+            <li class="Nav__Item" role="presentation">
+              <button class="Button Button--underline{% if collection_tab_index == 1 %} Active{% endif %}" data-tg-toggle="Tab" data-tg-target="#TabContent{{ section.id }}-{{ block.id }}" type="button" role="tab"{% if collection_tab_index == 1 %} aria-selected="true"{% endif %}>
+                {{- block.settings.heading | default: block.settings.collection.title | default: 'Tab' -}}
+              </button>
+            </li>
+        {%- endcase -%}
+      {%- endfor -%}
+    </ul>
+  </header>
+
+  <div class="SectionBody TabCollections__Body ProductListWrapper Animate {% if section.settings.animation_type == 'staggering' and section.settings.layout_mode == 'grid' %}Animate--staggering{% endif %}">
+    <div class="Tab__Content">
+      {%- assign collection_tab_index = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'collection' -%}
+            {%- liquid
+              assign collection_tab_index = collection_tab_index | plus: 1
+              assign item_count = section.settings.grid_items_count 
+            -%}
+            <div class="Tab__Pane {% if collection_tab_index == 1 %} Active{% endif %}" id="TabContent{{ section.id }}-{{ block.id }}" tabindex="0">
+              {%- assign tab_collection = block.settings.collection -%}
+              
+              {%- if tab_collection != blank -%}
+                {%- if tab_collection.products_count < item_count -%}
+                  {%- assign item_count = tab_collection.products_count -%}
+                {%- endif -%}
+
+                {%- if section.settings.layout_mode == 'grid' -%}
+                  <div class="ProductList ProductList--grid Grid">
+                    {%- for product in tab_collection.products limit: item_count -%}
+                      {% assign lazy_load = true %}
+                      {%- if section.index < 3 and forloop.index < 3 and forloop.parentloop.index == 1 -%}
+                        {%- assign lazy_load = false -%}
+                      {%- endif -%}
+                      <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ tablet_items_per_row }}--medium-up 1/{{ desktop_items_per_row }}--large">
+                        {% render 'product-card', product: product, lazy_load: lazy_load, section_is_grid_width: section.settings.section_width, show_rating: section.settings.show_rating, show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor, show_swatches: section.settings.show_swatches, show_quick_add: section.settings.enable_quick_add %}
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <div class="ProductList ProductList--carousel Carousel" data-carousel-config='{{ carousel_options }}'>
+                    <div class="CarouselWrapper">
+                      {%- for product in tab_collection.products limit: item_count -%}
+                        {% assign lazy_load = true %}
+                        {%- if section.index < 3 and forloop.index < 3 and forloop.parentloop.index == 1 -%}
+                          {%- assign lazy_load = false -%}
+                        {%- endif -%}
+                        <div class="Carousel__Item 1/{{ mobile_items_per_row }}--small 1/{{ tablet_items_per_row }}--medium-up 1/{{ desktop_items_per_row }}--large">
+                          {% render 'product-card', product: product, lazy_load: lazy_load, card_mobile_items_per_row: 1.47, section_is_grid_width: section.settings.section_width, show_rating: section.settings.show_rating, show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor, show_swatches: section.settings.show_swatches, show_quick_add: section.settings.enable_quick_add %}
+                        </div>
+                      {%- endfor -%}
+                    </div>
+                    <div class="Carousel__NavPrev">
+                      {%- render 'icons', icon: 'nav-right' -%}
+                    </div>
+                    <div class="Carousel__NavNext">
+                      {%- render 'icons', icon: 'nav-right' -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+
+              {%- else -%}
+
+                {%- if section.settings.layout_mode == 'grid' -%}
+                  <div class="ProductList ProductList--grid Grid">
+                    {%- for i in (1..section.settings.grid_items_count) -%}
+                      <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ tablet_items_per_row }}--medium-up 1/{{ desktop_items_per_row }}--large">
+                        {% render 'product-card-placeholder', show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor %}
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <div class="ProductList ProductList--carousel Carousel" data-carousel-config='{{ carousel_options }}'>
+                    <div class="CarouselWrapper">
+                      {%- for i in (1..section.settings.grid_items_count) -%}
+                        <div class="Carousel__Item 1/{{ mobile_items_per_row }}--small 1/{{ tablet_items_per_row }}--medium-up 1/{{ desktop_items_per_row }}--large">
+                          {% render 'product-card-placeholder', show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor %}
+                        </div>
+                      {%- endfor -%}
+                    </div>
+                    <div class="Carousel__NavPrev">
+                      {%- render 'icons', icon: 'nav-right' -%}
+                    </div>
+                    <div class="Carousel__NavNext">
+                      {%- render 'icons', icon: 'nav-right' -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- else -%}
+        {%- if section.settings.layout_mode == 'grid' -%}
+          <div class="ProductList ProductList--grid Grid">
+            {%- for i in (1..section.settings.grid_items_count) -%}
+              <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ tablet_items_per_row }}--medium-up 1/{{ desktop_items_per_row }}--large">
+                {% render 'product-card-placeholder', show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor %}
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="ProductList ProductList--carousel Carousel" data-carousel-config='{{ carousel_options }}'>
+            <div class="CarouselWrapper">
+              {%- for i in (1..section.settings.grid_items_count) -%}
+                <div class="Carousel__Item 1/{{ mobile_items_per_row }}--small 1/{{ tablet_items_per_row }}--medium-up 1/{{ desktop_items_per_row }}--large">
+                  {% render 'product-card-placeholder', show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor %}
+                </div>
+              {%- endfor -%}
+            </div>
+            <div class="Carousel__NavPrev">
+              {%- render 'icons', icon: 'nav-right' -%}
+            </div>
+            <div class="Carousel__NavNext">
+              {%- render 'icons', icon: 'nav-right' -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+</section-tab-collections>
+
+{% schema %}
+{
+  "name": "Tab collections",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "select",
+      "id": "layout_mode",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "animation_type",
+      "label": "Animation type",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "staggering",
+          "label": "Staggering"
+        }
+      ],
+      "default": "staggering",
+      "info": "Visible when the ‘Layout’ setting is set to Grid."
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured collections"
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "Header alignment",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "HeadlineSmall",
+          "label": "Small"
+        },
+        {
+          "value": "HeadlineMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "HeadlineLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "HeadlineMedium"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "id": "grid_items_count",
+      "min": 2,
+      "max": 24,
+      "step": 1,
+      "label": "Maximum products to show",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "id": "grid_desktop_items_per_row",
+      "label": "Number of columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "grid_mobile_items_per_row",
+      "label": "Number of columns on mobile",
+      "info": "Visible when the ‘Layout’ setting is set to Grid.",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_info",
+      "label": "Show product info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show product rating",
+      "default": false,
+      "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-collection-show-product-rating)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatches",
+      "label": "Show swatch",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_quick_add",
+      "default": false,
+      "label": "Enable quick add button",
+      "info": "You can set button style and position in [Theme settings](/editor?context=theme&category=product)."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Title",
+          "info": "if you want a new title to replace the default collection title"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tab collections",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

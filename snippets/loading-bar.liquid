@@ -1,0 +1,61 @@
+<style type="text/css">
+    .LoadingBar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        width: 0;
+        opacity: 0;
+        background: var(--tg-sys-color-primary);
+        transition: width 0.25s ease-in-out;
+        z-index: 50;
+        pointer-events: none;
+    }
+      
+    .LoadingBar.Visible {
+        opacity: 1;
+    }
+      
+    @media screen and (min-width: 1280px) {
+        .LoadingBar {
+            height: 3px;
+        }
+    }
+</style>
+<loading-bar class="LoadingBar"></loading-bar>
+<script>
+if (!customElements.get('loading-bar')) {
+    class TG_LoadingBar extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            document.addEventListener('theme:loading:start', this._onLoadingStart.bind(this));
+            document.addEventListener('theme:loading:end', this._onLoadingEnd.bind(this));
+
+            this.addEventListener('transitionend', this._onTransitionEnd.bind(this));
+        }
+
+        _onLoadingStart() {
+            this.classList.add('Visible');
+            this.style.width = '40%';
+        }
+
+        _onLoadingEnd() {
+            this.style.width = '100%';
+            this.classList.add('Finished');
+        }
+
+        _onTransitionEnd(event) {
+            if (event.propertyName === 'width' && this.classList.contains('Finished')) {
+                this.classList.remove('Visible');
+                this.classList.remove('Finished');
+                this.style.width = '0';
+            }
+        }
+    }
+    
+    customElements.define('loading-bar', TG_LoadingBar);
+}
+</script>

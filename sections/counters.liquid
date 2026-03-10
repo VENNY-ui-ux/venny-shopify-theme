@@ -1,0 +1,266 @@
+{{ 'section-counters.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-counters.js' | asset_url }}" defer="defer"></script>
+<section-counters class="Container Container--noGutter Container--fluid Container--{{ section.settings.section_spacing }} Counters" data-section-id="{{ section.id }}">
+  <div class="Container {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}">
+    <header class="SectionHeader SectionHeader--{{ section.settings.header_align }}">
+      <div class="SectionHeader__Text">
+        {%- if section.settings.heading != blank -%}
+            <h2 class="SectionHeader__Heading CustomSize {{ section.settings.heading_font_size }}">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.subheading != blank -%}
+            <div class="SectionHeader__Subheading TextMuted">{{ section.settings.subheading }} </div>
+        {%- endif -%}
+      </div>
+    </header>
+
+    <div class="Counters__Body">
+      <div class="Grid">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'counter' -%}
+              <div class="Grid__Item 1/{{ section.settings.grid_mobile_items_per_row }}--small 1/{{ section.settings.grid_desktop_items_per_row }}--medium-up" {{ block.shopify_attributes }}>
+                  <div class="Counter Counter--center">
+                    <div class="Counter__Text">
+                      <h3 class="Counter__TitleWrapper CustomSize {{ block.settings.heading_font_size }}">
+                        {%- if block.settings.before_heading != blank -%}
+                          <span class="Counter__BeforeTitle">{{  block.settings.before_heading }}</span>
+                        {%- endif -%}
+                        {%- if block.settings.heading != blank -%}
+                          <span class="Counter__Title">{{  block.settings.heading | escape }}</span>
+                        {%- endif -%}
+                        {%- if block.settings.after_heading != blank -%}
+                          <span class="Counter__AfterTitle">{{  block.settings.after_heading }}</span>
+                        {%- endif -%}
+                      </h3>
+                      
+                      {%- if block.settings.description != blank -%}
+                        <div class="Counter__Content RTE">{{ block.settings.description }}</div>
+                      {%- endif -%}
+                    </div>
+                  </div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+  </div>
+</section-counters>
+{% schema %}
+{
+  "name": "Counters",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "Header alignment",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "HeadlineSmall",
+          "label": "Small"
+        },
+        {
+          "value": "HeadlineMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "HeadlineLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "HeadlineMedium"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "id": "grid_desktop_items_per_row",
+      "label": "Number of columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "id": "grid_mobile_items_per_row",
+      "label": "Number of columns on mobile",
+      "default": "2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "counter",
+      "name": "Counter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "100",
+          "info": "Use a number. Letters and special characters are not accepted."
+        },
+        {
+          "type": "text",
+          "id": "before_heading",
+          "label": "Before heading"
+        },
+        {
+          "type": "text",
+          "id": "after_heading",
+          "label": "After heading"
+        },
+        {
+            "type": "select",
+            "id": "heading_font_size",
+            "label": "Heading size",
+            "options": [
+              {
+                "value": "DisplaySmall",
+                "label": "Small"
+              },
+              {
+                "value": "DisplayMedium",
+                "label": "Medium"
+              },
+              {
+                "value": "DisplayLarge",
+                "label": "Large"
+              }
+            ],
+            "default": "DisplayMedium"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Describe facts or numbers</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Counters",
+      "settings": {
+      },
+      "blocks": [
+        {
+          "type": "counter",
+          "settings": {
+            "heading": "2000",
+            "before_heading": "+",
+            "after_heading": "k"
+          }
+        },
+        {
+          "type": "counter",
+          "settings": {
+            "heading": "100",
+            "after_heading": "%"
+          }
+        },
+        {
+          "type": "counter",
+          "settings": {
+            "heading": "2000",
+            "before_heading": "$"
+          }
+        },
+        {
+          "type": "counter",
+          "settings": {
+            "heading": "5000",
+            "before_heading": "$"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

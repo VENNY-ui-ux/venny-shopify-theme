@@ -1,0 +1,262 @@
+{%- liquid
+    assign color_label = 'color,colour,couleur,colore,farbe,färg,farve,kleur,barva,väri,색상,색,色,farge,kolor,cor,สี,renk,màu sắc,颜色,顏色' | split: ','
+
+    assign products_sort_by = search.sort_by | default: search.default_sort_by
+    assign products_sort_options = search.sort_options
+    assign products_filters = search.filters
+    assign products_filters_size = search.filters.size
+    assign products_results_count = search.results_count
+
+    if template.name == 'collection'
+        assign products_sort_by = collection.sort_by | default: collection.default_sort_by
+        assign products_sort_options = collection.sort_options
+        assign products_filters = collection.filters
+        assign products_filters_size = collection.filters.size
+        assign products_results_count = collection.products_count
+    endif
+-%}
+{{ 'component-collection-filter-item.css' | asset_url | stylesheet_tag }}
+{{ 'component-collection-toolbar.css' | asset_url | stylesheet_tag }}
+
+<div class="Toolbar FilterProducts__Toolbar{% unless enable_filtering %} Toolbar--noFilters{% endunless %}" {% if template.name == 'search' -%}{% unless search.performed %}style="display:none;"{% endunless %}{%- endif %} {{ block.shopify_attributes }}> 
+    {%- if enable_sorting -%}
+        <div class="Toolbar__Sorting HiddenSmall">
+            <div class="Dropdown">
+                <button class="Button Button--outline Dropdown__Toggle" type="button" data-tg-toggle="Dropdown" aria-expanded="false">
+                    {{ 'collection.sorting.title' | t }} 
+                </button>
+                <ul class="Dropdown__Body">
+                    {%- for option in products_sort_options -%}
+                        <li class="Dropdown__Item {% if option.value == products_sort_by -%}Active{%- endif %}" data-value="{{ option.value }}" data-filter-from="toolbar" data-tg-action="change-sort">{{ option.name }}</li>
+                    {%- endfor -%}
+                </ul>
+            </div>
+        </div>
+    {%- endif -%}
+
+    {%- if enable_filtering -%}
+        <form class="FilterProducts__Form FilterProducts__Form--toolbar HiddenSmall Toolbar__Filters">
+            {%- if template.name == 'search' -%}
+                <input type="hidden" name="q" value="{{ search.terms }}">
+            {%- endif -%}
+            
+            {%- for filter in products_filters limit: numbers_of_filters_viewed_on_desktop -%}
+                {% liquid
+                    assign downcase_filter_label = filter.label | downcase
+                    assign default_presentation = 'text'
+                    assign presentation = filter.presentation | default: default_presentation
+                %}
+
+                <div class="Dropdown">
+                    <button class="Button Button--outline Dropdown__Toggle" type="button" data-tg-toggle="Dropdown" {% if filter.label == 'Price' %} data-tg-auto-close="outside" {% endif %} aria-expanded="false">
+                        {{ filter.label }}
+                    </button>
+                    {%- case filter.type -%}
+                        {%- when 'boolean', 'list' -%}
+                            <ul class="Dropdown__Body {% if presentation == 'image' %}FilterProductsImageWrapper{% endif %}">
+                                {%- for filter_value in filter.values -%}
+                                    {%- if filter_value.label contains '__label' -%}
+                                        {%- continue -%}
+                                    {%- endif -%}
+                                    <li class="Dropdown__Item ProductFilters__Item {% if filter_value.active -%}Active{%- endif %}" data-filter-from="toolbar">
+                                        <label for="Filter-toolbar-{{ filter.param_name }}-{{ forloop.index }}">
+                                        {%- render 'icons', icon: 'checkbox-checked' -%}
+                                        {%- render 'icons', icon: 'checkbox-unchecked' -%}
+                                        {%- if presentation == 'swatch' -%}
+                                            {%- if filter_value.swatch.color -%}
+                                                <span class="FilterProductsColorSwatch FilterProductsColorSwatch--metaobjectColors" title="{{ filter_value.value | escape }}" style="background: {{'rgb(' | append: filter_value.swatch.color.rgb | append: ')'}};">&nbsp;</span>
+                                            {%- elsif filter_value.swatch.image -%}
+                                                <span class="FilterProductsColorSwatch FilterProductsColorSwatch--metaobjectImage" title="{{ filter_value.value | escape }}" style="{% if filter_value.swatch.image != blank %}background-image: url({{ filter_value.swatch.image | image_url: width: 64, height: 64 }}){% endif %}">&nbsp;</span>
+                                            {%- else -%}
+                                                <div class="VisuallyHidden"></div>
+                                            {%- endif -%}
+                                        {%- elsif presentation == 'image' -%}
+                                            <div class="Ratio" style="--tg-aspect-ratio: {{ filter_value.image.aspect_ratio }};">
+                                                {{
+                                                    filter_value.image
+                                                    | image_url: width: 300
+                                                    | image_tag: class: 'FilterProductsImage FilterProductsImage--metaobjectImage', alt: filter_value.alt
+                                                }}
+                                            </div>
+                                        {%- elsif color_label contains downcase_filter_label and show_filter_color_swatch -%}
+                                            {%- liquid 
+                                                assign downcase_value = filter_value.value | downcase
+                                                assign color_swatch_name = filter_value.value | handle | append: '.jpg'
+                                                assign color_swatch_image = images[color_swatch_name]
+
+                                                if color_swatch_image == blank
+                                                    assign color_swatch_name = filter_value.value | handle | append: '.png'
+                                                    assign color_swatch_image = images[color_swatch_name]
+                                                endif 
+                                            -%}
+
+                                            <span class="FilterProductsColorSwatch {% if downcase_value == 'white' and color_swatch_image == blank %}FilterProductsColorSwatch--white{% endif %}" title="{{ filter_value.value | escape }}" style="background-color: {{ filter_value.value | replace: ' ', '' | downcase }}; {% if color_swatch_image != blank %}background-image: url({{ color_swatch_image | image_url: width: 64, height: 64 }}){% endif %}">&nbsp;</span>
+                                        {%- endif -%}
+                                        <input type="checkbox"
+                                            name="{{ filter_value.param_name }}"
+                                            value="{{ filter_value.value }}"
+                                            id="Filter-toolbar-{{ filter.param_name }}-{{ forloop.index }}"
+                                            {% if filter_value.active -%}checked{%- endif %}
+                                            {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                                            style="margin-right: 6px;"
+                                        ><span class="ProductFilters__ItemLabel">{{ filter_value.label }}{%-if presentation == 'image' -%}({{ filter_value.count }}){%- endif -%}</span>
+                                        </label>
+                                        <span class="ProductFilters__ItemProductCount">{{ filter_value.count }}</span>
+                                    </li>
+                                {%- endfor -%}
+                            </ul>
+                        {%- when 'price_range' -%}
+                            {{ 'nouislider.css' | asset_url | stylesheet_tag }}
+                            <script src="{{ 'nouislider.js' | asset_url }}" defer></script>
+                            {% liquid
+                                assign currencies_using_comma_decimals = 'ANG,ARS,BRL,BYN,BYR,CLF,CLP,COP,CRC,CZK,DKK,EUR,HRK,HUF,IDR,ISK,MZN,NOK,PLN,RON,RUB,SEK,TRY,UYU,VES,VND' | split: ','
+                                assign uses_comma_decimals = false
+                                if currencies_using_comma_decimals contains cart.currency.iso_code
+                                  assign uses_comma_decimals = true
+                                endif
+                              %}
+
+                            <div class="Dropdown__Body Dropdown__Body--priceRange" id="Dropdown__Body--priceRange">
+                                <div class="Form__Item Form__Item--floatingLabel">
+                                    <input name="{{ filter.min_value.param_name }}" class="Form__Input Form__Input--price Form__Input--priceMin"
+                                    id="Filter-Toolbar-Min-Price"
+                                    {% if filter.min_value.value %}
+                                        {% if uses_comma_decimals %}value="{{ filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' }}"{% else %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                                    {% endif %}
+                                    type="number"
+                                    placeholder="0"
+                                    min="0"
+                                    {% if uses_comma_decimals %}max="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"{% else %}max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"{% endif %}
+                                    step="0.01"
+                                    >
+
+                                    <label class="Form__Label" for="Filter-Toolbar-Min-Price">{{ 'collection.filter.price_from' | t }} {{ cart.currency.symbol }}</label>
+                                </div>
+                                <div class="Form__Item Form__Item--floatingLabel">
+                                    <input name="{{ filter.max_value.param_name }}" class="Form__Input Form__Input--price Form__Input--priceMax"
+                                    id="Filter-Toolbar-Max-Price"
+                                    {% if filter.max_value.value -%}
+                                        {% if uses_comma_decimals %}value="{{ filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' }}"{% else %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                                    {% endif %}
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    {% if uses_comma_decimals %}
+                                        placeholder="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                                        max="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                                    {% else %}
+                                        placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                        max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                    {% endif %}
+                                    >
+
+                                    <label class="Form__Label" for="Filter-Toolbar-Max-Price">{{ 'collection.filter.price_to' | t }} {{ cart.currency.symbol }}</label>
+                                </div>
+                                
+                                <div id="Toolbar-Price-Slider" style="margin-bottom: 1rem;" 
+                                    {% if uses_comma_decimals %}
+                                    data-tg-max-price="{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' }}"
+                                    {% else %}
+                                    data-tg-max-price="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                    {% endif %} 
+                                >
+                                </div>
+                               
+                                <button class="Button Button--secondary" type="button" style="margin-bottom: 1rem;" data-filter-from="toolbar" data-tg-action="apply-price">{{ 'collection.filter.apply' | t }}</button>
+                            </div>
+                    {%- endcase -%}
+                </div>
+            {%- endfor -%}
+
+            {%- if products_filters_size > numbers_of_filters_viewed_on_desktop -%}
+                <button class="Button Button--text Toolbar__FilterButton"
+                        data-tg-toggle="Drawer" data-tg-target="#FilterProductsDrawer"
+                        aria-label="{{ 'collection.filter.show_filter' | t }}"
+                        type="button">
+                    {% render 'icons', icon: 'sliders' %}<span style="padding-left: 4px;">{{ 'collection.filter.title' | t }}</span>
+                </button>
+            {%- endif -%}
+        </form>
+    {%- endif -%}
+
+    {%- if enable_sorting or enable_filtering -%}
+        <div class="Toolbar__Filters HiddenMediumUp">
+            <button type="button" class="Button Button--text Toolbar__FilterButton Toolbar__FilterButton--small"
+                        data-tg-toggle="Drawer" data-tg-target="#FilterProductsDrawer"
+                        aria-label="{{ 'collection.filter.show_filter' | t }}">
+                    {% render 'icons', icon: 'sliders' %}<span style="padding-left: 4px;">{{ 'collection.general.filter_sorting' | t }}</span>
+            </button>
+        </div>
+    {%- endif -%}
+    
+    <div class="Toolbar__ResultCount">
+        {{ 'collection.general.product_count' | t: count: products_results_count }}
+    </div>
+
+    <div class="Toolbar__LayoutSwitch">
+        <div class="HiddenMediumUp LayoutSwitch LayoutSwitch--small TextEnd">
+            <button aria-label="{{ 'collection.layout.show_one_per_row' | t }}" class="Button Button--icon {% if mobile_items_per_row == 1 %}Active{% endif %}" data-tg-action="change-layout-mode" data-grid-type="mobile" data-grid-template="{{ template.name }}" data-count="1" title="{{ 'collection.layout.show_one_per_row' | t }}">{% render 'icons', icon: 'square' %}</button>
+            <button aria-label="{{ 'collection.layout.show_two_per_row' | t }}" class="Button Button--icon {% if mobile_items_per_row == 2 %}Active{% endif %}" data-tg-action="change-layout-mode" data-grid-type="mobile" data-grid-template="{{ template.name }}" data-count="2" title="{{ 'collection.layout.show_two_per_row' | t }}">{% render 'icons', icon: 'grid' %}</button>
+        </div>
+
+        <div class="HiddenSmall LayoutSwitch LayoutSwitch--desktop TextEnd">
+            {%- for i in (2 .. 6) -%}
+                {% assign icon_key = 'columns-' | append: i %}
+                <button aria-label="{{ 'collection.layout.show_item_count_per_row' | t: count: i }}" class="Button Button--layoutSwitch Button--icon {% if desktop_items_per_row == i %}Active{% endif %}" data-tg-action="change-layout-mode" data-grid-type="desktop" data-grid-template="{{ template.name }}" data-count="{{ i }}" title="{{ 'collection.layout.show_item_count_per_row' | t: count: i }}">
+                    {% render 'icons', icon: icon_key %}
+                </button>
+            {%- endfor -%}
+        </div>
+    </div> 
+</div>
+
+{%- capture collection_filter_active_values -%}
+    {%- for filter in products_filters -%}
+        {%- if filter.type == "price_range" -%}
+            {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+                <a class="ActiveFilters__RemoveFilter Button" href="{{ filter.url_to_remove }}">
+                    {%- assign min_value = filter.min_value.value | default: 0 -%}
+                    {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+                    {{ min_value | money }} - {{ max_value | money }} X
+                </a>
+            {%- endif -%}
+        {%- else -%}
+            {%- for filter_value in filter.active_values -%}
+                {%- assign downcase_filter_label = filter.label | downcase -%}
+                <a class="ActiveFilters__RemoveFilter Button" href="{{ filter_value.url_to_remove }}">
+                    {%- if color_label contains downcase_filter_label and show_filter_color_swatch -%}
+                        {%- liquid 
+                            assign downcase_value = filter_value.value | downcase
+                            assign color_swatch_name = filter_value.value | handle | append: '.jpg'
+                            assign color_swatch_image = images[color_swatch_name]
+
+                            if color_swatch_image == blank
+                                assign color_swatch_name = filter_value.value | handle | append: '.png'
+                                assign color_swatch_image = images[color_swatch_name]
+                            endif 
+                        -%}
+                        <span class="FilterProductsColorSwatch {% if downcase_value == 'white' and color_swatch_image == blank %}FilterProductsColorSwatch--white{% endif %}" title="{{ filter_value.value | escape }}" style="background-color: {{ filter_value.value | replace: ' ', '' | downcase }}; {% if color_swatch_image != blank %}background-image: url({{ color_swatch_image | image_url: width: 64, height: 64 }}){% endif %}">&nbsp;</span>
+                    {%- endif -%}
+
+                    {{ filter_value.label }} X
+                </a>
+            {%- endfor -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endcapture -%}
+
+{%- if collection_filter_active_values != blank -%}
+<div class="Collection__ActiveFilters ActiveFilters">
+    <span class="ActiveFilters__Label">{{ 'collection.filter.selected_filters' | t }}</span>
+    <div class="ActiveFilters__Filters">
+        {{ collection_filter_active_values }}
+    </div>
+     {%- if template.name == 'search' -%}
+        <a href="{{ routes.search_url }}?sort_by={{ products_sort_by }}&options[prefix]=last&q={{ search.terms }}" class="ActiveFilters__Clear Button Button--secondary">{{ 'collection.filter.clear_all' | t }}</a>
+     {%- else -%}
+        <a href="{{ collection.url }}?sort_by={{ products_sort_by }}" class="ActiveFilters__Clear Button Button--secondary">{{ 'collection.filter.clear_all' | t }}</a>
+     {%- endif -%}
+</div>
+{%- endif -%}
+
+<script src="{{ 'popper.js' | asset_url }}" defer="defer"></script>

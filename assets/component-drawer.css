@@ -1,0 +1,145 @@
+:root {
+  --tg-component-drawer-background: var(--tg-sys-color-surface1);
+  --tg-component-drawer-shadow-color: var(--tg-sys-color-shadow2);
+  --tg-component-drawer-text-color: var(--tg-sys-color-on-surface);
+}
+
+.Drawer {
+  position: fixed;
+  bottom: 0;
+  z-index: 1045;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  visibility: hidden;
+  background: var(--tg-component-drawer-background);
+  background-clip: padding-box;
+  outline: 0;
+  transition: transform 0.3s ease-in-out;
+}
+.Drawer.Show {
+  transform: none;
+}
+.Drawer .ButtonClose {
+  -webkit-margin-end: -0.75rem;
+          margin-inline-end: -0.75rem;
+  background-image: var(--tg-component-icon-close);
+}
+
+.Drawer__Backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+.Drawer__Backdrop.Fade {
+  opacity: 0;
+}
+.Drawer__Backdrop.Show {
+  opacity: 0.5;
+}
+
+.Drawer__Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 2rem;
+  box-shadow: 0 -1px var(--tg-component-drawer-shadow-color) inset;
+}
+
+.Drawer__Title {
+  margin-bottom: 0;
+  line-height: 1.5;
+  word-break: break-word;
+  color: var(--tg-component-drawer-text-color);
+  font-family: var(--tg-sys-typescale-title-large-font);
+  font-style: var(--tg-sys-typescale-title-large-style);
+  font-weight: var(--tg-sys-typescale-title-large-weight);
+  font-size: var(--tg-sys-typescale-title-large-size);
+  line-height: var(--tg-sys-typescale-title-large-line-height);
+  letter-spacing: var(--tg-sys-typescale-title-large-tracking);
+}
+
+.Drawer__Body {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.Drawer--start {
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateX(-100%);
+}
+@media screen and (min-width: 641px) {
+  .Drawer--start {
+    width: 400px;
+  }
+}
+@media screen and (min-width: 1008px) {
+  .Drawer--start {
+    width: 520px;
+  }
+}
+
+.Drawer--end {
+  top: 0;
+  right: 0;
+  width: 100%;
+  box-shadow: 1px 0 var(--tg-component-drawer-shadow-color) inset;
+  transform: translateX(100%);
+}
+@media screen and (min-width: 641px) {
+  .Drawer--end {
+    width: 400px;
+  }
+}
+@media screen and (min-width: 1008px) {
+  .Drawer--end {
+    width: 520px;
+  }
+}
+.Drawer--end .ButtonClose {
+  -webkit-margin-end: -0.75rem;
+          margin-inline-end: -0.75rem;
+}
+
+.Drawer--top {
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 30vh;
+  max-height: 100%;
+  transform: translateY(-100%);
+}
+
+.Drawer--bottom {
+  right: 0;
+  left: 0;
+  height: 30vh;
+  max-height: 100%;
+  transform: translateY(100%);
+}
+
+.Drawer__Footer {
+  padding: 2rem;
+  box-shadow: 0 1px var(--tg-component-drawer-shadow-color) inset;
+}
+
+[dir=rtl] .Drawer--start {
+  left: auto;
+  right: 0;
+  transform: translateX(100%);
+}
+[dir=rtl] .Drawer--end {
+  left: 0;
+  right: auto;
+  transform: translateX(-100%);
+}
+[dir=rtl] .Drawer.Show {
+  transform: none;
+}

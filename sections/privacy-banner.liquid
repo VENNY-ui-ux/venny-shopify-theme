@@ -1,0 +1,85 @@
+{%- if section.settings.enable_privacy_banner -%}
+  <link rel="stylesheet" href="{{ 'component-toast.css' | asset_url }}" media="print" onload="this.media='all'">
+  <noscript>{{ 'component-toast.css' | asset_url | stylesheet_tag }}</noscript>
+
+  <link rel="stylesheet" href="{{ 'component-privacy-banner.css' | asset_url }}" media="print" onload="this.media='all'">
+  <noscript>{{ 'component-privacy-banner.css' | asset_url | stylesheet_tag }}</noscript>
+
+  <script src="{{ 'component-toast.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'privacy-banner.js' | asset_url }}" defer="defer"></script>
+
+  <privacy-banner class="PrivacyBanner Toast PrivacyBanner--{{ section.settings.layout_mode }}"  data-tg-autohide="false">
+    {%- if section.settings.layout_mode == 'card' -%}
+      <div class="Toast__Header">
+        {%- if section.settings.title != blank -%}
+          <h5 class="PrivacyBanner__Title">{{ section.settings.title }}</h5>
+        {%- endif -%}
+        <button type="button" class="ButtonClose" data-tg-dismiss="Toast" aria-label="{{ 'general.accessibility.close' | t }}"></button>
+      </div>
+    {%- endif -%}
+
+    <div class="Toast__Body">
+      {%- if section.settings.content != blank -%}
+        <div class="PrivacyBanner__Content RTE">
+          {%- if section.settings.title != blank and section.settings.layout_mode == 'banner' -%}
+            <h5 class="PrivacyBanner__Title">{{ section.settings.title }}</h5>
+          {%- endif -%}
+          {{- section.settings.content -}}
+        </div>
+      {%- endif -%}
+
+      <div class="ButtonGroup ButtonGroup--smallSize">
+        <button type="button" class="Button Button--primary PrivacyBanner__Accept">{{ 'general.privacy_banner.accept' | t }}</button>
+        <button type="button" class="Button Button--secondary PrivacyBanner__Decline">{{ 'general.privacy_banner.decline' | t }}</button>
+        {%- if section.settings.layout_mode == 'banner' -%}
+          <button type="button" class="ButtonClose" data-tg-dismiss="Toast" aria-label="{{ 'general.accessibility.close' | t }}"></button>
+        {%- endif -%}
+      </div>
+    </div>
+  </privacy-banner>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Privacy banner",
+  "class": "shopify-section--privacy-banner",
+  "tag": "aside",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_privacy_banner",
+      "label": "Enable privacy banner",
+      "info": "Privacy banner will only be visible if it fulfills the conditions of the [Shopify Customer Privacy API](https://shopify.dev/docs/themes/consent-tracking-api)",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "layout_mode",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "banner",
+          "label": "Banner"
+        },
+        {
+          "value": "card",
+          "label": "Card"
+        }
+      ],
+      "default": "banner"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Cookie policy"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>We use cookies and similar technologies to provide the best experience on our website. Refer to our Privacy Policy for more information.</p>"
+    }
+  ]
+}
+{% endschema %}

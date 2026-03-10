@@ -1,0 +1,346 @@
+{{ 'section-scrolling-bar.css' | asset_url | stylesheet_tag }}
+<style>
+
+    .ScrollingBarSection--{{ section.id }}{
+        {%- if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}
+            background-color: {{ section.settings.background }};
+        {% endif -%}
+
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    @media screen and (max-width: 640px) {
+        .ScrollingBarSection--{{ section.id }}{
+            padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+            padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+        }
+    }
+
+    {%- for block in section.blocks -%}
+        {%- case block.type -%}
+            {%- when 'text' -%}
+                .ScrollingBar__Text--{{ section.id }}-{{ block.id }}, .ScrollingBar__Text--{{ section.id }}-{{ block.id }} a{
+                    {%- if block.settings.text_color != blank and block.settings.text_color != 'rgba(0,0,0,0)' %}
+                        color: {{ block.settings.text_color }};
+                    {% endif -%}
+                    {%- if block.settings.italic_font %}
+                        font-style: italic;
+                    {% endif -%}
+                    font-weight: {{ block.settings.text_font_weight }};
+                    font-size: {{ block.settings.text_font_size_desktop }}px;
+                }
+
+                @media screen and (max-width: 640px) {
+                    .ScrollingBar__Text--{{ section.id }}-{{ block.id }}, .ScrollingBar__Text--{{ section.id }}-{{ block.id }} a{
+                        font-size: {{ block.settings.text_font_size_mobile }}px;
+                    }
+                }
+            {%- when 'image' -%}
+                .ScrollingBar__Image.ScrollingBar__Image--{{ section.id }}-{{ block.id }}{
+                    width: {{ block.settings.image_width }}px;
+                }
+                @media screen and (max-width: 640px) {
+                  .ScrollingBar__Image.ScrollingBar__Image--{{ section.id }}-{{ block.id }}{
+                    width: {{ block.settings.image_width_mobile }}px;
+                  }
+                }
+        {%- endcase -%}
+    {%- endfor -%}
+</style>
+
+{%- liquid
+  assign lazy_load = 'lazy'
+  if section.index == 1 and section.location != 'footer'
+    assign lazy_load = 'eager'
+  endif
+-%}
+
+<script src="{{ 'section-scrolling-bar.js' | asset_url }}" defer="defer"></script>
+<section-scrolling-bar class="Container  Container--specialSpacingFirstSection {% if section.settings.section_width == 'full_width' %}Container--fluid Container--spacingContainerGutter Container--specialSpacingLastSection{% elsif section.settings.section_width ==  'full_width_no_gap' %}Container--fluid Container--noGutter Container--specialSpacingLastSection{% else %}Container--{{ section.settings.section_spacing }}{% endif %} ScrollingBarSection ScrollingBarSection--{{ section.id }}">
+    <div class="ScrollingBar{% if section.settings.pause_marquee_on_hover %} ScrollingBar--pauseOnHover{% endif %}"
+     style="--tg-scrolling-bar-animation-scroll-speed: {{ section.settings.scroll_speed }}; {% if section.settings.scroll_direction == 'left_to_right' %}--tg-scrolling-bar-animation-direction: reverse{% endif %}">
+        <div class="ScrollingBar__Inner">
+          <div class="ScrollingBar__Item">
+              <div class="ScrollingBar__ItemInner">
+                  {%- for block in section.blocks -%}
+                      {%- case block.type -%}
+                          {%- when 'text' -%}
+                              <div class="ScrollingBar__Text ScrollingBar__Text--{{ section.id }}-{{ block.id }}">
+                                  {%- if block.settings.link != blank -%}
+                                      <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+                                  {%- else -%}
+                                      {{ block.settings.text }}
+                                  {%- endif -%}
+                              </div>
+                          {%- when 'image' -%}
+                              {%- if block.settings.image != blank -%}
+                                  {%- if block.settings.link != blank -%} <a href="{{ block.settings.link }}" aria-label="{{ block.settings.image.alt }}">{%- endif -%}
+                                  <div class="ScrollingBar__Image ScrollingBar__Image--{{ section.id }}-{{ block.id }} Ratio" style="--tg-aspect-ratio: {{ block.settings.image.aspect_ratio }}">
+                                      {%- assign image_width = block.settings.image_width | times: 2 -%}
+                                      {{ block.settings.image | image_url: width: image_width | image_tag:
+                                        loading: lazy_load
+                                      }}
+                                  </div>
+                                  {%- if block.settings.link != blank -%} </a>{%- endif -%}
+                              {%- else -%}
+                                  <div class="ScrollingBar__Image ScrollingBar__Image--{{ section.id }}-{{ block.id }} Ratio" style="--tg-aspect-ratio: 1;">
+                                      {{ 'image' | placeholder_svg_tag: 'IconBox__Image SvgPlaceholder' }}
+                                  </div>
+                              {%- endif -%}
+                      {%- endcase -%}
+                  {%- endfor -%}
+              </div>
+          </div>
+        </div>
+    </div>
+</section-scrolling-bar>
+
+{% schema %}
+{
+  "name": "Scrolling bar",
+  "class": "shopify-section--marquee-text",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width_no_gap"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "none",
+      "info": "Visible when the ‘Section width’ setting is set to Grid."
+    },
+    {
+      "type": "header",
+      "content": "Marquee"
+    },
+    {
+      "type": "select",
+      "id": "scroll_direction",
+      "label": "Scroll direction",
+      "options": [
+        {
+          "value": "right_to_left",
+          "label": "Rright to left"
+        },
+        {
+          "value": "left_to_right",
+          "label": "Left to right"
+        }
+      ],
+      "default": "right_to_left"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "unit": "x",
+      "label": "Scroll speed",
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_marquee_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#F4EDDD"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "60 x 60px recommended."
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "min": 40,
+          "max": 600,
+          "step": 10,
+          "unit": "px",
+          "label": "Image width on desktop",
+          "default": 60
+        },
+        {
+          "type": "range",
+          "id": "image_width_mobile",
+          "min": 40,
+          "max": 600,
+          "step": 10,
+          "unit": "px",
+          "label": "Image width on mobile",
+          "default": 60
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Make an announcement."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text"
+        },
+        {
+          "type": "range",
+          "id": "text_font_size_desktop",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size on desktop",
+          "default": 28
+        },
+        {
+          "type": "range",
+          "id": "text_font_size_mobile",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size on mobile",
+          "default": 20
+        },
+        {
+          "type": "checkbox",
+          "id": "italic_font",
+          "label": "Italic font",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "text_font_weight",
+          "label": "Font weight",
+          "options": [
+            {
+              "value": "300",
+              "label": "300"
+            },
+            {
+              "value": "400",
+              "label": "400"
+            },
+            {
+              "value": "500",
+              "label": "500"
+            },
+            {
+              "value": "600",
+              "label": "600"
+            },
+            {
+              "value": "700",
+              "label": "700"
+            }
+          ],
+          "default": "500"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling bar",
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "italic_font": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+  

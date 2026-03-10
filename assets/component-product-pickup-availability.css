@@ -1,0 +1,76 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Product pickup availability
+ * ----------------------------------------------------------------------------
+ */
+.PickupAvailability {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.PickupAvailability__Body {
+  display: flex;
+  align-items: baseline;
+}
+
+.Icon--pickup-availability-in-stock {
+  position: relative;
+  width: 10px;
+  height: 10px;
+}
+
+.Icon--pickup-availability-out-of-stock {
+  position: relative;
+  width: 11px;
+  height: 10px;
+}
+
+.StoreAvailability {
+  -webkit-margin-start: 6px;
+          margin-inline-start: 6px;
+}
+
+.StoreAvailability__Title {
+  margin-bottom: 2px;
+}
+
+.StoreAvailability__Stock {
+  margin-bottom: 5px;
+}
+
+.StoreAvailabilityItem:first-child {
+  border-top: 1px dashed rgba(var(--tg-sys-color-outline-rgb), 0.8);
+}
+
+.StoreAvailabilityItem {
+  padding-bottom: 1rem;
+  padding-top: 0.75rem;
+  border-bottom: 1px dashed rgba(var(--tg-sys-color-outline-rgb), 0.8);
+}
+
+.StoreAvailabilityItem__Location,
+.StoreAvailabilityItem__Stock {
+  margin-bottom: 5px;
+}
+
+.StoreAvailabilityItem__Stock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.StoreAvailabilityItem__Stock svg {
+  -webkit-margin-end: 8px;
+          margin-inline-end: 8px;
+}
+
+.StoreAvailabilityItem__Contact {
+  line-height: 1.45;
+}
+
+.StoreAvailabilityItem__Stock .Icon--store-availability-in-stock {
+  top: -1px;
+}
+
+.StoreAvailabilityItem__Contact p {
+  margin-bottom: 0;
+}

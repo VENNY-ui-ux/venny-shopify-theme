@@ -1,0 +1,330 @@
+{{ 'section-featured-row.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign has_button = false
+  assign has_two_buttons = false
+
+  for block in section.blocks
+    case block.type
+      when 'button'
+        if has_button
+          assign has_two_buttons = true
+        endif
+        assign has_button = true
+    endcase
+  endfor 
+
+  assign lazy_load = 'lazy'
+  assign fetch_priority = 'auto'
+  if section.index == 1 and section.location != 'footer'
+    assign lazy_load = 'eager'
+    assign fetch_priority = 'high'
+  endif
+-%}
+
+<style>
+  {%- if section.settings.background_color != blank -%}
+    #section-{{ section.id }} .FeatureRow__ContentWrapper {
+      background: {{ section.settings.background_color }};
+    }
+  {%- endif -%}
+
+  {%- if section.settings.text_color != blank -%}
+    #section-{{ section.id }} .SectionHeader{
+      --tg-section-header-text-color: {{ section.settings.text_color }};
+    }
+  {%- endif -%}
+</style>
+
+<div id="section-{{ section.id }}" class="Container Container--specialSpacingFirstSection Container--{{ section.settings.section_spacing }} {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %} FeaturedRow FeaturedRow--image{{ section.settings.image_position }}">
+  
+    <div class="FeaturedRow__Body">
+
+      <div class="FeatureRow__ContentWrapper {% if section.settings.background_color != blank %}FeatureRow__ContentWrapper--withBackgroundColor{% endif %}">
+        <div class="FeatureRow__Content FeatureRow__Content--align{{ section.settings.text_align }}">
+            <header class="SectionHeader">
+              {%- for block in section.blocks -%}
+                {%- case block.type -%}
+                  {%- when 'heading' -%}
+                    <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}" {{ block.shopify_attributes }}>
+                      {{ block.settings.text }}
+                    </h2>
+
+                  {%- when 'subheading' -%}
+                    <h3 class="SectionHeader__Subheading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h3>
+                    
+                  {%- when 'description' -%}
+                    <div class="SectionHeader__Description RTE" {{ block.shopify_attributes }}>
+                      {{ block.settings.text }}
+                    </div>
+                {%- endcase -%}
+                
+              {%- endfor -%}
+
+              {%- if has_button -%}
+                <div class="SectionHeader__ButtonWrapper">
+                  <div class="ButtonGroup {% if has_two_buttons %}ButtonGroup--smallSize{% endif %}">
+                    {%- for block in section.blocks -%}
+                      {%- case block.type -%}
+                        {%- when 'button' -%}
+                          <a href="{{ block.settings.link }}" class="Button Button--{{ block.settings.style }}" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</a>
+                      {%- endcase -%}
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </header>
+        </div>
+      </div>
+
+      <div class="FeaturedRow__ImageWrapper">
+        {%- if section.settings.image != blank -%}
+          <div class="Ratio" style="--tg-aspect-ratio: {{ section.settings.image.aspect_ratio }} ;">
+            {%- capture tg_sizes -%}
+              {%- if section.settings.section_width == 'default' -%}
+                (min-width: 641px) calc((min(100vw, {{ settings.container_max_width }}px) - 64px) / 2), 100vw
+              {%- else -%}
+                (min-width: 641px) calc(100vw / 2), 100vw
+              {%- endif -%}
+            {%- endcapture -%}
+            {{ section.settings.image | image_url: width: 3000 | image_tag:
+              sizes: tg_sizes,
+              widths: '360, 535, 750, 1070, 1500, 2000, 3000',
+              class: 'FeaturedRow__Image',
+              loading: lazy_load,
+              fetchpriority: fetch_priority
+            }}
+          </div>
+        {%- else -%}
+          <div class="Ratio" style="--tg-aspect-ratio: 1.6;">
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'FeaturedRow__Image SvgPlaceholder' }}
+          </div>
+        {%- endif -%}
+       </div>
+    </div>
+  
+</div>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "800 x 600px .png recommended."
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "Left",
+          "label": "Left"
+        },
+        {
+          "value": "Right",
+          "label": "Right"
+        }
+      ],
+      "default": "Left"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "Left",
+          "label": "Left"
+        },
+        {
+          "value": "Center",
+          "label": "Center"
+        },
+        {
+          "value": "Right",
+          "label": "Right"
+        }
+      ],
+      "default": "Left"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Image with text"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineLarge"
+        }
+      ]
+    },
+    {
+      "type": "subheading",
+      "name": "Subeading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            },
+            {
+              "value": "outline",
+              "label": "Outline"
+            },
+            {
+              "value": "underline",
+              "label": "Underline"
+            }
+          ],
+          "default": "secondary"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with text",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "description"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,47 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Placeholder
+ * ----------------------------------------------------------------------------
+ */
+.Placeholder {
+  display: inline-block;
+  min-height: 1em;
+  vertical-align: middle;
+  cursor: wait;
+  background-color: var(--tg-sys-color-on-surface-variant);
+  opacity: 0.3;
+}
+
+@media screen and (max-width: 640px) {
+  .Placeholder {
+    min-height: 0.8em;
+  }
+}
+
+@media screen and (min-width: 1008px) {
+  .Placeholder {
+    min-height: 1.2em;
+  }
+}
+
+.Placeholder.Button::before {
+  display: inline-block;
+  content: "";
+}
+
+.PlaceholderGlow .Placeholder {
+  -webkit-animation: PlaceholderGlow 2s ease-in-out infinite;
+          animation: PlaceholderGlow 2s ease-in-out infinite;
+}
+
+@-webkit-keyframes PlaceholderGlow {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes PlaceholderGlow {
+  50% {
+    opacity: 0.2;
+  }
+}

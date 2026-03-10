@@ -1,0 +1,347 @@
+{%- liquid
+  assign products_enable_filtering = false 
+  assign products_enable_sorting  = false 
+  assign animation_type = 'staggering'
+  assign has_aside = false
+  for block in section.blocks
+    if block.type == 'aside'
+      assign has_aside = true
+    elsif block.type == 'product_grid'
+      assign animation_type = block.settings.animation_type
+    endif
+  endfor
+-%}
+
+{%- capture section_settings -%}
+{
+  "url": {{ collection.url | default: '/collections/all' | json }},
+  "sortBy": {{ collection.sort_by | default: collection.default_sort_by | json }},
+  "animationType": {{ animation_type | json }}
+}
+{%- endcapture -%}
+
+{%- for block in section.blocks -%}
+  {%- case block.type -%}
+    {%- when 'product_grid' -%}
+      {%- assign desktop_items_per_row = cart.attributes.collection_desktop_items_per_row | default: block.settings.grid_desktop_items_per_row | times: 1 -%}
+      {%- assign mobile_items_per_row  = cart.attributes.collection_mobile_items_per_row | default: block.settings.grid_mobile_items_per_row | times: 1 -%}
+      
+      {%- assign products_enable_filtering = block.settings.enable_filtering -%}
+      {%- assign products_enable_sorting  = block.settings.enable_sorting -%}
+
+      {%- capture collection_products -%}
+        {%- render 'collection-product-grid', has_aside: has_aside, block: block, desktop_items_per_row: desktop_items_per_row, mobile_items_per_row: mobile_items_per_row -%}
+      {%- endcapture -%}
+
+      {% comment %} empty collection, not filter product count is 0 {% endcomment %}
+      {%- if collection.products_count > 0 -%}
+        {%- capture collection_toolbar -%}
+          {%- render 'filters-toolbar', block: block, show_filter_color_swatch: block.settings.show_filter_color_swatch, numbers_of_filters_viewed_on_desktop: block.settings.numbers_of_filters_viewed_on_desktop, enable_sorting: products_enable_sorting, enable_filtering: products_enable_filtering, 
+          grid_desktop_items_per_row: block.settings.grid_desktop_items_per_row,
+          desktop_items_per_row: desktop_items_per_row, mobile_items_per_row: mobile_items_per_row -%}
+        {%- endcapture -%}
+
+        {%- if products_enable_filtering or products_enable_sorting -%}
+          {%- capture collection_filter_drawer -%}
+            {%- render 'filters-drawer', block: block, show_filter_color_swatch: block.settings.show_filter_color_swatch, enable_sorting: products_enable_sorting, enable_filtering: products_enable_filtering -%}
+          {%- endcapture -%}
+        {%- endif -%}
+      {%- endif -%}
+
+    {%- when 'aside' -%}
+      {%- capture collection_aside -%}
+        {%- render 'collection-aside', block: block, quick_links: block.settings.filter_menu -%}
+      {%- endcapture -%}
+
+  {%- endcase -%}
+{%- endfor -%}
+
+<section-collection style="display: block;" class="Collection Container {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %} Container--spacingContainerGutter" data-section-settings='{{ section_settings }}' data-section-id="{{ section.id }}">
+  <div class="Collection__Inner">
+    {{ collection_aside }}
+
+    <div class="Collection__Content FilterProducts">
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'text_banner' -%}
+          <div class="Collection__TextBanner TextBanner Alert" {{ block.shopify_attributes }}
+          {%- if block.settings.background_color != blank -%}
+                style="background-color: {{ block.settings.background_color }}; border-color: {{ block.settings.background_color }}"
+          {%- endif -%}
+          >
+            {%- if block.settings.heading != blank -%}
+              <div class="TextBanner__Title {{ block.settings.heading_size }}" 
+              {%- if block.settings.heading_color != blank -%}
+                style="color: {{ block.settings.heading_color }};"
+              {%- endif -%}
+              >
+                {{ block.settings.heading }}
+              </div>
+            {%- endif -%}
+            {%- if block.settings.content != blank -%}
+              <div class="TextBanner__Content RTE"
+              {%- if block.settings.content_color != blank -%}
+                style="color: {{ block.settings.content_color }}; text-decoration-color: {{ block.settings.content_color }};"
+              {%- endif -%}
+              >
+                {{ block.settings.content }}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {{ collection_toolbar }}
+
+      {%- if collection.products_count > 0 -%}
+        <div class="Collection__Products">
+          {{- collection_products -}}
+        </div>
+      {%- else -%}
+        <div class="FilterProducts__Content">
+          <div class="EmptyResult Container">
+            <h2 class="EmptyResult__Title">{{ 'collection.general.no_products' | t }}</h2>
+
+            {%- if collection.filters.size > 0 -%}
+              <a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="EmptyResult__Action Button Button--primary" data-tg-action="reset-tags">{{ 'collection.general.reset' | t }}</a>
+            {%- else -%}
+               <a href="{{ routes.all_products_collection_url }}" class="Button Button--primary">{{ 'general.continue_shopping' | t }}</a>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+
+  {{ collection_filter_drawer }}
+
+</section-collection>
+
+<script src="{{ 'component-filter-product.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'section-collection.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Collection products",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "full_width"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "aside",
+      "name": "Aside",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "filter_menu",
+          "label": "Quick links",
+          "default": "main-menu",
+          "info": "This menu won't show dropdown items."
+        }
+      ]
+    },
+    {
+      "type": "product_grid",
+      "name": "Product grid",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "animation_type",
+          "label": "Animation type",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "staggering",
+              "label": "Staggering"
+            }
+          ],
+          "default": "staggering"
+        },
+        {
+          "type": "header",
+          "content": "Toolbar"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_filtering",
+          "label": "Enable filtering",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_filter_color_swatch",
+          "label": "Show filter color swatch",
+          "info": "Visible when the ‘Enable filtering’ setting is checked.",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_sorting",
+          "label": "Enable sorting",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "numbers_of_filters_viewed_on_desktop",
+          "label": "Number of filters on desktop",
+          "min": 0,
+          "max": 24,
+          "step": 1,
+          "default": 6
+        },
+        {
+          "type": "header",
+          "content": "Grid"
+        },
+        {
+          "type": "range",
+          "id": "grid_items_per_page",
+          "label": "Products per page",
+          "min": 4,
+          "max": 50,
+          "step": 1,
+          "default": 16
+        },
+        {
+          "type": "range",
+          "min": 2,
+          "max": 6,
+          "step": 1,
+          "id": "grid_desktop_items_per_row",
+          "label": "Number of columns on desktop",
+          "default": 4
+        },
+        {
+          "type": "select",
+          "options": [
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            }
+          ],
+          "id": "grid_mobile_items_per_row",
+          "label": "Number of columns on mobile",
+          "default": "2"
+        },
+        {
+          "type": "header",
+          "content": "Product Card"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_product_info",
+          "label": "Show product info",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_rating",
+          "label": "Show product rating",
+          "default": false,
+          "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-collection-show-product-rating)."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_swatches",
+          "label": "Show swatch",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show vendor",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_quick_add",
+          "default": false,
+          "label": "Enable quick add button",
+          "info": "You can set button style and position in [Theme settings](/editor?context=theme&category=product)."
+        }
+      ]
+    },
+    {
+      "type": "text_banner",
+      "name": "Text banner",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Tell your story"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineMedium",
+          "label": "Heading size"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Add your own custom content to give more information.</p>"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading color",
+          "default": "#1c1b1b"
+        },
+        {
+          "type": "color",
+          "id": "content_color",
+          "label": "Content color",
+          "default": "#842029"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#f1ebdf"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

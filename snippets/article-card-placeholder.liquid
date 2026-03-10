@@ -1,0 +1,25 @@
+<article class="ArticleCard">
+    {%- capture placeholder -%}{% cycle 'lifestyle-1', 'lifestyle-2' %}{%- endcapture -%}
+
+    <div class="ArticleCard__ImageWrapper Ratio {% if section.settings.featured_image_size == 'natural' %}Ratio--3x2{% else %} Ratio--{{ section.settings.featured_image_size }}{% endif %}">
+      {{ placeholder | placeholder_svg_tag: 'ArticleCard__Image SvgPlaceholder' }}
+    </div>
+
+    <div class="ArticleCard__Content">
+      {%- if section.settings.show_category -%}
+        <span class="ArticleCard__Category{% if section.settings.text_color == blank or section.settings.text_color == 'rgba(0,0,0,0)' %} TextMuted{% endif %}">{{ 'sections.onboarding.article_category' | t }}</span>
+      {%- endif -%}
+
+      <h3 class="ArticleCard__Title">
+        <a href="#">{{ 'sections.onboarding.article_name' | t }}</a>
+      </h3>
+
+      {%- if section.settings.show_description -%}
+        <p class="ArticleCard__Excerpt">{{ 'sections.onboarding.article_excerpt' | t }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.show_read_more -%}
+        <a href="#" class="ArticleCard__Link Nav__Link Nav__Link--underline">{{ 'blog.article.read_more' | t }}</a>
+      {%- endif -%}
+    </div>
+</article>

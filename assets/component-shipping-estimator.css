@@ -1,0 +1,32 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Shipping estimator
+ * ----------------------------------------------------------------------------
+ */
+shipping-estimator {
+  display: block;
+}
+
+.ShippingEstimator .Form__Item {
+  margin-bottom: 0;
+}
+
+.ShippingEstimator__Results {
+  margin-top: 16px;
+  overflow: hidden;
+  transition: height 0.25s ease-in-out;
+}
+
+.ShippingEstimator__Error {
+  margin-top: 16px;
+}
+
+.ShippingEstimator__Results p {
+  margin-bottom: 0.5em;
+}
+
+@media screen and (min-width: 641px) {
+  .ShippingEstimator__Submit {
+    height: calc(3.5rem + 2px);
+  }
+}

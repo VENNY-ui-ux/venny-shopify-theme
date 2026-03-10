@@ -1,0 +1,63 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Deferred media
+  * ----------------------------------------------------------------------------
+  */
+.DeferredMedia {
+  overflow: hidden;
+  display: block;
+  position: relative;
+}
+
+.DeferredMedia__CoverImageWrapper{
+  cursor: pointer;
+  height: 100%;
+  background: var(--tg-sys-color-surface1);
+}
+
+.DeferredMedia .Button--icon{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 2;
+}
+
+.DeferredMedia .Button--icon:hover {
+  transform:  translate(-50%, -50%) scale(1.1);
+}
+
+.DeferredMedia:not([loaded]) template {
+  z-index: -1;
+}
+
+.DeferredMedia[loaded] .DeferredMedia__CoverImage,
+.DeferredMedia[loaded] .DeferredMedia__CoverImageWrapper .Button--icon {
+  display: none;
+}
+
+.DeferredMedia .DeferredMedia__CoverImageWrapper:focus {
+  outline-offset: 0.3rem;
+}
+
+.DeferredMedia iframe,
+.DeferredMedia video, 
+.DeferredMedia .shopify-model-viewer-ui {
+  background: transparent;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  border: 0;
+  width: 100%;
+  position: absolute;
+}
+
+.DeferredMedia iframe,
+.DeferredMedia .shopify-model-viewer-ui {
+  height: 100%;
+}
+
+.DeferredMedia .shopify-model-viewer-ui model-viewer {
+  width: 100%;
+  height: 100%;
+}

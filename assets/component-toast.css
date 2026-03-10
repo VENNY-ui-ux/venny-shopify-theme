@@ -1,0 +1,51 @@
+:root {
+  --tg-component-toast-background: var(--tg-sys-color-background);
+  --tg-component-toast-shadow-color: var(--tg-sys-color-shadow2);
+  --tg-component-toast-text-color: var(--tg-sys-color-on-surface);
+  --tg-component-toast-outline: var(--tg-sys-color-outline);
+}
+
+.Toast {
+  max-width: 100%;
+  width: 100%;
+  pointer-events: auto;
+  background-color: var(--tg-component-toast-background);
+  background-clip: padding-box;
+  z-index: 85;
+}
+.Toast.Showing {
+  opacity: 0;
+}
+.Toast:not(.Show) {
+  display: none;
+}
+@media screen and (min-width: 641px) {
+  .Toast {
+    width: 400px;
+  }
+}
+@media screen and (min-width: 1008px) {
+  .Toast {
+    width: 520px;
+  }
+}
+
+.Toast__Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  color: var(--tg-component-toast-text-color);
+  background-clip: padding-box;
+}
+.Toast__Header .ButtonClose {
+  -webkit-margin-end: -0.75rem;
+          margin-inline-end: -0.75rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.Toast__Body {
+  padding: 1rem;
+  word-wrap: break-word;
+}

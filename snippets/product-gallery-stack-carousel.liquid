@@ -1,0 +1,377 @@
+{%- comment -%}
+-------------------------------------------------------------------------------------
+Product Gallery Carousel
+-------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{{ 'component-carousel.css' | asset_url | stylesheet_tag }}
+{{ 'component-product-gallery-carousel.css' | asset_url | stylesheet_tag }}
+{{ 'component-product-gallery-stacks-carousel.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign initial_media_id = product.featured_media.id 
+  assign initial_media_index = 0 
+  assign has_model = false 
+  assign media_min_ratio = product.featured_media.preview_image.aspect_ratio 
+
+  for media in product.media 
+      if media.media_type == 'external_video' 
+          if media.aspect_ratio < media_min_ratio 
+            assign media_min_ratio = media.aspect_ratio 
+          endif 
+      else 
+          if media.preview_image.aspect_ratio < media_min_ratio 
+            assign media_min_ratio = media.preview_image.aspect_ratio 
+          endif 
+      endif 
+
+      if media.media_type == 'model' 
+        assign has_model = true 
+      endif 
+
+      if product.selected_or_first_available_variant and media.id == product.selected_or_first_available_variant.featured_media.id 
+          assign initial_media_index = forloop.index0 
+          assign initial_media_id = media.id 
+      endif 
+  endfor 
+
+  assign gallery_media_size = section.settings.gallery_media_size 
+  assign is_gallery_media_fit_cover = section.settings.gallery_media_fit_cover 
+  if gallery_media_size == 'natural'  
+      assign use_natural_size = true 
+  else 
+      assign use_natural_size = false 
+  endif 
+
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class = ''
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class = 'Image--withLoader'
+  endif
+-%}
+{% comment %} Cumulative Layout Shift fixed, slidesPerView determines the actual width  {% endcomment %}
+<style>
+  @media screen and (max-width: 640px) {
+    .ProductGallery--{{ section.id }} .ProductGallery__Carousel.Carousel .Carousel__Item:not(.Carousel__Item--fullWidth){
+      width: {{ section.settings.media_with_mobile }}%; 
+    }
+  }
+</style>
+<div class="ProductGallery ProductGallery--{{ section.id }} ProductGallery--stackCarousel{% if has_model %} ProductGallery--withModle {% endif %} ProductGallery--carousel {% if section.settings.enable_image_zoom %}ProductGallery--zoom{% endif %}">
+  {%- liquid
+    assign media_size = product.media.size
+
+    assign enable_media_grouping = false 
+    if section.settings.enable_media_grouping and product.metafields.themegoal.media_grouping_set.value != blank
+      assign enable_media_grouping = true
+    endif
+    if enable_media_grouping
+      assign set_start_index = 1
+      assign set_end_index = product.media.size
+      assign current_first_option_value = product.selected_or_first_available_variant.options | first | downcase
+      for item in product.metafields.themegoal.media_grouping_set.value
+          assign item_set = item | split: ','
+          assign item_set_key = item_set | first | downcase
+          if current_first_option_value == item_set_key
+              if item_set.size != 3
+                break;
+              endif
+              assign set_start_index = item_set[1] | times: 1
+              assign set_end_index = item_set | last | times: 1
+              break
+          endif
+      endfor
+      assign media_size = set_end_index | minus: set_start_index | plus: 1
+    endif
+    
+    assign gallery_media_virtual = false
+
+    assign gallery_media_centered = false
+    assign gallery_media_centered_mobile = false
+
+    assign gallery_media_centered_insufficient = false
+    assign gallery_media_centered_insufficient_mobile = false
+
+    assign gallery_media_loop = false
+
+    assign slides_per_view_mobile = 100.0 | divided_by: section.settings.media_with_mobile
+    assign slides_per_view = 100.0 | divided_by: section.settings.media_with
+
+    assign slides_per_view_mobile_plus_1 = slides_per_view_mobile | plus: 2 
+    assign slides_per_view_plus_1 = slides_per_view | plus: 2
+
+    if media_size == 1
+      assign slides_per_view = 1
+    endif
+
+    if section.settings.media_centered
+      assign gallery_media_centered = true 
+      assign gallery_media_centered_mobile = true
+
+      assign gallery_media_loop = true
+    endif 
+
+    if media_size <= slides_per_view_plus_1
+      assign gallery_media_loop = false
+      assign gallery_media_centered = false
+      assign gallery_media_centered_insufficient = true
+    endif
+
+    if media_size <= slides_per_view_mobile_plus_1
+      assign gallery_media_centered_mobile = false
+      assign gallery_media_centered_insufficient_mobile = true
+    endif 
+
+    if media_size > slides_per_view and media_size > 8
+      assign gallery_media_virtual = true
+    endif
+
+  -%}
+  {%- capture carousel_options -%}
+    {
+      "loop": {% if gallery_media_loop %}true{% else %}false{% endif %},
+      {% if gallery_media_virtual %}
+        "virtual":{
+          {% unless gallery_media_loop %}
+            "addSlidesBefore": 2,
+            "addSlidesAfter": 2,
+            {% endunless %}
+            "enabled": true
+        },
+        {% endif %}
+      "spaceBetween": 4,
+      "slidesPerView": {{ slides_per_view_mobile }},
+      "initialSlide": {{ initial_media_index }},
+      "centeredSlides": {% if gallery_media_centered_mobile %}true{% else %}false{% endif %},
+      "centerInsufficientSlides":  {% if gallery_media_centered_insufficient_mobile %}true{% else %}false{% endif %},
+      "pagination": {
+        "el": ".Carousel__Pagination",
+        "clickable": true
+      },
+      "navigation": {
+        "nextEl": ".Carousel__NavNext",
+        "prevEl": ".Carousel__NavPrev"
+      },
+      "breakpoints": {
+        "640": {
+          "centeredSlides": {% if gallery_media_centered %}true{% else %}false{% endif %},
+          "centerInsufficientSlides":  {% if gallery_media_centered_insufficient %}true{% else %}false{% endif %},
+          "slidesPerView":{{ slides_per_view }}
+        }
+      }
+    }
+  {%- endcapture -%}
+
+  <div class="ProductGallery__Carousel Carousel {% if section.settings.media_centered %}ProductGallery__Carousel--mediaCentered{% endif %}"
+    data-carousel-config='{{ carousel_options }}'>
+    <div class="CarouselWrapper">
+      {%- assign c_index = 0 -%}
+      {%- for media in product.media -%}
+
+        {% liquid
+          if enable_media_grouping
+            if media.position < set_start_index or media.position > set_end_index
+                continue
+            endif
+          endif
+          assign c_index = c_index | plus: 1
+       %}
+
+        {%- case media.media_type -%}
+          {%- when 'image' -%}
+
+
+            <div class="swiper-slide Carousel__Item Carousel__Item--image {% if media_size == 1 %}Carousel__Item--fullWidth{% endif %} MediaModalOpener MediaModalOpener--image {% if initial_media_id == media.id %}is-selected{% endif %}"
+              data-media-type="{{ media.media_type }}" data-media-id="{{ media.id }}" data-media-position="{{ c_index }}">
+                {%- if section.settings.enable_image_zoom -%}
+                  <div class="Product__ActionList">
+                      <div class="Product__ActionItem">
+                          <button class="Button Button--icon" type="button">
+                              <span class="VisuallyHidden">
+                                  {{ 'product.general.open_gallery_view' | t }}
+                              </span>
+                              {% render 'icons', icon: 'fullscreen' %}
+                          </button>
+                      </div>
+                  </div>
+                {%- endif -%}
+
+
+              <{{- animation_image_loading_tag }} class="Ratio{% unless use_natural_size %} Ratio--{{ gallery_media_size }}{% endunless %}{% unless is_gallery_media_fit_cover %} Ratio--contain{% endunless %}" {% if use_natural_size %}style="--tg-aspect-ratio: {{ media.preview_image.aspect_ratio }}"{% endif %}>
+                <img
+                  class="{{ animation_image_loading_class }}"
+                  srcset="{%- if media.preview_image.width >= 550 -%}{{ media.preview_image | image_url: width: 550 }} 550w,{%- endif -%}
+                          {%- if media.preview_image.width >= 1100 -%}{{ media.preview_image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                          {{ media.preview_image | image_url }} {{ media.preview_image.width }}w"
+                  sizes="(min-width: 1008px) calc(100vw / 1.5), 100vw"
+                  src="{{ media.preview_image | image_url: width: 1445 }}"
+                  alt="{{ media.alt | escape }}"
+                  {% unless c_index == 1 %}loading="lazy"{% endunless %}
+                  width="1100"
+                  height="{{ 1100 | divided_by: media.preview_image.aspect_ratio | ceil }}"
+                  data-media-id="{{ media.id }}"
+                >
+                {%- if settings.animation_image_loading != 'none' -%}
+                  <span class="Image--loader"></span>
+                {%- endif -%}
+              </{{- animation_image_loading_tag }}>
+            </div>
+
+          {%- when 'external_video' -%}
+            <div tabindex="-1" class="swiper-slide Carousel__Item Carousel__Item--video MediaModalOpener {% if media_size == 1 %}Carousel__Item--fullWidth{% endif %} {% if initial_media_id == media.id %}is-selected{% endif %}"
+             data-media-type="external_video" data-media-id="{{ media.id }}" data-media-position="{{ c_index }}">
+              
+              <deferred-media class="DeferredMedia">
+                    
+                    <{{- animation_image_loading_tag }} id="Deferred-Cover-Modal-{{ media.id }}" class="DeferredMedia__CoverImageWrapper Ratio{% unless use_natural_size %} Ratio--{{ gallery_media_size }}{% endunless %}{% unless is_gallery_media_fit_cover %} Ratio--contain{% endunless %}"
+                    {% if use_natural_size %}style="--tg-aspect-ratio: {{ media.aspect_ratio }};"{% endif %}>
+                      <img class="DeferredMedia__CoverImage Product__Media Product__Media--externalVideo {{ animation_image_loading_class }}"
+                        srcset="{% if media.preview_image.width >= 288 %}{{ media.preview_image | image_url: width: 288 }} 288w,{% endif %}
+                                {% if media.preview_image.width >= 576 %}{{ media.preview_image | image_url: width: 576 }} 576w,{% endif %}
+                                {% if media.preview_image.width >= 550 %}{{ media.preview_image | image_url: width: 550 }} 550w,{% endif %}
+                                {% if media.preview_image.width >= 1100 %}{{ media.preview_image | image_url: width: 1100 }} 1100w,{% endif %}
+                                {{ media.preview_image | image_url }} {{ media.preview_image.width }}w"
+                        src="{{ media | image_url: width: 550, height: 550 }}"
+                        sizes="(min-width: 1008px) calc(100vw / 1.5), 100vw"
+                        {% unless c_index == 1 %}loading="lazy"{% endunless %}
+                        width="576"
+                        height="{{ 576 | divided_by: media.preview_image.aspect_ratio | ceil }}"
+                        alt="{{ media.preview_image.alt | escape }}"
+                      >
+                      {%- if settings.animation_image_loading != 'none' -%}
+                        <span class="Image--loader"></span>
+                      {%- endif -%}
+                      <button class="Button Button--icon Button--play">{% render 'icons', icon: 'play-fill' %}</button>
+                    </{{- animation_image_loading_tag }}>
+
+                    <template>
+                        {%- liquid
+                            assign video_class = 'js-' | append: media.host
+                            if media.host == 'youtube'
+                                echo media | external_video_url: autoplay: true, loop: loop, playlist: media.external_id | external_video_tag: class: video_class, loading: "lazy"
+                            else
+                                echo media | external_video_url: autoplay: true, loop: loop | external_video_tag: class: video_class, loading: "lazy"
+                            endif
+                        -%}
+                    </template>
+
+                </deferred-media>
+
+
+            </div>
+
+          {%- when 'video' -%}
+            <div tabindex="-1" class="swiper-slide Carousel__Item Carousel__Item--video MediaModalOpener {% if media_size == 1 %}Carousel__Item--fullWidth{% endif %} {% if initial_media_id == media.id %}is-selected{% endif %}"
+             data-media-type="video" data-media-id="{{ media.id }}" data-media-position="{{ c_index }}">
+              
+              <deferred-media class="DeferredMedia">
+                    
+                    <{{- animation_image_loading_tag }} id="Deferred-Cover-Modal-{{ media.id }}" class="DeferredMedia__CoverImageWrapper Ratio {% unless use_natural_size %} Ratio--{{ gallery_media_size }}{% endunless %}{% unless is_gallery_media_fit_cover %} Ratio--contain{% endunless %}" 
+                         {% if use_natural_size %}style="--tg-aspect-ratio: {{ media.preview_image.aspect_ratio }};"{% endif %}>
+                         <img class="DeferredMedia__CoverImage Product__Media Product__Media--video {{ animation_image_loading_class }}"
+                          srcset="{% if media.preview_image.width >= 288 %}{{ media.preview_image | image_url: width: 288 }} 288w,{% endif %}
+                                  {% if media.preview_image.width >= 576 %}{{ media.preview_image | image_url: width: 576 }} 576w,{% endif %}
+                                  {% if media.preview_image.width >= 550 %}{{ media.preview_image | image_url: width: 550 }} 550w,{% endif %}
+                                  {% if media.preview_image.width >= 1100 %}{{ media.preview_image | image_url: width: 1100 }} 1100w,{% endif %}
+                                  {{ media.preview_image | image_url }} {{ media.preview_image.width }}w"
+                          src="{{ media | image_url: width: 550, height: 550 }}"
+                          sizes="(min-width: 1008px) calc(100vw / 1.5), 100vw"
+                          {% unless c_index == 1 %}loading="lazy"{% endunless %}
+                          width="576"
+                          height="{{ 576 | divided_by: media.preview_image.aspect_ratio | ceil }}"
+                          alt="{{ media.preview_image.alt | escape }}"
+                        >
+                        {%- if settings.animation_image_loading != 'none' -%}
+                          <span class="Image--loader"></span>
+                        {%- endif -%} 
+                        <button class="Button Button--icon Button--play">{% render 'icons', icon: 'play-fill' %}</button> 
+                    </{{- animation_image_loading_tag }}>
+
+                    <template>
+                        {%- liquid
+                             echo media | media_tag: image_size: "2048x", autoplay: true, loop: loop, controls: true, preload: "none"
+                        -%}
+                    </template>
+
+                </deferred-media>
+
+            </div>
+
+          {%- when 'model' -%}
+            <div tabindex="-1" class="swiper-slide Carousel__Item Carousel__Item--model MediaModalOpener {% if media_size == 1 %}Carousel__Item--fullWidth{% endif %} {% if initial_media_id == media.id %}is-selected{% endif %}"
+             data-media-type="model" data-media-id="{{ media.id }}" data-media-position="{{ c_index }}">
+              
+              <product-model class="DeferredMedia">
+
+                  <{{- animation_image_loading_tag }} id="Deferred-Cover-Modal-{{ media.id }}" class="DeferredMedia__CoverImageWrapper Ratio {% unless use_natural_size %} Ratio--{{ gallery_media_size }}{% endunless %}{% unless is_gallery_media_fit_cover %} Ratio--contain{% endunless %}" 
+                        {% if use_natural_size %}style="--tg-aspect-ratio: {{ media.preview_image.aspect_ratio }};"{% endif %}>
+                        <img class="DeferredMedia__CoverImage Product__Media Product__Media--model {{ animation_image_loading_class }}"
+                          srcset="{% if media.preview_image.width >= 288 %}{{ media.preview_image | image_url: width: 288 }} 288w,{% endif %}
+                                  {% if media.preview_image.width >= 576 %}{{ media.preview_image | image_url: width: 576 }} 576w,{% endif %}
+                                  {% if media.preview_image.width >= 550 %}{{ media.preview_image | image_url: width: 550 }} 550w,{% endif %}
+                                  {% if media.preview_image.width >= 1100 %}{{ media.preview_image | image_url: width: 1100 }} 1100w,{% endif %}
+                                  {{ media.preview_image | image_url }} {{ media.preview_image.width }}w"
+                          src="{{ media | image_url: width: 550, height: 550 }}"
+                          sizes="(min-width: 1008px) calc(100vw / 1.5), 100vw"
+                          {% unless c_index == 1 %}loading="lazy"{% endunless %}
+                          width="576"
+                          height="{{ 576 | divided_by: media.preview_image.aspect_ratio | ceil }}"
+                          alt="{{ media.preview_image.alt | escape }}"
+                        >
+
+                        {%- if settings.animation_image_loading != 'none' -%}
+                          <span class="Image--loader"></span>
+                        {%- endif -%} 
+                      <button class="Button Button--icon Button--play">{% render 'icons', icon: 'media-view-in-space' %}</button>
+                  </{{- animation_image_loading_tag }}>
+
+                  <template>
+                      {%- liquid
+                          echo media | media_tag: image_size: "2048x", toggleable: true
+                      -%}
+                  </template>
+
+              </product-model>
+
+               <button
+                        class="Button Button--full Button--primary Button--productXR "
+                        type="button"
+                        aria-label="{{ 'product.general.view_in_space' | t }}"
+                        data-shopify-xr
+                        data-shopify-model3d-id="{{ media.id }}"
+                        data-shopify-title="{{ product.title }}"
+                        data-shopify-xr-hidden
+                        >
+                        {% render 'icons', icon: 'media-view-in-space' %}
+                        {{ 'product.general.view_in_space' | t }}
+                    </button>
+
+            </div>
+        {%- endcase -%}
+
+      {%- endfor -%}
+    </div>
+    <div class="Carousel__Pagination HiddenLarge"></div>
+    <div class="Carousel__NavPrev HiddenLarge">
+      {%- render 'icons', icon: 'nav-right' -%}
+    </div>
+    <div class="Carousel__NavNext HiddenLarge">
+      {%- render 'icons', icon: 'nav-right' -%}
+    </div>
+  </div>
+
+
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'short_description' and block.settings.short_description_position == 'left'  and block.settings.content != blank -%}
+      <div class="Product__ShortDescription Product__ShortDescription--left RTE" {{ block.shopify_attributes }} 
+        {% if block.settings.short_description_background != blank  and block.settings.short_description_background != 'rgba(0,0,0,0)' %} 
+          style="--tg-product-short-description-background: {{ block.settings.short_description_background }}"
+        {% endif %}
+      >
+        {{ block.settings.content }}
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+
+</div>

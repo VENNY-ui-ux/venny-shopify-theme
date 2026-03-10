@@ -1,0 +1,49 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Product model
+  * ----------------------------------------------------------------------------
+  */
+.Button--productXR {
+  background: rgba(var(--tg-sys-color-on-background-rgb), 0.08);
+  color: rgb(var(--tg-sys-color-on-background-rgb));
+  margin: 1rem auto;
+  box-shadow: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Button.Button--productXR:hover {
+  box-shadow: none;
+}
+
+.Button--productXR[data-shopify-xr-hidden] {
+  visibility: hidden;
+}
+
+.shopify-design-mode .Button--productXR[data-shopify-xr-hidden] {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  .active .Button--productXR:not([data-shopify-xr-hidden]) {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .Button--productXR[data-shopify-xr-hidden] {
+    display: none;
+  }
+}
+
+.Button--productXR .Icon {
+  width: 1.2rem;
+  margin-right: .2rem;
+}
+
+@media screen and (min-width: 750px) {
+  .Button--productXR .Icon {
+    margin-right: .8rem;
+  }
+}

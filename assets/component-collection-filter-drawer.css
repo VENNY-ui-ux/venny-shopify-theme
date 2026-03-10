@@ -1,0 +1,28 @@
+:root {
+  --tg-component-filter-drawer-seleced-label-background-color: var(--tg-sys-color-surface5);
+  --tg-component-filter-drawer-seleced-label-text-color: var(--tg-sys-color-on-surface);
+}
+
+.FilterProducts__Drawer .Accordion__Button {
+  font-family: var(--tg-sys-typescale-label-large-font);
+  font-style: var(--tg-sys-typescale-label-large-style);
+  font-weight: var(--tg-sys-typescale-label-large-weight);
+  font-size: var(--tg-sys-typescale-label-large-size);
+  line-height: var(--tg-sys-typescale-label-large-line-height);
+  letter-spacing: var(--tg-sys-typescale-label-large-tracking);
+}
+.FilterProducts__Drawer .Accordion__Body {
+  padding: 0.5rem 0;
+}
+.FilterProducts__Drawer .Accordion__Body.List .List__Item {
+  padding: 0.25rem 1rem;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+.FilterProducts__Drawer .Accordion__Body.List .List__Item.Active, .FilterProducts__Drawer .Accordion__Body.List .List__Item:hover, .FilterProducts__Drawer .Accordion__Body.List .List__Item:focus {
+  color: var(--tg-component-filter-drawer-seleced-label-text-color);
+  background: var(--tg-component-filter-drawer-seleced-label-background-color);
+}
+.FilterProducts__Drawer .Accordion__Body--priceRange {
+  padding: 1rem;
+}

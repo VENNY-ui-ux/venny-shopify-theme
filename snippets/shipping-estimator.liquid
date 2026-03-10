@@ -1,0 +1,42 @@
+{{ 'component-shipping-estimator.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'component-country-selector.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'component-shipping-estimator.js' | asset_url }}" defer="defer"></script>
+
+<shipping-estimator class="ShippingEstimator">     
+    <h2 class="TitleLarge">{{ 'cart.shipping_estimator.title' | t }}</h2>       
+    <div class="Grid">
+        <div class="Grid__Item 1/2--medium 1/3--large 1/4--x-large">
+            <div class="Form__Item Form__Item--floatingLabel">
+                <select id="ShippingEstimator--selectCountry" class="Form__Select" name="country" 
+                data-default="{% if customer %}{{ customer.default_address.country }}{% elsif section.settings.shipping_estimator_default_country != '' %}{{ section.settings.shipping_estimator_default_country }}{% endif %}"
+                aria-label="{{ 'cart.shipping_estimator.country' | t }}">
+                {{ all_country_option_tags }}
+                </select>
+                <label class="Form__Label" for="ShippingEstimator--selectCountry">{{ 'cart.shipping_estimator.country' | t }}</label>
+            </div>
+        </div>
+
+        <div class="Grid__Item 1/2--medium 1/3--large 1/4--x-large" style="display: none">
+            <div class="Form__Item Form__Item--floatingLabel">
+                <select id="ShippingEstimator--selectProvince" class="Form__Select" name="province" aria-label="{{ 'cart.shipping_estimator.province' | t }}"></select>
+                <label class="Form__Label" for="ShippingEstimator--selectProvince">{{ 'cart.shipping_estimator.province' | t }}</label>
+            </div>
+        </div>
+
+        <div class="Grid__Item 1/2--medium 1/3--large 1/4--x-large">
+            <div class="Form__Item Form__Item--floatingLabel">
+                <input type="text" class="Form__Input" id="ShippingEstimator--inputZip"  name="zip" placeholder="{{ 'cart.shipping_estimator.zip_code' | t }}">
+                <label class="Form__Label" for="ShippingEstimator--inputZip">{{ 'cart.shipping_estimator.zip_code' | t }}</label>
+            </div>
+        </div>
+
+        <div class="Grid__Item 1/2--medium 1/3--large 1/4--x-large">
+            <button type="button" class="ShippingEstimator__Submit Button Button--outline Button--full">{{ 'cart.shipping_estimator.estimate' | t }}</button>
+        </div>
+
+    </div>
+
+    <div class="ShippingEstimator__Error Alert Alert--danger" style="display: none"></div>
+    <div class="ShippingEstimator__Results"></div>
+</shipping-estimator>

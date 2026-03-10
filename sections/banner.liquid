@@ -1,0 +1,594 @@
+{{ 'component-text-on-image.css' | asset_url | stylesheet_tag }}
+{{ 'section-banner.css' | asset_url | stylesheet_tag }}
+{% liquid 
+  assign section_has_image = false
+  if section.settings.image != blank or section.settings.image_mobile != blank
+    assign section_has_image = true
+    if section.settings.image != blank 
+      assign section_image_ratio = section.settings.image.aspect_ratio
+      assign section_image_ratio_mobile = section.settings.image.aspect_ratio
+    endif
+
+    if section.settings.image_mobile != blank
+      assign section_image_ratio_mobile = section.settings.image_mobile.aspect_ratio
+    endif
+
+  endif 
+
+  assign lazy_load = 'lazy'
+  assign fetch_priority = 'auto'
+  if section.index == 1 and section.location != 'footer'
+    assign fetch_priority = 'high'
+    assign lazy_load = 'eager'
+  endif
+
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class = 'TextOnImage__Image'
+  assign animation_image_loading_class_modal = ''
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class = 'Image--withLoader TextOnImage__Image'
+    assign animation_image_loading_class_modal = 'Image--withLoader'
+  endif
+
+-%}
+{%- capture tg_sizes -%}
+  {%- if section.settings.section_width == 'default' -%}
+    (min-width: 641px) calc(min(100vw, {{ settings.container_max_width }}px) - 64px), 100vw
+  {%- else -%}
+    100vw
+  {%- endif -%}
+{%- endcapture -%}
+
+<section id="section-{{ section.id }}" class="Container Container--specialSpacingFirstSection Banner Container--banner {% if section.settings.section_width == 'full_width' %}Container--fluid Container--spacingContainerGutter Container--specialSpacingLastSection{% elsif section.settings.section_width ==  'full_width_no_gap' %}Container--fluid Container--noGutter Container--specialSpacingLastSection{% else %}Container--{{ section.settings.section_spacing }}{% endif %}">
+  <div class="TextOnImage TextOnImage--{{ section.settings.content_position }}"
+  style="{% if section_has_image %}--tg-component-text-on-image-image-ratio-mobile: {{ section_image_ratio_mobile }}; --tg-component-text-on-image-image-ratio: {{ section_image_ratio }};
+  {% else %} --tg-component-text-on-image-image-ratio-mobile: 0.65; --tg-component-text-on-image-image-ratio: 1.5;
+ {% endif %}">
+    <!-- Mobile -->
+    {%- if section.settings.image_mobile != blank -%}
+      <{{- animation_image_loading_tag }} class="Ratio TextOnImage__ImageWrapper HiddenMediumUp {% if section.settings.overlay_opacity > 0 %}ImageOverlay{% endif %}">
+
+        {{ section.settings.image_mobile | image_url: width: 1500 | image_tag:
+          sizes: tg_sizes,
+          widths: '375, 550, 750, 1100, 1500',
+          class: animation_image_loading_class,
+          loading: lazy_load,
+          fetchpriority: fetch_priority
+        }}
+
+        {%- if settings.animation_image_loading != 'none' -%}
+          <span class="Image--loader"></span>
+        {%- endif -%}
+      </{{- animation_image_loading_tag }}>
+    {%- endif -%}
+
+    <!-- PC -->
+    {%- if section.settings.image != blank -%}
+      <{{- animation_image_loading_tag }} class="Ratio TextOnImage__ImageWrapper {% if section.settings.image_mobile != blank %} HiddenSmall{% endif %} {% if section.settings.overlay_opacity > 0 %}ImageOverlay{% endif %}">
+
+        {{ section.settings.image | image_url: width: 3840 | image_tag:
+          sizes: tg_sizes,
+          widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+          class: animation_image_loading_class,
+          loading: lazy_load,
+          fetchpriority: fetch_priority
+        }}
+
+        {%- if settings.animation_image_loading != 'none' -%}
+          <span class="Image--loader"></span>
+        {%- endif -%}
+      </{{- animation_image_loading_tag }}>
+    {%- else -%}
+      <div class="Ratio TextOnImage__ImageWrapper {% if section.settings.image_mobile != blank %} HiddenSmall{% endif %} {% if section.settings.overlay_opacity > 0 %}ImageOverlay{% endif %}">
+        {{ 'lifestyle-2' | placeholder_svg_tag: 'TextOnImage__Image SvgPlaceholder' }}
+      </div>
+    {%- endif -%}
+
+    <!-- content -->
+    {%- assign has_button = false -%}
+    {%- assign has_two_buttons = false -%}
+    {%- assign heading_has_link = false -%}
+    {%- assign has_video_button = false -%}
+    <div class="TextOnImage__Content {% if section.blocks.size == 0 %}TextOnImage__Content--empty{% endif %}">
+      <div class="TextOnImage__ContentInner">
+        <header class="SectionHeader">
+
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'button' -%}
+                {%- liquid
+                  if has_button 
+                    assign has_two_buttons = true
+                  endif
+                  assign has_button = true 
+                -%}
+
+                {%- when 'video_button' -%}
+                  {%- liquid
+                    assign has_video_button = true 
+                    assign video_id = block.settings.self_hosted_video.id | default: block.settings.video_url.id
+                    assign video_alt = block.settings.self_hosted_video.alt | default: block.settings.description
+                    assign poster = block.settings.self_hosted_video.preview_image | default: block.settings.cover_image
+                  -%}
+                
+              {%- when 'heading' -%}
+                <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}" {{ block.shopify_attributes }}>
+                  {%- assign heading_color = block.settings.color -%}
+                  {%- if block.settings.link != blank -%} 
+                    <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+                    {%- assign heading_has_link = true -%}
+                  {%- else -%}
+                    {{ block.settings.text }}
+                  {%- endif -%}
+                </h2>
+
+              {%- when 'subheading' -%}
+                {%- assign subheading_color = block.settings.color -%}
+                <h3 class="SectionHeader__Subheading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h3>
+                
+              {%- when 'description' -%}
+                {%- assign description_color = block.settings.color -%}
+                <div class="SectionHeader__Description RTE" {{ block.shopify_attributes }}>
+                  {{ block.settings.text }}
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+
+          {%- if has_button -%}
+            <div class="SectionHeader__ButtonWrapper">
+              <div class="ButtonGroup {% if has_two_buttons %}ButtonGroup--smallSize{% endif %}">
+                {%- for block in section.blocks -%}
+                  {%- case block.type -%}
+                    {%- when 'button' -%}
+                       <a href="{{ block.settings.link }}" class="Button Button--{{ block.settings.style }}" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</a>
+                  {%- endcase -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+  
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'video_button' -%}
+                <button type="button" class="Banner__VideoButton Button Button--icon Button--play" data-tg-toggle="Modal" aria-label="{{ 'sections.featured_video.play' | t }}" data-tg-target="#FeaturedVideo-{{ section.id }}" {{ block.shopify_attributes }}>
+                  {% render 'icons', icon: 'play-fill' %}
+                </button>
+            {%- endcase -%}
+          {%- endfor -%}
+        </header>
+
+      </div>
+
+      {%- unless has_button or heading_has_link or has_video_button -%}
+        {%- if section.settings.image_link != blank -%}
+          <a class="StretchedLink" href="{{ section.settings.image_link }}"></a>
+        {%- endif -%}
+      {%- endunless -%}
+    </div>
+
+    {%- if section.settings.image_link != blank -%}
+      <a class="StretchedLink" href="{{ section.settings.image_link }}"></a>
+    {%- endif -%}
+  </div>
+  
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'video_button' -%}
+        <!-- Modal -->
+        {{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+        <div class="Modal Fade Modal--banner Modal--video" id="FeaturedVideo-{{ section.id }}" tabindex="-1" aria-hidden="true" {{ block.shopify_attributes }}>
+          <div class="Modal__Dialog Modal__Dialog--centered">
+            <div class="Modal__Content">
+              <button type="button" class="ButtonClose" data-tg-dismiss="Modal" aria-label="{{ 'general.modal.close' | t }}"></button>
+              <div class="Modal__Body">
+                <deferred-media class="DeferredMedia">
+                  {%- if poster != blank -%}
+                    <{{- animation_image_loading_tag }} {% if block.settings.video_url != blank %}id="Deferred-Cover-Modal-{{ section.id }}-{{ video_id }}"{% endif %} 
+                      class="DeferredMedia__CoverImageWrapper Ratio" 
+                      style="--tg-aspect-ratio: {{ poster.aspect_ratio }};">
+
+                      {{ poster | image_url: width: 1500 | image_tag:
+                        loading: 'lazy',
+                        sizes: '100vw',
+                        widths: '375, 550, 750, 1100, 1500',
+                        class: animation_image_loading_class_modal,
+                        alt: video_alt
+                      }}
+
+                      {%- if settings.animation_image_loading != 'none' -%}
+                        <span class="Image--loader"></span>
+                      {%- endif -%}
+
+                      {%- if block.settings.video_url != blank -%}
+                        <button class="Button Button--icon Button--play">{% render 'icons', icon: 'play-fill' %}</button>
+                      {%- endif -%}
+                    </{{- animation_image_loading_tag }}>
+                  {%- endif -%}
+
+                  {%- if poster == blank -%}
+                    <div class="DeferredMedia__CoverImageWrapper Ratio"  style="--tg-aspect-ratio:  1.7777777777778;">
+                      {{ 'lifestyle-2' | placeholder_svg_tag: 'DeferredMedia__CoverImage SvgPlaceholder' }}
+                      {%- if block.settings.video_url != blank -%}
+                        <button class="Button Button--icon Button--play" id="Deferred-Cover-Modal-{{ section.id }}-{{ video_id }}">{% render 'icons', icon: 'play-fill' %}</button>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+
+                  <template>
+                    {%- if block.settings.self_hosted_video == null and block.settings.video_url != null -%}
+                      {%- liquid
+                        assign loop = ''
+                        if block.settings.enable_video_looping
+                          assign loop = '&loop=1&playlist=' | append: video_id
+                        endif
+                      -%}
+                      {%- if block.settings.video_url.type == 'youtube' -%}
+                        <iframe src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&autoplay=1{{ loop }}" class="js-youtube" allow="autoplay; encrypted-media" allowfullscreen title="{{ section.settings.description | escape }}"></iframe>
+                      {%- else -%}
+                        <iframe src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1{{ loop }}" class="js-vimeo" allow="autoplay; encrypted-media" allowfullscreen title="{{ section.settings.description | escape }}"></iframe>
+                      {%- endif -%}
+                    {%- else -%}
+                      {{ block.settings.self_hosted_video
+                        | video_tag:
+                          image_size: "1100x",
+                          autoplay: true,
+                          loop: block.settings.enable_video_looping,
+                          controls: true,
+                          muted: false
+                      }}
+                    {%- endif -%}
+                  </template>
+                </deferred-media>
+              </div>
+            </div>
+          </div>
+        </div>
+    {%- endcase -%}
+  {%- endfor -%}
+</section>
+
+<style>
+  {% if section.settings.overlay_opacity > 0 %}
+    #section-{{ section.id }} .ImageOverlay::after{
+      {%- assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0 -%}
+      background-color: rgba(0,0,0,{{ overlay_opacity }});
+    }
+  {% endif %}
+
+  {% if heading_color != blank and heading_color != 'rgba(0,0,0,0)' %}
+    #section-{{ section.id }} .SectionHeader__Heading,
+    #section-{{ section.id }} .SectionHeader__Heading a{
+      color: {{ heading_color }};
+    }
+  {% endif %}
+
+  {% if subheading_color != blank and subheading_color != 'rgba(0,0,0,0)' %}
+    #section-{{ section.id }} .SectionHeader__Subheading{
+      color: {{ subheading_color }};
+    }
+  {% endif %}
+
+  {% if description_color != blank and description_color != 'rgba(0,0,0,0)' %}
+    #section-{{ section.id }} .SectionHeader__Description{
+      color: {{ description_color }};
+    }
+    #section-{{ section.id }} .SectionHeader__Description a{
+      color: {{ description_color }};
+      text-decoration-color: {{ description_color }};
+    }
+  {% endif %}
+
+
+</style>
+
+{% schema %}
+{
+  "name": "Image banner",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium",
+      "info": "Visible when the ‘Section width’ setting is set to Grid."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "1200 x 800px .jpg recommended."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image mobile",
+      "info": "600 x 900px .jpg recommended. The desktop image will be visible and cropped on mobile if left empty."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "url",
+      "id": "image_link",
+      "label": "Link",
+      "info": "Give the image a link when there is no content on it."
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "options": [
+        {
+          "value": "topLeft",
+          "label": "Top left"
+        },
+        {
+          "value": "topCenter",
+          "label": "Top center"
+        },
+        {
+          "value": "topRight",
+          "label": "Top right"
+        },
+        {
+          "value": "middleLeft",
+          "label": "Middle left"
+        },
+        {
+          "value": "middleCenter",
+          "label": "Middle center"
+        },
+        {
+          "value": "middleRight",
+          "label": "Middle right"
+        },
+        {
+          "value": "bottomLeft",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottomCenter",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottomRight",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "middleCenter"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Tell your story"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "DisplaySmall",
+              "label": "Small"
+            },
+            {
+              "value": "DisplayMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "DisplayLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "DisplaySmall"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "subheading",
+      "name": "Subeading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#ffffff"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Add your own custom content to give more information</p>"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#ffffff"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            }
+          ],
+          "default": "secondary"
+        }
+      ]
+    },
+    {
+      "type": "video_button",
+      "name": "Video button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable_video_looping",
+          "label": "Play video on loop",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Shopify-hosted video"
+        },
+        {
+          "type": "video",
+          "id": "self_hosted_video",
+          "label": "Video"
+        },
+        {
+          "type": "header",
+          "content": "Or embed video from URL"
+        },
+        {
+          "type": "paragraph",
+          "content": "Shows when no Shopify-hosted video is selected."
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image",
+          "label": "Cover image"
+        },
+        {
+          "type": "video_url",
+          "accept": [
+            "vimeo",
+            "youtube"
+          ],
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+          "id": "video_url",
+          "label": "Video URL"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Video alt text",
+          "info": "Describe the video for customers using screen readers. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image banner",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "description"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

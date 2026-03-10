@@ -1,0 +1,98 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Countdown timer bar
+ * ----------------------------------------------------------------------------
+ */
+:root {
+  --tg-countdown-timer-bar-background-color: var(--tg-sys-color-background);
+  --tg-countdown-timer-bar-text-color: var(--tg-sys-color-on-background);
+}
+
+.CountdownTimerBar {
+  background-color: var(--tg-countdown-timer-bar-background-color);
+  display: block;
+  color: var(--tg-countdown-timer-bar-text-color);
+}
+
+.CountdownTimerBar__Inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.CountdownTimerBar__Content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: var(--tg-sys-typescale-body-large-size);
+}
+
+.CountdownTimerBar__Message.RTE {
+  color: var(--tg-countdown-timer-bar-text-color);
+  -webkit-margin-end: 0.5rem;
+          margin-inline-end: 0.5rem;
+}
+.CountdownTimerBar__Message.RTE a {
+  color: var(--tg-countdown-timer-bar-text-color);
+  -webkit-text-decoration-color: var(--tg-countdown-timer-bar-text-color);
+          text-decoration-color: var(--tg-countdown-timer-bar-text-color);
+}
+
+.CountdownTimerBar__Button {
+  margin-top: -0.5rem;
+  margin-bottom: -0.5rem;
+}
+
+@media screen and (max-width: 640px) {
+  .CountdownTimerBar__Inner {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+  .CountdownTimerBar__Timer {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+  .CountdownTimerBar__Message {
+    -webkit-margin-end: 0;
+            margin-inline-end: 0;
+    text-align: center;
+  }
+  .CountdownTimer__Inner {
+    justify-content: center;
+  }
+}
+.CountdownTimer__Inner {
+  display: flex;
+}
+
+.CountdownTimer__Item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.CountdownTimer__Item:not(:last-child) {
+  position: relative;
+  -webkit-margin-end: 1rem;
+          margin-inline-end: 1rem;
+}
+.CountdownTimer__Item:not(:last-child) .CountdownTimer__Amount::before {
+  content: ":";
+  display: block;
+  position: absolute;
+  left: calc(100% + 0.45rem);
+  top: 0;
+  text-align: center;
+}
+
+.CountdownTimer__Amount {
+  font-weight: bolder;
+  text-align: center;
+}
+
+.CountdownTimer__Unit {
+  text-transform: uppercase;
+}

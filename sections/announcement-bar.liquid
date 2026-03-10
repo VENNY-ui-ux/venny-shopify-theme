@@ -1,0 +1,70 @@
+{%- if section.settings.enable_bar -%}
+  {{ 'section-announcement-bar.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'section-announcement-bar.js' | asset_url }}" defer="defer"></script>
+
+  {% capture section_settings %}
+    {
+      "closeable": {{ section.settings.closeable | json }}
+    }
+  {% endcapture %}
+  
+  <section-announcement-bar id="AnnouncementBar" class="Container Container--fluid Container--noGutter Announcement" data-section-id="{{ section.id }}" data-closeable="{% if section.settings.closeable %}1{% else %}0{% endif %}" data-section-settings='{{ section_settings }}'  {% if section.settings.closeable %}aria-hidden="true"{% endif %}
+    style="{% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}--tg-announcement-bar-background-color: {{ section.settings.background }};{% endif %}
+    {% if section.settings.text_color != blank and section.settings.text_color != 'rgba(0,0,0,0)' %}--tg-announcement-bar-text-color: {{ section.settings.text_color }};{% endif %}"
+  >
+
+    <div class="Announcement__Body">
+      {%- if section.settings.closeable -%}
+        <button class="Button Announcement__Close" data-action="close-annoucement" aria-label="{{ 'general.announcement_bar.close' | t }}">{% render 'icons', icon: 'close' %}</button>
+      {%- endif -%}
+      <div class="Announcement__Content RTE">
+        {{ section.settings.content }}   
+      </div>
+    </div>
+
+  </section-announcement-bar>
+
+  <script>
+    document.documentElement.style.setProperty('--tg-announcement-bar-height', document.getElementById('AnnouncementBar').offsetHeight + 'px');
+  </script>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement",
+  "class": "shopify-section--announcement-bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_bar",
+      "label": "Enable announcement bar",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "closeable",
+      "label": "Show close button",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Text",
+      "default": "<p>Make an announcement.</p>"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    }
+  ]
+}
+{% endschema %}

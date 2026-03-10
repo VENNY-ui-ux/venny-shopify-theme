@@ -1,0 +1,19 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Section banner
+ * ----------------------------------------------------------------------------
+ */
+.Banner__VideoButton {
+  margin-top: 1rem;
+}
+
+.Banner .SectionHeader {
+  margin-bottom: 1.5rem;
+}
+
+.Banner .DeferredMedia .Button--play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

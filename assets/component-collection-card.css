@@ -1,0 +1,6 @@
+.CollectionCard {
+  position: relative;
+}
+.CollectionCard .TextOnImage__Content {
+  padding: 1rem;
+}

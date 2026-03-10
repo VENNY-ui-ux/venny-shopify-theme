@@ -1,0 +1,282 @@
+{{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign video_id = section.settings.self_hosted_video.id | default: section.settings.video_url.id
+  assign video_alt = section.settings.self_hosted_video.alt | default: section.settings.description
+  assign poster = section.settings.self_hosted_video.preview_image | default: section.settings.cover_image
+
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class = 'DeferredMedia__CoverImage Image--fadeIn'
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class = 'Image--withLoader Image--fadeIn DeferredMedia__CoverImage'
+  endif
+-%}
+
+{%- capture tg_sizes -%}
+  {%- if section.settings.section_width == 'default' -%}
+    (min-width: 641px) calc(min(100vw, {{ settings.container_max_width }}px) - 64px), 100vw
+  {%- else -%}
+    100vw
+  {%- endif -%}
+{%- endcapture -%}
+<section id="section-{{ section.id }}" class="Container Container--specialSpacingFirstSection VideoSection {% if section.settings.section_width == 'full_width' %}Container--fluid Container--spacingContainerGutter Container--specialSpacingLastSection{% elsif section.settings.section_width ==  'full_width_no_gap' %}Container--fluid Container--noGutter Container--specialSpacingLastSection{% else %}Container--{{ section.settings.section_spacing }}{% endif %}">
+
+  <deferred-media  class="DeferredMedia VideoSection__Media{% if section.settings.self_hosted_video_mobile != blank %} HiddenSmall{% endif %}" data-tg-video-auto="{% if section.settings.enable_video_autoplay %}1{% else %}0{% endif %}">
+    {%- if poster != blank -%}
+      <{{- animation_image_loading_tag }} class="DeferredMedia__CoverImageWrapper Ratio" 
+        style="--tg-aspect-ratio: {{ poster.aspect_ratio }};">
+
+        {{ poster | image_url: width: 3840 | image_tag:
+          loading: 'lazy',
+          sizes: tg_sizes,
+          widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+          class: animation_image_loading_class,
+          alt: video_alt
+        }}
+
+        {%- if settings.animation_image_loading != 'none' -%}
+          {%- unless section.settings.enable_video_autoplay -%}
+            <span class="Image--loader"></span> 
+          {%- endunless -%} 
+        {%- endif -%}
+        {%- if section.settings.video_url != blank -%}
+          <button class="Button Button--icon Button--play" {% if section.settings.video_url != blank %}id="Deferred-Cover-Modal-{{ section.id }}-{{ video_id }}"{% endif %} >{% render 'icons', icon: 'play-fill' %}</button>
+        {%- endif -%}
+      </{{- animation_image_loading_tag }}>
+    {%- endif -%}
+
+    {%- if poster == blank -%}
+      <div class="DeferredMedia__CoverImageWrapper Ratio" style="--tg-aspect-ratio:  1.7777777777778;">
+        {%- if section.settings.enable_video_autoplay == false -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'DeferredMedia__CoverImage SvgPlaceholder' }}
+        {%- endif -%}
+        {%- if section.settings.video_url != blank -%}
+          <button class="Button Button--icon Button--play" id="Deferred-Cover-Modal-{{ section.id }}-{{ video_id }}">{% render 'icons', icon: 'play-fill' %}</button>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <template>
+      {%- liquid
+        assign video_autoply = section.settings.enable_video_autoplay 
+        assign video_mute = 0
+        assign video_controls = 1
+
+        assign video_self_host_mute = false
+
+        if video_autoply
+          assign video_mute = 1
+          assign video_self_host_mute = true
+        endif
+        unless section.settings.show_video_controls
+          assign video_controls = 0
+        endunless
+      -%}
+      {%- if section.settings.self_hosted_video == null and section.settings.video_url != null -%}
+        {%- liquid
+          assign loop = ''
+          if section.settings.enable_video_looping
+            assign loop = '&loop=1&playlist=' | append: video_id
+          endif
+        -%}
+        {%- if section.settings.video_url.type == 'youtube' -%}
+          <iframe src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&autoplay=1&controls={{ video_controls }}&mute={{ video_mute }}{{ loop }}" class="js-youtube" allow="autoplay; encrypted-media" allowfullscreen title="{{ section.settings.description | escape }}"></iframe>
+        {%- else -%}
+          <iframe src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&controls={{ video_controls }}&muted={{ video_mute }}{{ loop }}&autopause=0" class="js-vimeo" allow="autoplay; encrypted-media" allowfullscreen title="{{ section.settings.description | escape }}"></iframe>
+        {%- endif -%}
+      {%- else -%}
+        {{ section.settings.self_hosted_video
+          | video_tag:
+            class: 'DeferredMedia__SelfVideo',
+            image_size: "1100x",
+            autoplay: video_autoply,
+            loop: section.settings.enable_video_looping,
+            controls: section.settings.show_video_controls,
+            muted: video_self_host_mute,
+            playsinline: ""
+        }}
+      {%- endif -%}
+    </template>
+
+  </deferred-media>
+
+  <!-- mobile host video -->
+  {%- if section.settings.self_hosted_video_mobile != blank -%}
+
+    {%- liquid
+      assign video_id = section.settings.self_hosted_video_mobile.id
+      assign video_alt = section.settings.self_hosted_video_mobile.alt | default: section.settings.description
+      assign poster = section.settings.self_hosted_video_mobile.preview_image 
+    -%}
+
+    <deferred-media  class="DeferredMedia VideoSection__Media HiddenMediumUp" data-tg-video-auto="{% if section.settings.enable_video_autoplay %}1{% else %}0{% endif %}">
+        <{{- animation_image_loading_tag }} class="DeferredMedia__CoverImageWrapper Ratio" 
+          style="--tg-aspect-ratio: {{ poster.aspect_ratio }};">
+
+          {{ poster | image_url: width: 3840 | image_tag:
+            loading: 'lazy',
+            sizes: tg_sizes,
+            widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+            class: animation_image_loading_class,
+            alt: video_alt
+          }}
+
+          {%- if settings.animation_image_loading != 'none' -%}
+            {%- unless section.settings.enable_video_autoplay -%}
+              <span class="Image--loader"></span> 
+            {%- endunless -%}
+          {%- endif -%}
+          {%- if section.settings.video_url != blank -%}
+            <button class="Button Button--icon Button--play" {% if section.settings.video_url != blank %}id="Deferred-Cover-Modal-{{ section.id }}-{{ video_id }}"{% endif %} >{% render 'icons', icon: 'play-fill' %}</button>
+          {%- endif -%}
+        </{{- animation_image_loading_tag }}>
+
+      <template>
+        {%- liquid
+          assign video_autoply = section.settings.enable_video_autoplay 
+          assign video_self_host_mute = false
+
+          if video_autoply
+            assign video_self_host_mute = true
+          endif
+        -%}
+       
+        {{ section.settings.self_hosted_video_mobile
+          | video_tag:
+            class: 'DeferredMedia__SelfVideo',
+            image_size: "1100x",
+            autoplay: video_autoply,
+            loop: section.settings.enable_video_looping,
+            controls: section.settings.show_video_controls,
+            muted: video_self_host_mute,
+            playsinline: ""
+        }}
+      </template>
+
+    </deferred-media>
+  {%- endif -%}
+
+</section>
+
+{% schema %}
+{
+  "name": "Video",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium",
+      "info": "Visible when the ‘Section width’ setting is set to Grid."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_video_controls",
+      "label": "Show video controls",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_looping",
+      "label": "Play video on loop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_autoplay",
+      "label": "Mute autoplay video",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Shopify-hosted video"
+    },
+    {
+      "type": "video",
+      "id": "self_hosted_video",
+      "label": "Video"
+    },
+    {
+      "type": "video",
+      "id": "self_hosted_video_mobile",
+      "label": "Video mobile"
+    },
+    {
+      "type": "header",
+      "content": "Or embed video from URL"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shows when no Shopify-hosted video is selected."
+    },
+    {
+      "type": "image_picker",
+      "id": "cover_image",
+      "label": "Cover image"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+      "label": "Video URL",
+      "placeholder": "Use a YouTube or Vimeo URL"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Video alt text",
+      "info": "Describe the video for customers using screen readers. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video"
+    }
+  ]
+}
+{% endschema %}

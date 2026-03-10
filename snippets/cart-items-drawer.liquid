@@ -1,0 +1,112 @@
+{% comment %}
+  Cart items for cart drawer – VENNY
+  - Viser produktbillede, titel, farve og størrelse på egne linjer
+  - Forventet titel-format: "Produktnavn (Farve)"
+  - Variant-titel (hvis ikke "Default Title") vises som Size: ...
+{% endcomment %}
+
+{% for item in cart.items %}
+
+  {%- comment -%}
+    Split produktnavn op i:
+    - base_title: tekst før første " ("
+    - color_name: teksten inde i første parentes, hvis den findes
+  {%- endcomment -%}
+  {% assign base_title = item.product.title %}
+  {% assign color_name = '' %}
+
+  {% if base_title contains ' (' %}
+    {% assign title_parts = base_title | split: ' (' %}
+    {% assign base_title = title_parts[0] %}
+    {% if title_parts.size > 1 %}
+      {% assign color_raw = title_parts[1] | split: ')' | first %}
+      {% assign color_name = color_raw %}
+    {% endif %}
+  {% endif %}
+
+  {%- comment -%}
+    Variant-titel bruges som størrelse, hvis den ikke bare er "Default Title"
+  {%- endcomment -%}
+  {% assign size_text = '' %}
+  {% if item.variant.title and item.variant.title != 'Default Title' %}
+    {% assign size_text = item.variant.title %}
+  {% endif %}
+
+  <article class="CartDrawerItem"
+           data-cart-item
+           data-line="{{ forloop.index }}">
+
+    <!-- Billede -->
+    <div class="CartDrawerItem__ImageWrapper">
+      <a href="{{ item.url }}">
+        {% if item.image %}
+          <img
+            src="{{ item.image | img_url: '160x' }}"
+            alt="{{ item.image.alt | escape }}"
+            class="CartDrawerItem__Image">
+        {% else %}
+          <div class="CartDrawerItem__Image CartDrawerItem__Image--placeholder"></div>
+        {% endif %}
+      </a>
+    </div>
+
+    <!-- Tekst / qty / pris -->
+    <div class="CartDrawerItem__Content">
+      <div class="CartDrawerItem__TopRow" style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div class="CartDrawerItem__TitleBlock" style="flex:1;">
+          <a href="{{ item.url }}" class="CartDrawerItem__Title" style="margin:0;">
+            {{ base_title }}
+          </a>
+
+          {% if color_name != '' %}
+            <div class="CartDrawerItem__Meta CartDrawerItem__Meta--color">
+              {{ color_name }}
+            </div>
+          {% endif %}
+
+          {% if size_text != '' %}
+            <div class="CartDrawerItem__Meta CartDrawerItem__Meta--size">
+              Size: {{ size_text }}
+            </div>
+          {% endif %}
+        </div>
+
+        <button
+          type="button"
+          class="CartDrawerItem__Remove"
+          data-cart-remove
+          aria-label="Remove {{ item.product.title }}"
+          data-line="{{ forloop.index }}">
+          ×
+        </button>
+      </div>
+
+      <div class="CartDrawerItem__BottomRow">
+        <div class="CartDrawerItem__Qty">
+          <button type="button"
+                  class="CartDrawerItem__QtyBtn"
+                  data-cart-qty-minus
+                  data-line="{{ forloop.index }}">-</button>
+
+          <input
+            type="number"
+            class="CartDrawerItem__QtyInput"
+            value="{{ item.quantity }}"
+            min="0"
+            data-cart-qty-input
+            data-line="{{ forloop.index }}">
+
+          <button type="button"
+                  class="CartDrawerItem__QtyBtn"
+                  data-cart-qty-plus
+                  data-line="{{ forloop.index }}">+</button>
+        </div>
+
+        <div class="CartDrawerItem__Price">
+          {{ item.final_line_price | money }}
+        </div>
+      </div>
+    </div>
+  </article>
+
+{% endfor %}

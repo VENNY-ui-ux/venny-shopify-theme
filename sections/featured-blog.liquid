@@ -1,0 +1,399 @@
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+{{ 'section-featured-blog.css' | asset_url | stylesheet_tag }}
+
+<section class="Container Container--specialSpacingFirstSection Container--noGutter Container--fluid FeaturedBlog FeaturedBlog--{{ section.settings.layout_mobile }} {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}Container--specialSpacingLastSection Container--{{ section.settings.section_spacing }}Padding{% else %}Container--{{ section.settings.section_spacing }}{% endif %} FeaturedBlog" id="section-{{ section.id }}" data-section-id="{{ section.id }}"
+  style="{% if section.settings.text_color != blank and section.settings.text_color != 'rgba(0,0,0,0)' %}--tg-featured-blog-text-color: {{ section.settings.text_color }};--tg-section-header-text-color: {{ section.settings.text_color }};{% endif %}
+  {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}--tg-featured-blog-background-color: {{ section.settings.background }};{% endif %}
+  ">
+  <div class="Container {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'section_header' -%}
+          <header class="SectionHeader SectionHeader--{{ block.settings.header_align }}"  {{ block.shopify_attributes }}>
+            <div class="SectionHeader__Text">
+              {%- if block.settings.heading != blank -%}
+                  <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+
+              {%- if block.settings.subheading != blank -%}
+                  <div class="SectionHeader__Subheading TextMuted">{{ block.settings.subheading }} </div>
+              {%- endif -%}
+            </div>
+
+            {%- if block.settings.header_align == 'left' and block.settings.button_label != blank -%} 
+              <div class="SectionHeader__Button"> 
+                <a href="{{ block.settings.button_link }}" class="SectionHeader__Button Button Button--outline">{{ block.settings.button_label | escape }}</a>        
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.header_align == 'center' and block.settings.button_label != blank -%} 
+              {%- capture section_footer -%}
+                <footer class="SectionFooter TextCenter">
+                    <a class="SectionFooter__Button Button Button--outline" href="{{ block.settings.button_link }}">{{ block.settings.button_label | escape }}</a>
+                </footer>
+              {%- endcapture -%}
+            {%- endif -%}
+          </header>
+      {%- endcase -%}
+    {%- endfor -%}
+
+    {%- liquid
+      assign show_placeholders = true 
+      assign card_mobile_items_per_row = 1
+      if section.settings.layout_mobile == 'horizontal'
+        assign card_mobile_items_per_row = 1.136
+      endif
+    -%}
+
+    <div class="SectionBody FeaturedBlog__Body">
+      {%- for block in section.blocks -%}
+     
+        {%- case block.type -%}
+          {%- when 'article' -%}
+              <div class="Grid" {{ block.shopify_attributes }}>
+              {%- liquid
+                assign item_count = 0
+                for i in (1..4)
+                  assign article_option = 'article_' | append: i
+                  assign article = articles[block.settings[article_option]]
+
+                  unless article == empty
+                    assign item_count = item_count | plus: 1
+                  endunless
+                endfor 
+              -%}
+
+              {%- for i in (1..4) -%}
+                {%- assign article_option = 'article_' | append: i -%}
+                {%- assign article = articles[block.settings[article_option]] -%}
+
+                {%- unless article == empty -%}
+                  <div class="Grid__Item 1/{{ item_count }}--large">
+                    {%- render 'article-card', block: block, article: article, card_desktop_items_per_row: item_count, card_mobile_items_per_row: card_mobile_items_per_row -%}
+                  </div>
+
+                  {%- assign show_placeholders = false -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+
+          {%- when 'blog' -%}
+            <div class="Grid" {{ block.shopify_attributes }}>
+              {%- liquid
+                assign blog = block.settings.blog
+                assign item_count = block.settings.grid_items_count
+              -%}
+
+              {%- for article in blog.articles limit: item_count -%}
+                <div class="Grid__Item 1/{{ item_count }}--large">
+                  {%- render 'article-card', block: block, article: article, card_desktop_items_per_row: item_count, card_mobile_items_per_row: card_mobile_items_per_row -%}
+                </div>
+
+                {%- assign show_placeholders = false -%}
+              {%- endfor -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+
+      {%- if show_placeholders -%}
+        <div class="Grid">
+          {%- for i in (1..3) -%}
+            <div class="Grid__Item 1/3--medium-up">
+              {%- render 'article-card-placeholder' -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+    
+    {{ section_footer }}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "header",
+      "content": "Article card"
+    },
+    {
+      "type": "select",
+      "id": "featured_image_size",
+      "label": "Featured image ratio",
+      "options": [
+        {
+          "value": "natural",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "2x3",
+          "label": "2:3"
+        },
+        {
+          "value": "3x4",
+          "label": "3:4"
+        },
+        {
+          "value": "1x1",
+          "label": "1:1"
+        },
+        {
+          "value": "4x3",
+          "label": "4:3"
+        },
+        {
+          "value": "16x9",
+          "label": "16:9"
+        },
+        {
+          "value": "21x9",
+          "label": "21:9"
+        }
+      ],
+      "default": "natural"
+    },
+    {
+      "type": "select",
+      "id": "card_align",
+      "label": "Card alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "layout_mobile",
+      "label": "Mobile layout",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "horizontal",
+          "label": "Horizontal"
+        }
+      ],
+      "default": "horizontal"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_category",
+      "label": "Show article category",
+      "info": "The first article's tag is used as the main category.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_more",
+      "label": "Show read more label",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "section_header",
+      "name": "Section header",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Blog posts"
+        },
+        {
+          "type": "select",
+          "id": "header_align",
+          "label": "Header alignment",
+          "options": [
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineMedium"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "View all articles"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    },
+    {
+      "type": "article",
+      "name": "Articles",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "article",
+          "id": "article_1",
+          "label": "Article"
+        },
+        {
+          "type": "article",
+          "id": "article_2",
+          "label": "Article"
+        },
+        {
+          "type": "article",
+          "id": "article_3",
+          "label": "Article"
+        },
+        {
+          "type": "article",
+          "id": "article_4",
+          "label": "Article"
+        }
+      ]
+    },
+    {
+      "type": "blog",
+      "name": "Blog",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "blog",
+          "id": "blog",
+          "label": "Blog"
+        },
+        {
+          "type": "range",
+          "id": "grid_items_count",
+          "min": 2,
+          "max": 4,
+          "step": 1,
+          "label": "Number of articles to show",
+          "default": 3
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog posts",
+      "settings": {
+      },
+      "blocks": [
+        {
+          "type": "section_header"
+        },
+        {
+          "type": "blog",
+          "settings": {
+            "blog": "news"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

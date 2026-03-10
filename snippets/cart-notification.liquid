@@ -1,0 +1,11 @@
+{% comment %}
+  Renders cart notification
+
+  Usage:
+  {% render 'cart-notification' %}
+{% endcomment %}
+
+<cart-notification class="Toast CartNotification Fade" {% if settings.enable_cart_notification_auto_hide %}data-tg-delay="{{ settings.cart_notification_hide_after }}000"{% else %}data-tg-autohide="false"{% endif %}>
+  {%- render 'cart-notification-body' -%}
+</cart-notification>
+

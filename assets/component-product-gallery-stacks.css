@@ -1,0 +1,56 @@
+.ProductGallery--stack .ProductGallery__Inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.ProductGallery--stack .ProductGallery__Inner .Product__MediaWrapper {
+  width: 50%;
+}
+.ProductGallery--stack .ProductGallery__Inner .Product__MediaWrapper:first-child {
+  width: 100%;
+}
+.ProductGallery--stack .ProductGallery__Inner .Product__MediaWrapper:last-of-type:nth-child(2n) {
+  width: 100%;
+}
+.ProductGallery--stack .ProductGallery__Inner .Product__Media {
+  padding: 2px;
+}
+.ProductGallery--stack .ProductGallery__Inner .Product__ShortDescription {
+  order: 1;
+  width: 100%;
+}
+@media screen and (min-width: 641px) {
+  .ProductGallery--stack .ProductGallery__Inner .Product__MediaWrapper:first-child {
+    width: 50%;
+  }
+  .ProductGallery--stack .ProductGallery__Inner .Product__MediaWrapper:last-of-type:nth-child(2n) {
+    width: 50%;
+  }
+  .ProductGallery--stack .ProductGallery__Inner .Product__ShortDescription {
+    order: 2;
+  }
+}
+.ProductGallery--stack .ProductGallery__Inner .Product__MediaWrapper.Product__MediaWrapper--currentVariantImage {
+  -webkit-animation: CurrentVariantImageGlow 800ms ease-out 3 alternate;
+          animation: CurrentVariantImageGlow 800ms ease-out 3 alternate;
+  box-shadow: 0 1px 0 var(--tg-sys-color-primary);
+}
+@-webkit-keyframes CurrentVariantImageGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(var(--tg-sys-color-primary-rgb), 0), inset 0 0 5px rgba(var(--tg-sys-color-primary-rgb), 0.1), 0 1px 0 var(--tg-sys-color-primary);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(var(--tg-sys-color-primary-rgb), 0.4), inset 0 0 10px rgba(var(--tg-sys-color-primary-rgb), 0.2), 0 1px 0 var(--tg-sys-color-primary);
+  }
+}
+@keyframes CurrentVariantImageGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(var(--tg-sys-color-primary-rgb), 0), inset 0 0 5px rgba(var(--tg-sys-color-primary-rgb), 0.1), 0 1px 0 var(--tg-sys-color-primary);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(var(--tg-sys-color-primary-rgb), 0.4), inset 0 0 10px rgba(var(--tg-sys-color-primary-rgb), 0.2), 0 1px 0 var(--tg-sys-color-primary);
+  }
+}
+.ProductGallery--stack .ProductGallery__Inner .Product__MediaWrapper.Product__MediaWrapper--fullWidth {
+  width: 100%;
+}

@@ -1,0 +1,20 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Widget
+ * ----------------------------------------------------------------------------
+ */
+.Widget + .Widget {
+  margin-top: 3rem;
+}
+
+.Widget__Title {
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  line-height: 1.65;
+  border-bottom: 1px solid var(--tg-sys-color-outline);
+  color: var(--tg-sys-color-on-background);
+}
+
+.Widget__ButtonWrapper {
+  margin-top: 32px;
+}

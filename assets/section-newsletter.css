@@ -1,0 +1,52 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Newsletter
+  * ----------------------------------------------------------------------------
+  */
+.Form--newsletter .Form__Submit {
+  height: 100%;
+}
+.Form--newsletter .Form__Input::-moz-placeholder {
+  opacity: 0.8;
+}
+.Form--newsletter .Form__Input:-ms-input-placeholder {
+  opacity: 0.8;
+}
+.Form--newsletter .Form__Input::placeholder {
+  opacity: 0.8;
+}
+
+.Newsletter {
+  max-width: 100%;
+  padding: 0;
+}
+.Newsletter .TextOnImage__ContentInner {
+  max-width: 680px;
+}
+
+@media screen and (min-width: 641px) {
+  .Newsletter .SectionHeader {
+    margin-bottom: 2rem;
+  }
+}
+.Newsletter .SectionHeader .SectionHeader__Heading {
+  margin-bottom: 0.75rem;
+}
+
+.Newsletter .Form .Newsletter__EmailWrapper {
+  z-index: 3;
+  -webkit-padding-end: 0;
+          padding-inline-end: 0;
+  display: flex;
+}
+.Newsletter .Form .Newsletter__EmailWrapper .Form__Input {
+  flex: 1 1 auto;
+  width: 1%;
+}
+
+.Newsletter .Form .Newsletter__SubmitWrapper {
+  flex-grow: 0;
+  -webkit-padding-start: 0;
+          padding-inline-start: 0;
+  width: auto;
+}

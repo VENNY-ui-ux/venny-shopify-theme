@@ -1,0 +1,56 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Featured blog
+ * ----------------------------------------------------------------------------
+ */
+:root {
+  --tg-featured-blog-background-color: var(--tg-sys-color-background);
+  --tg-featured-blog-text-color: var(--tg-sys-color-on-background);
+}
+
+.FeaturedBlog {
+  background-color: var(--tg-featured-blog-background-color);
+}
+.FeaturedBlog .ArticleCard__Title a, .FeaturedBlog .ArticleCard__Link, .FeaturedBlog .ArticleCard__Category {
+  color: var(--tg-featured-blog-text-color);
+}
+.FeaturedBlog .ArticleCard__Title a:hover, .FeaturedBlog .ArticleCard__Link:hover, .FeaturedBlog .ArticleCard__Category:hover {
+  color: var(--tg-featured-blog-text-color);
+}
+.FeaturedBlog .ArticleCard__Excerpt {
+  color: var(--tg-featured-blog-text-color);
+}
+
+.FeaturedBlog__Body .Grid ~ .Grid {
+  margin-top: -1px;
+}
+
+@media screen and (max-width: 640px) {
+  .FeaturedBlog--stacked .Grid__Item:not(:last-child) {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 1007px) {
+  .FeaturedBlog--horizontal .FeaturedBlog__Body {
+    overflow: hidden;
+  }
+  .FeaturedBlog--horizontal .FeaturedBlog__Body .Grid {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: -1rem;
+    padding-bottom: 1rem;
+  }
+  .FeaturedBlog--horizontal .FeaturedBlog__Body .Grid .Grid__Item {
+    white-space: normal;
+    display: inline-block !important;
+    width: 42%;
+  }
+}
+@media screen and (max-width: 640px) {
+  .FeaturedBlog--horizontal .FeaturedBlog__Body .Grid .Grid__Item {
+    width: 88%;
+  }
+}

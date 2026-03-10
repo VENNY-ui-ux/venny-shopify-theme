@@ -1,0 +1,52 @@
+{{ 'component-page-header.css' | asset_url | stylesheet_tag }}
+
+{%- assign background_image = section.settings.image -%}
+<div class="Container Container--fluid Container--noGutter Container--relative PageHeader  {% if section.settings.use_stroke_title %}PageHeader--blog{% endif %} {% if section.settings.page_header_width == 'full_width' %}PageHeader--withGap{% endif %} {% if background_image != blank %}PageHeader--withBackgroundImage{% endif %}"
+    {% if section.settings.page_header_bg_color != blank and section.settings.page_header_bg_color != 'rgba(0,0,0,0)' %}style="--tg-sys-component-page-header-background: {{ section.settings.page_header_bg_color }}"{% endif%}>
+    {%- if background_image != blank -%}
+
+        {%- capture mobile_size -%}{% if background_image.height >= 960 %}960{% else %}{{ background_image.height }}{% endif %}{%- endcapture -%}
+
+        <div class="PageHeader__Background PageHeader__Background--image"
+            style="background-image: -webkit-image-set(
+                url({{ background_image | image_url: width: 750 }}) 1x,
+                url({{ background_image | image_url: width: 1500 }}) 2x);
+              background-image:image-set(
+                url({{ background_image | image_url: width: 750 }}) 1x,
+                url({{ background_image | image_url: width: 1500 }}) 2x);">
+        </div>
+
+        <div class="BackgroundOverlay"></div>
+    {%- else -%}
+        <div class="PageHeader__Background PageHeader__Background--color"></div>
+    {%- endif -%}
+
+    <div class="PageHeader__ContentWrapper {% if blog.all_tags.size == 0 %}PageHeader__ContentWrapper--withNoBottom{% endif %} Container Container--height{{ section.settings.page_header_height }}">
+        <div class="PageHeader__Content">
+            <h1 class="PageHeader__Title">{{ section.settings.title | default: blog.title }}</h1>
+            
+            {% comment %} {%- if section.settings.subtitle != blank -%}
+                <div class="PageHeader__Subtitle">{{ section.settings.subtitle }}</div>
+            {%- endif -%} {% endcomment %}
+        </div>  
+    </div>
+
+    {%- if blog.all_tags.size > 0 -%}
+        <div class="PageHeader__Bottom">
+            <div class="Container">
+                <ul class="PageHeader__Breadcrumb Breadcrumb">
+                    <li class="Breadcrumb__Item">
+                        <a href="/blogs/{{ blog.handle }}" class="{% if current_tags == blank %}Active{% endif %}">{{ 'blog.general.all_tag' | t }}</a>
+                    </li>
+
+                    {%- for tag in blog.all_tags limit: 8 -%}
+                    <li class="Breadcrumb__Item">
+                        <a href="/blogs/{{ blog.handle }}/tagged/{{ tag | handle }}" class="{% if current_tags contains tag %}Active{% endif %}">{{ tag }}</a>
+                    </li>
+                    {%- endfor -%}
+                </ul>
+            </div>
+        </div>
+    {%- endif -%}
+
+</div>

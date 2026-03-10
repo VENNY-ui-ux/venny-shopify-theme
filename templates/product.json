@@ -1,0 +1,288 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "text_size": "HeadlineSmall"
+          }
+        },
+        "rating": {
+          "type": "rating",
+          "disabled": true,
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "price_size": "TitleLarge",
+            "price_color": "#191c1e",
+            "sale_price_color": "#dd1d1d",
+            "bold_font": false,
+            "show_taxes_included": false
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "hide_sold_out_variants": false,
+            "hide_unavailable_variants": false,
+            "picker_type": "block",
+            "swatch_type": "square"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "disabled": true,
+          "settings": {
+            "show_inventory_quantity": true,
+            "inventory_quantity_threshold": 18
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": false,
+            "show_pickup_availability": false
+          }
+        },
+        "order_deadline_2_app_block_product_UzD6gT": {
+          "type": "shopify://apps/order-deadline-2/blocks/app-block-product/aa720489-6f6f-40f0-bb97-2aeb4afd8498",
+          "settings": {
+            "product": "{{product}}",
+            "style": "boxed",
+            "margintop": 0,
+            "marginbottom": 0,
+            "placementRelativity": "before",
+            "placementTarget": "",
+            "loadEventName": ""
+          }
+        },
+        "trust_badges_wULmbd": {
+          "type": "trust_badges",
+          "disabled": true,
+          "settings": {
+            "trust_badges_img": "shopify://shop_images/VENNY_USP_PP.svg"
+          }
+        },
+        "description_collapsible_L8rFV6": {
+          "type": "description_collapsible",
+          "settings": {
+            "heading": "DESCRIPTION",
+            "open_collapsible_tab": true
+          }
+        },
+        "collapsible_info_M6Vdrd": {
+          "type": "collapsible_info",
+          "settings": {
+            "heading": "MATERIALS",
+            "content": "<p>Our jewelry is crafted from <strong>premium stainless steel</strong>, ensuring a sleek, modern look that’s built to last. Each piece is made <strong>waterproof</strong> through advanced PVD (Physical Vapor Deposition) technology, so you can wear it confidently in the shower, at the beach, or during <strong>any activity without worrying</strong> about tarnish or discoloration. </p><p>This <strong>high-quality material</strong> is not only durable and resistant to scratches but also hypoallergenic, making it <strong>perfect for sensitive skin</strong>. With our jewelry, you’re choosing lasting shine and style that can handle whatever life throws at it.</p>",
+            "page": "",
+            "open_collapsible_tab": false
+          }
+        },
+        "collapsible_info_WjCbWP": {
+          "type": "collapsible_info",
+          "settings": {
+            "heading": "WATERPRROOF",
+            "content": "<p>Our jewelry is fully waterproof, designed to withstand all your daily adventures – from swimming and showering to intense workouts. Using advanced PVD technology, each piece is treated to resist water, sweat, and humidity without losing its shine or color. This means no tarnishing, no rusting, and no fading over time. You can wear our jewelry with confidence, knowing it’s crafted to stay beautiful, whatever the conditions.</p>",
+            "page": "",
+            "open_collapsible_tab": false
+          }
+        },
+        "collapsible_info_Ri8gmF": {
+          "type": "collapsible_info",
+          "settings": {
+            "heading": "DELIVERY & RETURN",
+            "content": "<p><strong>Shipping:</strong> </p><ul><li>Shipping from €3.99</li><li>Free shipping on orders over €75</li><li>Delivery within the EU in 2-4 days</li></ul><p><strong>Return & exchange: </strong></p><ul><li>30-day return/exchange policy</li><li>For return/exchange click here. </li></ul>",
+            "page": "",
+            "open_collapsible_tab": false
+          }
+        },
+        "collapsible_info_gVBQEY": {
+          "type": "collapsible_info",
+          "settings": {
+            "heading": "LIFETIME GUARANTEE",
+            "content": "<p>We’re proud to offer a Lifetime Warranty on all our jewelry, ensuring that your piece stands the test of time. This warranty covers any accidental damage, so you can wear your jewelry with confidence, knowing we have you covered. However, please note: our Lifetime Warranty does not cover loss, theft, or damage caused by third parties. We recommend taking extra care of your piece to keep it safe and looking its best.</p>",
+            "page": "",
+            "open_collapsible_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "rating",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "order_deadline_2_app_block_product_UzD6gT",
+        "trust_badges_wULmbd",
+        "description_collapsible_L8rFV6",
+        "collapsible_info_M6Vdrd",
+        "collapsible_info_WjCbWP",
+        "collapsible_info_Ri8gmF",
+        "collapsible_info_gVBQEY"
+      ],
+      "custom_css": [
+        ".zA7gzY36g4yHEtu5TfBW {--od-root-border-radius: 0px !important; --od-root-padding: 12px !important; --od-root-background-color: #f4f4f4 !important;}",
+        ".ColorDotWrapper {margin-bottom: 12px;}"
+      ],
+      "settings": {
+        "section_width": "full_width",
+        "section_background_color": "",
+        "gallery_media_size": "3x4",
+        "gallery_design": "stack_carousel",
+        "gallery_media_fit_cover": true,
+        "media_centered": true,
+        "enable_media_grouping": false,
+        "media_with": 50,
+        "media_with_mobile": 100,
+        "enable_image_zoom": false,
+        "image_zoom_layout": "carousel",
+        "image_zoom_bg_color": "#000000",
+        "image_zoom_bg_opacity": 50
+      }
+    },
+    "product_recommendations_wz8iAN": {
+      "type": "product-recommendations",
+      "settings": {
+        "section_width": "full_width",
+        "section_spacing": "spacingMedium",
+        "layout_mode": "carousel",
+        "heading": "You may also like",
+        "header_align": "left",
+        "heading_font_size": "HeadlineMedium",
+        "subheading": "",
+        "grid_items_count": 8,
+        "grid_desktop_items_per_row": 4,
+        "grid_mobile_items_per_row": "2",
+        "show_product_info": true,
+        "show_rating": false,
+        "show_vendor": false,
+        "show_swatches": false,
+        "enable_quick_add": false
+      }
+    },
+    "video_with_text_overlay_Kb7bJp": {
+      "type": "video-with-text-overlay",
+      "blocks": {
+        "heading_ANGHgg": {
+          "type": "heading",
+          "settings": {
+            "text": "Tell your story",
+            "heading_font_size": "DisplaySmall",
+            "link": ""
+          }
+        },
+        "description_EtKxt4": {
+          "type": "description",
+          "settings": {
+            "text": "<p>Add your own custom content to give more information</p>"
+          }
+        },
+        "button_F8H9RE": {
+          "type": "button",
+          "settings": {
+            "label": "Shop Now",
+            "link": "",
+            "style": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_ANGHgg",
+        "description_EtKxt4",
+        "button_F8H9RE"
+      ],
+      "settings": {
+        "section_width": "full_width",
+        "section_spacing": "spacingMedium",
+        "overlay_opacity": 0,
+        "overlay_opacity_mobile": 0,
+        "video_link": "",
+        "content_position": "middleCenter",
+        "text_color": "#1c1b1b",
+        "text_color_mobile": "#ffffff"
+      }
+    },
+    "image_with_text_AneXFg": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_CcrMyX": {
+          "type": "heading",
+          "settings": {
+            "text": "Image with text",
+            "heading_font_size": "HeadlineLarge"
+          }
+        },
+        "description_DPUCGM": {
+          "type": "description",
+          "settings": {
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_CcrMyX",
+        "description_DPUCGM"
+      ],
+      "settings": {
+        "section_width": "full_width",
+        "section_spacing": "spacingMedium",
+        "image_position": "Right",
+        "text_color": "",
+        "background_color": "",
+        "text_align": "Left"
+      }
+    },
+    "rich_text_7hATVe": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_3HUAcM": {
+          "type": "heading",
+          "settings": {
+            "text": "Talk about your brand",
+            "heading_font_size": "HeadlineMedium"
+          }
+        },
+        "description_693xWT": {
+          "type": "description",
+          "settings": {
+            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_3HUAcM",
+        "description_693xWT"
+      ],
+      "settings": {
+        "section_width": "default",
+        "section_spacing": "spacingMedium",
+        "background": "",
+        "text_color": "",
+        "content_align": "center"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "product_recommendations_wz8iAN",
+    "video_with_text_overlay_Kb7bJp",
+    "image_with_text_AneXFg",
+    "rich_text_7hATVe"
+  ]
+}

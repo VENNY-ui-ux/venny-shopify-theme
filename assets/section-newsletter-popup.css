@@ -1,0 +1,88 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Newsletter popup
+ * ----------------------------------------------------------------------------
+ */
+.NewsletterPopup .Form__Input::-moz-placeholder {
+  opacity: 0.8;
+}
+.NewsletterPopup .Form__Input:-ms-input-placeholder {
+  opacity: 0.8;
+}
+.NewsletterPopup .Form__Input::placeholder {
+  opacity: 0.8;
+}
+.NewsletterPopup .NewsletterPopup__ImageWrapper {
+  display: none;
+}
+.NewsletterPopup .NewsletterPopup__ContentWrapper {
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+.NewsletterPopup .NewsletterPopup__ContentWrapper .Form__Input {
+  margin-bottom: 0.5rem;
+}
+.NewsletterPopup .NewsletterPopup__Content {
+  width: 100%;
+}
+.NewsletterPopup .NewsletterPopup__Social {
+  justify-content: center;
+}
+.NewsletterPopup .Modal__Body {
+  padding: 0;
+}
+
+.NewsletterPopup__Social {
+  margin-top: 5px;
+}
+
+.NewsletterPopup__Close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.NewsletterPopup__Close svg {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+}
+
+.Form--newsletterPopup {
+  margin-top: 1.5rem;
+}
+
+@media screen and (min-width: 641px) {
+  .NewsletterPopup .Modal__Dialog {
+    max-width: 420px;
+  }
+  .NewsletterPopup .Modal__Body {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+  .NewsletterPopup .NewsletterPopup__ImageWrapper {
+    display: block;
+    width: 320px;
+    flex-shrink: 0;
+  }
+  .NewsletterPopup--withImage .Modal__Dialog {
+    max-width: 800px;
+  }
+  .NewsletterPopup--imageRight .NewsletterPopup__ContentWrapper {
+    order: 1;
+  }
+  .NewsletterPopup--imageRight .NewsletterPopup__ImageWrapper {
+    order: 2;
+  }
+  .NewsletterPopup__Social {
+    margin-top: 0.75rem;
+  }
+  .NewsletterPopup__Close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}

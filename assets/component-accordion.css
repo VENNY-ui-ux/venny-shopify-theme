@@ -1,0 +1,101 @@
+:root {
+  --tg-component-accordion-body-background: var(--tg-sys-color-surface3);
+  --tg-component-accordion-body-text-color: var(--tg-sys-color-on-surface);
+  --tg-component-accordion-button-text-color: var(--tg-sys-color-on-background);
+  --tg-component-accordion-button-icon: var(--tg-component-icon-plus);
+  --tg-component-accordion-button-active-icon: var(--tg-component-icon-minus);
+}
+
+.Accordion__Button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: start;
+  background-color: transparent;
+  border: 1px solid var(--tg-sys-color-outline);
+  border-radius: 0;
+  overflow-anchor: none;
+  color: var(--tg-component-accordion-button-text-color);
+  font-family: var(--tg-sys-typescale-title-medium-font);
+  font-style: var(--tg-sys-typescale-title-medium-style);
+  font-weight: var(--tg-sys-typescale-title-medium-weight);
+  font-size: var(--tg-sys-typescale-title-medium-size);
+  line-height: var(--tg-sys-typescale-title-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-title-medium-tracking);
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
+}
+.Accordion__Button:not(.Collapsed)::after {
+  background-image: var(--tg-component-accordion-button-active-icon);
+  transform: rotate(-180deg);
+}
+.Accordion__Button::after {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  -webkit-margin-start: auto;
+          margin-inline-start: auto;
+  content: "";
+  background-image: var(--tg-component-accordion-button-icon);
+  background-repeat: no-repeat;
+  background-size: 1.25rem;
+  transition: transform 0.2s ease-in-out;
+}
+.Accordion__Button:hover {
+  z-index: 2;
+}
+
+.Accordion__Button--noAction::after {
+  display: none;
+}
+
+.Accordion__Header {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.Accordion__Item {
+  margin-bottom: 1rem;
+}
+
+.Accordion__Body {
+  padding: 1rem 1.25rem;
+  background: var(--tg-component-accordion-body-background);
+  color: var(--tg-component-accordion-body-text-color) !important;
+}
+
+.Accordion__Collapse {
+  border-width: 0;
+}
+
+.Accordion__Item {
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+}
+.Accordion__Item:first-child {
+  border-top: 0;
+}
+.Accordion__Item:last-child {
+  border-bottom: 0;
+}
+.Accordion__Item .Accordion__Button {
+  border-radius: 0;
+}
+
+.Collapse:not(.Show) {
+  display: none;
+}
+
+.Collapsing {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+
+.Collapsing.Collapse--horizontal {
+  width: 0;
+  height: auto;
+  transition: width 0.35s ease;
+}

@@ -1,0 +1,351 @@
+{%- liquid
+  assign assign page_header_bg_img = section.settings.image
+  if section.settings.heading != blank
+    assign page_header_title =  section.settings.heading
+  else
+    assign page_header_title =  'customer.register.title' | t 
+  endif
+
+  assign add_gap =  true 
+  if section.settings.page_header_width == 'full_width_no_gap'
+      assign add_gap =  false 
+  endif 
+
+  render 'page-header', background_image: page_header_bg_img, background_color: section.settings.page_header_bg_color, page_header_title: page_header_title, page_header_height: section.settings.page_header_height, add_gap: add_gap
+
+  assign collection_count = 0
+
+  if section.settings.collections_to_show == 'all'
+    assign collection_count = collections.size 
+  else
+    assign collection_count = section.blocks.size
+  endif 
+
+  case section.settings.sort
+    when 'products_high', 'products_low'
+      assign collections = collections | sort: 'all_products_count'
+    when 'date', 'date_reversed'
+      assign collections = collections | sort: 'published_at'
+  endcase
+
+  if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+    assign collections = collections | reverse
+  endif
+
+  assign grid_items_per_page =  section.settings.grid_items_per_page | default: 16 
+  assign desktop_items_per_row = section.settings.grid_desktop_items_per_row | default: 4
+  assign mobile_items_per_row  = section.settings.grid_mobile_items_per_row | times: 1 
+
+-%}
+{{ 'component-collection-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-text-on-image.css' | asset_url | stylesheet_tag }}
+
+<section id="section-{{ section.id }}" class="Container ListCollection{% if section.settings.section_width == 'full_width' %} Container--fluid{% endif %}" data-section-id="{{ section.id }}">
+
+  {%- if collection_count == 0 -%} 
+    <div class="EmptyResult">
+      <h3 class="EmptyResult__Title">{{ 'collection_list.general.empty_title' | t }}</h3>
+      <a href="{{ routes.root_url }}" class="EmptyResult__Action Button Button--primary">{{ 'collection_list.general.empty_button' | t }}</a>
+    </div>
+  {%- else -%}
+    {%- if section.settings.collections_to_show == 'all' -%}
+      {%- paginate collections by grid_items_per_page -%}
+        <div class="Grid">
+          {%- for collection in collections -%}
+            <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up">
+              {%- render 'collection-card', collection: collection -%}
+            </div>
+          {%- endfor -%}
+        </div>
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <div class="Grid">
+        {%- for block in section.blocks -%}
+          {%- assign collection = collections[block.settings.collection] -%}
+          <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up" {{ block.shopify_attributes }}>
+            {%- render 'collection-card', collection: collection, block: block -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+</section>
+
+{% schema %}
+{
+  "name": "Collection list page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    },
+    {
+      "type": "header",
+      "content": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "radio",
+      "id": "collections_to_show",
+      "label": "Collections to show",
+      "info": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections.",
+      "options": [
+        {
+          "value": "all",
+          "label": "All"
+        },
+        {
+          "value": "selected",
+          "label": "Selected"
+        }
+      ],
+      "default": "all"
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "options": [
+        {
+          "value": "alphabetical",
+          "label": "Alphabetically, A-Z"
+        },
+        {
+          "value": "alphabetical_reversed",
+          "label": "Alphabetically, Z-A"
+        },
+        {
+          "value": "date_reversed",
+          "label": "Date, new to old"
+        },
+        {
+          "value": "date",
+          "label": "Date, old to new"
+        },
+        {
+          "value": "products_high",
+          "label": "Product count, high to low"
+        },
+        {
+          "value": "products_low",
+          "label": "Product count, low to high"
+        }
+      ],
+      "default": "alphabetical",
+      "label": "Sort collections by",
+      "info": "Visible when the ‘Collections to show’ setting is set to All."
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "id": "grid_items_per_page",
+      "label": "Collections per page",
+      "min": 4,
+      "max": 50,
+      "step": 1,
+      "default": 18,
+      "info": "Visible when the ‘Collections to show’ setting is set to All."
+    },
+    {
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "id": "grid_desktop_items_per_row",
+      "label": "Number of columns on desktop",
+      "default": 3
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "id": "grid_mobile_items_per_row",
+      "label": "Number of columns on mobile",
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Collection card"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "natural",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "2x3",
+          "label": "2:3"
+        },
+        {
+          "value": "3x4",
+          "label": "3:4"
+        },
+        {
+          "value": "1x1",
+          "label": "1:1"
+        },
+        {
+          "value": "4x3",
+          "label": "4:3"
+        },
+        {
+          "value": "16x9",
+          "label": "16:9"
+        },
+        {
+          "value": "21x9",
+          "label": "21:9"
+        }
+      ],
+      "default": "3x4"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "600 x 800px .jpg recommended."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "heading"
+        },
+        {
+          "type": "select",
+          "id": "heading_style",
+          "label": "Heading style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            }
+          ],
+          "default": "secondary"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Content alignment",
+          "options": [
+            {
+              "value": "bottomLeft",
+              "label": "Left"
+            },
+            {
+              "value": "bottomCenter",
+              "label": "Center"
+            },
+            {
+              "value": "bottomRight",
+              "label": "Right"
+            }
+          ],
+          "default": "bottomCenter"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

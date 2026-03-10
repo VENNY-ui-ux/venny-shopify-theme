@@ -1,0 +1,68 @@
+{%- liquid 
+    assign collection_image = block.settings.image | default: collection.image | default: collection.products.first.featured_image
+
+    assign animation_image_loading_tag = 'div'
+    assign animation_image_loading_class = 'TextOnImage__Image Image--fadeIn'
+    if settings.animation_image_loading == 'circle_icon'
+        assign animation_image_loading_tag = 'feature-img'
+        assign animation_image_loading_class = 'Image--withLoader Image--fadeIn TextOnImage__Image'
+    endif
+
+    assign card_desktop_items_per_row = card_desktop_items_per_row | default: section.settings.grid_desktop_items_per_row | default: 3
+    assign card_mobile_items_per_row = card_mobile_items_per_row | default: section.settings.grid_mobile_items_per_row | default: 2
+
+    if section.settings.layout_mobile == 'horizontal'
+        assign card_mobile_items_per_row = 1.136
+    endif
+-%}
+
+{%- capture tg_sizes -%}
+    {%- if section.settings.section_width == 'default' -%}
+        (min-width: 1008px) calc((min(100vw, {{ settings.container_max_width }}px) - 64px - {{ card_desktop_items_per_row | ceil | minus: 1 | times: settings.spacing_grid_horizontal }}px ) / {{ card_desktop_items_per_row }}), calc((100vw - 32px - {{ card_mobile_items_per_row | ceil | minus: 1 | times: settings.spacing_grid_horizontal }}px ) / {{ card_mobile_items_per_row }})
+    {%- else -%}
+        (min-width: 1008px) calc((100vw - 64px - {{ card_desktop_items_per_row | ceil | minus: 1 | times: settings.spacing_grid_horizontal }}px ) / {{ card_desktop_items_per_row }}), calc((100vw - 32px - {{ card_mobile_items_per_row | ceil | minus: 1 | times: settings.spacing_grid_horizontal }}px ) / {{ card_mobile_items_per_row }})
+    {%- endif -%}
+{%- endcapture -%}
+
+
+<div id="{% if block %}block{{ block.id }}{% endif %}"  class="CollectionCard">
+    <a href="{{ collection.url }}" class="TextOnImage TextOnImage--{{ block.settings.content_position | default: 'bottomCenter' }} TextOnImage--{{ section.settings.image_ratio }}"
+        style="{% if collection_image != blank and section.settings.image_ratio == 'natural' %}--tg-component-text-on-image-image-ratio-mobile: {{ collection_image.aspect_ratio }};--tg-component-text-on-image-image-ratio: {{ collection_image.aspect_ratio }};
+    {% elsif section.settings.image_ratio == 'natural' %}--tg-component-text-on-image-image-ratio-mobile: 0.75; --tg-component-text-on-image-image-ratio: 0.75;{% endif %}"
+    >
+        {%- if collection_image != blank -%}
+            <{{- animation_image_loading_tag }} class="TextOnImage__ImageWrapper Ratio">
+
+                {{ collection_image | image_url: width: 3000 | image_tag:
+                    loading: 'lazy',
+                    sizes: tg_sizes,
+                    widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000',
+                    class: animation_image_loading_class
+                }}
+
+                {%- if settings.animation_image_loading != 'none' -%}
+                    <span class="Image--loader"></span>
+                {%- endif -%}
+            </{{- animation_image_loading_tag }}>
+        {%- elsif collection != blank -%}
+            <div class="TextOnImage__ImageWrapper Ratio">
+                <div class="TextOnImage__Image TextOnImage__Image--bgColor"></div>
+            </div>
+        {%- else -%}
+            <div class="TextOnImage__ImageWrapper Ratio">
+                {%- capture placeholder -%}{% cycle 'collection-6', 'collection-5', 'collection-4' %}{%- endcapture -%}
+                {{ placeholder | placeholder_svg_tag: 'TextOnImage__Image SvgPlaceholder' }} 
+            </div>
+        {%- endif -%}
+        
+        {%- if block.settings.heading != blank or collection != blank -%}
+            <div class="TextOnImage__Content">
+                <div class="TextOnImage__ContentInner">
+                    <button type="button" class="Button Button--{{ block.settings.heading_style | default: 'secondary' }}">
+                        {%- if block.settings.heading != blank -%}{{ block.settings.heading }}{%- elsif collection -%}{{ collection.title }}{%- endif -%}
+                    </button>
+                </div>
+            </div>
+        {%- endif -%}
+    </a>
+</div>

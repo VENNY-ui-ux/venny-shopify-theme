@@ -1,0 +1,72 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "countdown_timer_bar_LhNHpz": {
+      "type": "countdown-timer-bar",
+      "disabled": true,
+      "settings": {
+        "section_width": "default",
+        "section_spacing": "none",
+        "background": "",
+        "text_color": "",
+        "content": "Tell something about your offers, sale or discounts.",
+        "expiration_date": "",
+        "hide_bar_after_expiration": false
+      }
+    },
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "custom_css": [],
+      "settings": {
+        "enable_bar": true,
+        "closeable": true,
+        "content": "<p>3 FOR 2, GET 1 FREE</p>",
+        "background": "#151f50",
+        "text_color": "#fbfcfe"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "section_width": "full_width",
+        "section_spacing": "spacingLarge",
+        "enable_sticky_header": true,
+        "show_header_border": false,
+        "enable_transparent_header": false,
+        "show_search_icon": true,
+        "show_cart_icon": true,
+        "header_background": "",
+        "header_text_color": "",
+        "header_text_color_transparent": "",
+        "logo": "shopify://shop_images/VENNY_-_header_logo_pc_1.svg",
+        "logo_position": "middleCenter",
+        "logo_position_mobile": "Left",
+        "logo_max_width": 135,
+        "mobile_logo_max_width": 80,
+        "navigation_menu_main": "main-menu",
+        "show_dropdown_menu_icon": true,
+        "navigation_menu_main_font_size": "TitleMedium",
+        "navigation_menu_third": "",
+        "enable_country_selector": true,
+        "show_country_name": false,
+        "show_country_flag": true,
+        "enable_language_selector": true
+      }
+    }
+  },
+  "order": [
+    "countdown_timer_bar_LhNHpz",
+    "announcement-bar",
+    "header"
+  ]
+}

@@ -1,0 +1,61 @@
+{{ 'component-page-header.css' | asset_url | stylesheet_tag }}
+
+{% assign background_image = background_image %}
+{% assign page_header_height = page_header_height | default: "Small" %}
+
+<div class="Container Container--fluid Container--noGutter Container--relative PageHeader PageHeader--search 
+{% if add_gap %}PageHeader--withGap{% endif %} 
+{% if background_image != blank %}PageHeader--withBackgroundImage{% endif %}"
+{% if section.settings.page_header_bg_color != blank and section.settings.page_header_bg_color != 'rgba(0,0,0,0)' %}style="--tg-sys-component-page-header-background: {{ section.settings.page_header_bg_color }}"{% endif%}>
+    {%- if background_image != blank -%}
+        {%- capture mobile_size -%}{% if background_image.height >= 960 %}960{% else %}{{ background_image.height }}{% endif %}{%- endcapture -%}
+
+        <div class="PageHeader__Background PageHeader__Background--image"
+            style="background-image: -webkit-image-set(
+                url({{ background_image | image_url: width: 750 }}) 1x,
+                url({{ background_image | image_url: width: 1500 }}) 2x);
+              background-image:image-set(
+                url({{ background_image | image_url: width: 750 }}) 1x,
+                url({{ background_image | image_url: width: 1500 }}) 2x);">
+        </div>
+        <div class="BackgroundOverlay"></div>
+    {%- else -%}
+        <div class="PageHeader__Background PageHeader__Background--color"></div>
+    {%- endif -%}
+
+    <div class="PageHeader__ContentWrapper Container Container--height{{ page_header_height }}">
+        <div class="PageHeader__Content">
+
+            <span class="PageHeader__Badge Badge">{{ 'search.general.title' | t }}</span>
+
+            {%- if search.performed -%}
+                <h1 class="PageHeader__Title">
+                    {{- 'search.general.results_with_terms_count' | t: count: search.results_count, terms: search.terms -}}
+                </h1>
+            {%- else -%} 
+                <h1 class="PageHeader__Title">{{ 'search.general.title' | t }}</h1>
+            {%- endif -%} 
+
+            <form method="GET" action="{{ routes.search_url }}" class="Form PageHeader__Form">
+                <input id="SearchHeaderFormQueryString" class="Form__Input" type="text" name="q" {% if search.performed %}value="{{ search.terms | replace: '*', '' }}"{% endif %} autocomplete="off" autocorrect="off" aria-label="{{ 'search.general.input_placeholder' | t }}" placeholder="{{ 'search.general.input_placeholder' | t }}">
+                <label class="VisuallyHidden" for="SearchHeaderFormQueryString">{{ 'search.general.input_placeholder' | t }}</label>
+                <input type="hidden" name="options[prefix]" value="last">
+                <button type="submit" class="Button Button--primary Form__Submit">{{ 'search.general.title' | t }}</button>
+            </form>
+
+            {%- if page_header_subtitle != blank -%}
+                <div class="PageHeader__Subtitle">{{ page_header_subtitle }}</div> 
+            {%- endif -%} 
+
+        </div>  
+    </div>
+
+    <div class="PageHeader__Bottom">
+        <div class="Container">
+            <ul class="PageHeader__Breadcrumb Breadcrumb">
+                <li class="Breadcrumb__Item"><a href="{{ routes.root_url }}" class="" title="{{ 'general.breadcrumb.home' | t }}">{{ 'general.breadcrumb.home' | t }}</a></li> 
+                <li class="Breadcrumb__Item">{{- 'search.general.title' | t -}}</li>
+            </ul>
+        </div>
+    </div>
+</div>

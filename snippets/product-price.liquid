@@ -1,0 +1,63 @@
+{%- liquid
+    if settings.price_currency_format == 'money'
+        assign money_price = product.selected_or_first_available_variant.price | money
+        assign money_price_compare = product.selected_or_first_available_variant.compare_at_price | money
+        assign money_price_unit = product.selected_or_first_available_variant.unit_price | money
+    elsif settings.price_currency_format == 'money_with_currency'
+        assign money_price = product.selected_or_first_available_variant.price | money_with_currency
+        assign money_price_compare = product.selected_or_first_available_variant.compare_at_price | money_with_currency
+        assign money_price_unit = product.selected_or_first_available_variant.unit_price | money_with_currency
+    elsif settings.price_currency_format == 'money_without_currency'
+        assign money_price = product.selected_or_first_available_variant.price | money_without_currency
+        assign money_price_compare = product.selected_or_first_available_variant.compare_at_price | money_without_currency
+        assign money_price_unit = product.selected_or_first_available_variant.unit_price | money_without_currency
+    else
+        assign money_price = product.selected_or_first_available_variant.price | money_without_trailing_zeros
+        assign money_price_compare = product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros
+        assign money_price_unit = product.selected_or_first_available_variant.unit_price | money_without_trailing_zeros
+    endif 
+-%}
+
+<div class="Product__PriceList {{ block.settings.price_size }}" 
+    style="
+        {%- if block.settings.sale_price_color != blank and block.settings.sale_price_color != 'rgba(0,0,0,0)' -%} 
+            --tg-product-price-sale-color: {{ block.settings.sale_price_color }};
+        {%- endif -%}
+        {%- if block.settings.price_color != blank and block.settings.price_color != 'rgba(0,0,0,0)' -%} 
+            --tg-product-price-regular-color: {{ block.settings.price_color }};
+        {%- endif -%}
+        {%- if block.settings.bold_font -%} 
+        --tg-product-price-text-font-weight: 500;
+        {%- endif -%}
+    ">
+    {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+        <span class="Price Price--saleRegular">{{ money_price_compare }}</span>
+        <span class="Price Price--sale">{{ money_price }}</span>
+    {%- else -%}
+        <span class="Price">{{ money_price }}</span>
+    {%- endif -%}
+</div>
+
+<div class="Product__UnitPrice {{ block.settings.price_size }}" style="display: {%- if product.selected_or_first_available_variant.unit_price_measurement -%}block{% else %}none{% endif %}" 
+    style="
+        {%- if block.settings.sale_price_color != blank and block.settings.sale_price_color != 'rgba(0,0,0,0)' -%} 
+            --tg-product-price-sale-color: {{ block.settings.sale_price_color }};
+        {%- endif -%}
+        {%- if block.settings.price_color != blank and block.settings.price_color != 'rgba(0,0,0,0)' -%} 
+            --tg-product-price-regular-color: {{ block.settings.price_color }};
+        {%- endif -%}
+        {%- if block.settings.bold_font -%} 
+        --tg-product-price-text-font-weight: 500;
+        {%- endif -%}
+    ">
+    <div class="UnitPrice">
+        <span class="UnitPrice__Price">{{ money_price_unit }}</span>
+        <span class="UnitPrice__Separator">/ </span>
+
+        {%- if product.selected_or_first_available_variant.unit_price_measurement.reference_value != 1 -%}
+            <span class="UnitPrice__ReferenceValue">{{ product.selected_or_first_available_variant.unit_price_measurement.reference_value }}</span>
+        {%- endif -%}
+
+        <span class="UnitPrice__ReferenceUnit">{{ product.selected_or_first_available_variant.unit_price_measurement.reference_unit }}</span>
+    </div>
+</div>

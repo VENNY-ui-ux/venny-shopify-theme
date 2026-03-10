@@ -1,0 +1,58 @@
+{%- liquid
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class = 'NavCard__Image Image--fadeIn'
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class = 'Image--withLoader Image--fadeIn NavCard__Image'
+  endif
+-%}
+
+<div class="NavCard Animate__Item">
+    {%- if block.settings.link_url != blank -%}
+      <a class="NavCard__Inner" href="{{ block.settings.link_url | default: '#' }}">
+    {%- else -%}
+      <div class="NavCard__Inner">
+    {%- endif -%}
+
+    {%- if block.settings.image != blank -%}
+      <{{- animation_image_loading_tag }} class="NavCard__ImageWrapper Ratio {% if section.settings.featured_image_size != 'natural' %} Ratio--{{ section.settings.featured_image_size }}{% endif %}" 
+        {% if section.settings.featured_image_size == 'natural' %}style="--tg-aspect-ratio: {{ block.settings.image.aspect_ratio }}"{% endif %}>
+        
+        {%- capture tg_sizes -%}
+          {%- if section.settings.section_width == 'default' -%}
+            (min-width: 641px) calc((min(100vw, {{ settings.container_max_width }}px) - 64px) / {{ section.settings.grid_desktop_items_per_row }}), {% if section.settings.layout_mode == 'carousel' %}30vw{% else %}calc((100vw - 32px) / {{ section.settings.grid_mobile_items_per_row }}){%- endif -%}
+          {%- else -%}
+            (min-width: 641px) calc((100vw - 64px) / {{ section.settings.grid_desktop_items_per_row }}), {% if section.settings.layout_mode == 'carousel' %}30vw{% else %}calc((100vw - 32px) / {{ section.settings.grid_mobile_items_per_row }}){%- endif -%}
+          {%- endif -%}
+        {%- endcapture -%}
+        {{ block.settings.image | image_url: width: 2000 | image_tag:
+            sizes: tg_sizes,
+            widths: '375, 550, 750, 1100, 1500, 1780, 2000',
+            class: animation_image_loading_class
+        }}
+
+        {%- if settings.animation_image_loading != 'none' -%}
+          <span class="Image--loader"></span>
+        {%- endif -%}
+
+      </{{- animation_image_loading_tag }}>
+    {%- else -%}
+      <div class="NavCard__ImageWrapper Ratio {% if section.settings.featured_image_size != 'natural' %} Ratio--{{ section.settings.featured_image_size }}{% endif %}"
+        {% if section.settings.featured_image_size == 'natural' %}style="--tg-aspect-ratio: 1;"{% endif %}>
+        {{ 'image' | placeholder_svg_tag: 'NavCard__Image SvgPlaceholder' }}
+      </div>
+    {%- endif -%}
+    
+    <div class="NavCard__Text">
+      {%- if block.settings.subheading != blank -%}
+        <p class="NavCard__Subtitle TextMuted">{{ block.settings.subheading }}</p>
+      {%- endif -%}
+      
+      {%- if block.settings.heading != blank -%}
+        <h3 class="NavCard__Title CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h3>
+      {%- endif -%}
+      
+    </div>
+
+  {%- if block.settings.link_url != blank -%}</a>{%- else -%}</div>{%- endif -%}
+</div>

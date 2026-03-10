@@ -1,0 +1,252 @@
+:root {
+  --tg-component-text-on-image-image-ratio: 1.5;
+  --tg-component-text-on-image-image-ratio-mobile: 0.65;
+  --tg-component-text-on-image-image-ratio-x-x-small: 2.8;
+  --tg-component-text-on-image-image-ratio-mobile-x-x-small: 1.2;
+  --tg-component-text-on-image-image-ratio-x-small: 2.2;
+  --tg-component-text-on-image-image-ratio-mobile-x-small: 1.1;
+  --tg-component-text-on-image-image-ratio-small: 1.8;
+  --tg-component-text-on-image-image-ratio-mobile-small: 1.0;
+  --tg-component-text-on-image-image-ratio-medium: 1.5;
+  --tg-component-text-on-image-image-ratio-mobile-medium: 0.65;
+  --tg-component-text-on-image-image-ratio-large: 1.2;
+  --tg-component-text-on-image-image-ratio-mobile-large: 0.55;
+}
+
+.TextOnImage {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  padding-top: calc(var(--tg-header-height) * var(--section-is-first, 0) * var(--header-is-transparent) - 1rem * var(--section-is-first, 0) * var(--header-is-transparent) * var(--header-has-no-bottom-border));
+}
+.TextOnImage::before {
+  padding-bottom: calc(100% / (var(--tg-component-text-on-image-image-ratio-mobile)));
+  content: "";
+  display: block;
+}
+@media screen and (min-width: 641px) {
+  .TextOnImage {
+    --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio);
+    padding-top: calc(var(--tg-header-height) * var(--section-is-first, 0) * var(--header-is-transparent) - 2rem * var(--section-is-first, 0) * var(--header-is-transparent) * var(--header-has-no-bottom-border));
+  }
+  .TextOnImage::before {
+    padding-bottom: calc(100% / (var(--tg-component-text-on-image-image-ratio)));
+  }
+}
+
+.TextOnImage.TextOnImage--fixedHeightSmall {
+  min-height: 20rem;
+}
+.TextOnImage.TextOnImage--fixedHeightMedium {
+  min-height: 25rem;
+}
+.TextOnImage.TextOnImage--fixedHeightLarge {
+  min-height: 30rem;
+}
+.TextOnImage.TextOnImage--x-x-small {
+  --tg-component-text-on-image-image-ratio-mobile: var(--tg-component-text-on-image-image-ratio-mobile-x-x-small);
+  --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-mobile-x-x-small);
+}
+@media screen and (min-width: 641px) {
+  .TextOnImage.TextOnImage--x-x-small {
+    --tg-component-text-on-image-image-ratio: var(--tg-component-text-on-image-image-ratio-x-x-small);
+    --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-x-x-small);
+  }
+}
+.TextOnImage.TextOnImage--x-small {
+  --tg-component-text-on-image-image-ratio-mobile: var(--tg-component-text-on-image-image-ratio-mobile-x-small);
+  --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-mobile-x-small);
+}
+@media screen and (min-width: 641px) {
+  .TextOnImage.TextOnImage--x-small {
+    --tg-component-text-on-image-image-ratio: var(--tg-component-text-on-image-image-ratio-x-small);
+    --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-x-small);
+  }
+}
+.TextOnImage.TextOnImage--small {
+  --tg-component-text-on-image-image-ratio-mobile: var(--tg-component-text-on-image-image-ratio-mobile-small);
+  --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-mobile-small);
+}
+@media screen and (min-width: 641px) {
+  .TextOnImage.TextOnImage--small {
+    --tg-component-text-on-image-image-ratio: var(--tg-component-text-on-image-image-ratio-small);
+    --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-small);
+  }
+}
+.TextOnImage.TextOnImage--medium {
+  --tg-component-text-on-image-image-ratio-mobile: var(--tg-component-text-on-image-image-ratio-mobile-medium);
+  --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-mobile-medium);
+}
+@media screen and (min-width: 641px) {
+  .TextOnImage.TextOnImage--medium {
+    --tg-component-text-on-image-image-ratio: var(--tg-component-text-on-image-image-ratio-medium);
+    --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-medium);
+  }
+}
+.TextOnImage.TextOnImage--large {
+  --tg-component-text-on-image-image-ratio-mobile: var(--tg-component-text-on-image-image-ratio-mobile-large);
+  --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-mobile-large);
+}
+@media screen and (min-width: 641px) {
+  .TextOnImage.TextOnImage--large {
+    --tg-component-text-on-image-image-ratio: var(--tg-component-text-on-image-image-ratio-large);
+    --tg-aspect-ratio: var(--tg-component-text-on-image-image-ratio-large);
+  }
+}
+.TextOnImage.TextOnImage--2x3 {
+  --tg-component-text-on-image-image-ratio-mobile: 0.6666666;
+  --tg-component-text-on-image-image-ratio: 0.6666666;
+  --tg-aspect-ratio: 0.6666666;
+}
+.TextOnImage.TextOnImage--3x4 {
+  --tg-component-text-on-image-image-ratio-mobile: 0.75;
+  --tg-component-text-on-image-image-ratio: 0.75;
+  --tg-aspect-ratio: 0.75;
+}
+.TextOnImage.TextOnImage--1x1 {
+  --tg-component-text-on-image-image-ratio-mobile: 1;
+  --tg-component-text-on-image-image-ratio: 1;
+  --tg-aspect-ratio: 1;
+}
+.TextOnImage.TextOnImage--4x3 {
+  --tg-component-text-on-image-image-ratio-mobile: 1.3333333;
+  --tg-component-text-on-image-image-ratio: 1.3333333;
+  --tg-aspect-ratio: 1.3333333;
+}
+.TextOnImage.TextOnImage--3x2 {
+  --tg-component-text-on-image-image-ratio-mobile: 1.5;
+  --tg-component-text-on-image-image-ratio: 1.5;
+  --tg-aspect-ratio: 1.5;
+}
+.TextOnImage.TextOnImage--16x9 {
+  --tg-component-text-on-image-image-ratio-mobile: 1.7777777;
+  --tg-component-text-on-image-image-ratio: 1.7777777;
+  --tg-aspect-ratio: 1.7777777;
+}
+.TextOnImage.TextOnImage--21x9 {
+  --tg-component-text-on-image-image-ratio-mobile: 2.333333;
+  --tg-component-text-on-image-image-ratio: 2.333333;
+  --tg-aspect-ratio: 2.333333;
+}
+
+.TextOnImage__ImageWrapper {
+  display: block;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.TextOnImage__Image {
+  flex-grow: 1;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.TextOnImage__Image.TextOnImage__Image--bgColor {
+  background: var(--tg-sys-color-surface1);
+}
+
+.TextOnImage__Content {
+  position: relative;
+  padding: 2.5rem;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+}
+@media screen and (min-width: 641px) {
+  .TextOnImage__Content {
+    padding: 4rem;
+  }
+}
+@media screen and (min-width: 1280px) {
+  .TextOnImage__Content {
+    padding: 6rem;
+  }
+}
+
+.TextOnImage__Content--empty {
+  padding: 0;
+}
+
+.TextOnImage__ContentInner {
+  margin-bottom: 0;
+  display: flex;
+}
+
+.TextOnImage--topLeft .TextOnImage__Content,
+.TextOnImage--middleLeft .TextOnImage__Content,
+.TextOnImage--bottomLeft .TextOnImage__Content {
+  justify-content: flex-start;
+  text-align: start;
+}
+.TextOnImage--topLeft .ButtonGroup,
+.TextOnImage--middleLeft .ButtonGroup,
+.TextOnImage--bottomLeft .ButtonGroup {
+  justify-content: flex-start;
+}
+
+.TextOnImage--topCenter .TextOnImage__Content,
+.TextOnImage--middleCenter .TextOnImage__Content,
+.TextOnImage--bottomCenter .TextOnImage__Content {
+  justify-content: center;
+  text-align: center;
+}
+.TextOnImage--topCenter .ButtonGroup,
+.TextOnImage--middleCenter .ButtonGroup,
+.TextOnImage--bottomCenter .ButtonGroup {
+  justify-content: center;
+}
+
+.TextOnImage--topRight .TextOnImage__Content,
+.TextOnImage--middleRight .TextOnImage__Content,
+.TextOnImage--bottomRight .TextOnImage__Content {
+  justify-content: flex-end;
+  text-align: end;
+}
+.TextOnImage--topRight .ButtonGroup,
+.TextOnImage--middleRight .ButtonGroup,
+.TextOnImage--bottomRight .ButtonGroup {
+  justify-content: flex-end;
+}
+
+.TextOnImage--topLeft,
+.TextOnImage--topCenter,
+.TextOnImage--topRight {
+  align-items: flex-start;
+}
+.TextOnImage--topLeft .TextOnImage__ContentInner,
+.TextOnImage--topCenter .TextOnImage__ContentInner,
+.TextOnImage--topRight .TextOnImage__ContentInner {
+  align-items: flex-start;
+}
+
+.TextOnImage--middleLeft,
+.TextOnImage--middleCenter,
+.TextOnImage--middleRight {
+  align-items: center;
+}
+.TextOnImage--middleLeft .TextOnImage__ContentInner,
+.TextOnImage--middleCenter .TextOnImage__ContentInner,
+.TextOnImage--middleRight .TextOnImage__ContentInner {
+  align-items: center;
+}
+
+.TextOnImage--bottomLeft,
+.TextOnImage--bottomCenter,
+.TextOnImage--bottomRight {
+  align-items: flex-end;
+}
+.TextOnImage--bottomLeft .TextOnImage__ContentInner,
+.TextOnImage--bottomCenter .TextOnImage__ContentInner,
+.TextOnImage--bottomRight .TextOnImage__ContentInner {
+  align-items: flex-end;
+}

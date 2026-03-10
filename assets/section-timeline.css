@@ -1,0 +1,179 @@
+:root {
+  --tg-section-timeline-item-background-color: var(--tg-sys-color-surface1);
+  --tg-section-timeline-item-text-color: var(--tg-sys-color-on-surface);
+  --tg-section-timeline-item-separation-border-color: var(--tg-sys-color-shadow2);
+}
+
+.Timeline__Body {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  position: relative;
+  margin: 0 auto;
+}
+.Timeline__Body::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  background-color: var(--tg-section-timeline-item-separation-border-color);
+  top: 0;
+  left: calc(50% - 2px);
+  bottom: 0;
+}
+
+.TimelineItem {
+  padding: 0.75rem 2.25rem;
+  position: relative;
+  background-color: inherit;
+  width: 50%;
+}
+.TimelineItem::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  right: -12px;
+  background: var(--tg-section-timeline-item-background-color);
+  border: 4px solid var(--tg-section-timeline-item-separation-border-color);
+  top: 26px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.TimelineItem--left {
+  left: 0;
+  -webkit-padding-start: 0;
+          padding-inline-start: 0;
+}
+@media screen and (min-width: 641px) {
+  .TimelineItem--left .TimelineItem__Content {
+    text-align: end;
+  }
+}
+
+.TimelineItem--right {
+  left: 50%;
+  -webkit-padding-end: 0;
+          padding-inline-end: 0;
+}
+
+.TimelineItem--left::before {
+  content: " ";
+  height: 0;
+  position: absolute;
+  top: 32px;
+  width: 0;
+  z-index: 1;
+  right: 29px;
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  background: var(--tg-section-timeline-item-background-color);
+  border-radius: 2px;
+}
+
+.TimelineItem--right::before {
+  content: " ";
+  height: 0;
+  position: absolute;
+  top: 32px;
+  width: 0;
+  z-index: 1;
+  left: 29px;
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  background: var(--tg-section-timeline-item-background-color);
+  border-radius: 2px;
+}
+
+.TimelineItem--right::after {
+  left: -12px;
+}
+
+.TimelineItem__Content {
+  padding: 24px 30px;
+  background: var(--tg-section-timeline-item-background-color);
+  position: relative;
+  border-radius: 2px;
+  margin-bottom: 0;
+  color: var(--tg-section-timeline-item-text-color);
+  --tg-sys-color-on-background: var(--tg-section-timeline-item-text-color);
+}
+.TimelineItem__Content .SectionHeader__Description {
+  margin-bottom: 8px;
+}
+
+@media screen and (max-width: 640px) {
+  .Timeline__Body::after {
+    left: 32px;
+  }
+  .TimelineItem {
+    width: 100%;
+    -webkit-padding-start: 68px;
+            padding-inline-start: 68px;
+    -webkit-padding-end: 24px;
+            padding-inline-end: 24px;
+  }
+  .TimelineItem::before {
+    left: 62px;
+    width: 16px;
+    height: 16px;
+    transform: rotate(45deg);
+  }
+  .TimelineItem--left::after, .TimelineItem--right::after {
+    left: 22px;
+  }
+  .TimelineItem--right {
+    left: 0%;
+  }
+  .TimelineItem__Content .SectionHeader__Description {
+    margin-bottom: 4px;
+  }
+}
+[dir=rtl] .Timeline__Body::after {
+  right: calc(50% - 2px);
+  left: auto;
+}
+[dir=rtl] .TimelineItem::after {
+  left: -12px;
+  right: auto;
+}
+[dir=rtl] .TimelineItem--left {
+  right: 0;
+  left: auto;
+}
+[dir=rtl] .TimelineItem--right {
+  right: 50%;
+  left: auto;
+}
+[dir=rtl] .TimelineItem--left::before {
+  right: auto;
+  left: 29px;
+}
+[dir=rtl] .TimelineItem--right::before {
+  left: auto;
+  right: 29px;
+}
+[dir=rtl] .TimelineItem--right::after {
+  right: -12px;
+  left: atuo;
+}
+@media screen and (max-width: 640px) {
+  [dir=rtl] .Timeline__Body::after {
+    right: 32px;
+    left: auto;
+  }
+  [dir=rtl] .TimelineItem::before {
+    right: 62px;
+    left: auto;
+    transform: rotate(45deg);
+  }
+  [dir=rtl] .TimelineItem--left::after, [dir=rtl] .TimelineItem--right::after {
+    right: 22px;
+    left: auto;
+  }
+  [dir=rtl] .TimelineItem--right {
+    right: 0%;
+    left: auto;
+  }
+}

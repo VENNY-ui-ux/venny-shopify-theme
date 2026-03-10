@@ -1,0 +1,42 @@
+section-interactive-links {
+  display: block;
+}
+
+@media screen and (max-width: 640px) {
+  .InteractiveLinks .InteractiveLinks__Link {
+    transition: text-decoration-thickness 100ms ease;
+    text-decoration: underline;
+    text-underline-offset: 8px;
+    text-decoration-thickness: 2px;
+  }
+}
+.InteractiveLinks .InteractiveLinks__Link.Active {
+  transition: text-decoration-thickness 100ms ease;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-thickness: 2px;
+}
+.InteractiveLinks .InteractiveLinks__Image {
+  display: none;
+  opacity: 0;
+}
+.InteractiveLinks .InteractiveLinks__Image.Active {
+  display: block;
+  opacity: 1;
+  z-index: 2;
+  transition: opacity 200ms ease;
+}
+.InteractiveLinks .FeaturedRow__ImageWrapper {
+  display: flex;
+  align-items: center;
+}
+@media screen and (max-width: 640px) {
+  .InteractiveLinks .FeaturedRow__ImageWrapper {
+    display: none;
+  }
+}
+@media screen and (max-width: 640px) {
+  .InteractiveLinks .FeaturedRow__Body, .InteractiveLinks .FeatureRow__ContentWrapper {
+    border-bottom: none;
+  }
+}

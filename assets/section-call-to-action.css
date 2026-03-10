@@ -1,0 +1,50 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Section Call to action
+ * ----------------------------------------------------------------------------
+ */
+:root {
+  --tg-section-call-to-action-background-color: var(--tg-sys-color-background);
+  --tg-section-call-to-action-text-color: var(--tg-sys-color-on-background);
+}
+
+.CallToAction {
+  background-color: var(--tg-section-call-to-action-background-color);
+  color: var(--tg-section-call-to-action-text-color);
+}
+.CallToAction .SectionHeader.SectionHeader--horizontal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: start;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin: 0;
+  flex-wrap: nowrap;
+}
+.CallToAction .SectionHeader.SectionHeader--horizontal .SectionHeader__Heading {
+  margin-top: -0.25rem;
+  margin-bottom: 0;
+}
+.CallToAction .SectionHeader.SectionHeader--horizontal .SectionHeader__Button {
+  display: flex;
+}
+.CallToAction .SectionHeader__Heading ~ .SectionHeader__Description {
+  margin-top: 0.75rem;
+}
+@media screen and (max-width: 640px) {
+  .CallToAction .SectionHeader.SectionHeader--horizontal {
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+}
+@media screen and (min-width: 641px) {
+  .CallToAction .SectionHeader .SectionHeader__ButtonWrapper {
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+  .CallToAction .SectionHeader .ButtonGroup {
+    flex-wrap: nowrap;
+  }
+}

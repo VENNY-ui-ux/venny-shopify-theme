@@ -1,0 +1,37 @@
+{%- if quick_links != blank -%}
+
+    {{ 'component-widget.css' | asset_url | stylesheet_tag }}
+    
+    <div class="Collection__Aside HiddenMediumDown" {{ block.shopify_attributes }}>
+        <div class="Widget">
+            <div class="Widget__Content">
+                <ul class="Nav Nav--vertical Nav--firstLevel">
+                    {%- for link in quick_links.links -%}
+                        <li class="Nav__Item Nav__Item--firstLevel {% if link.links != blank %}Nav__Item--hasChildNav{% endif %}">
+                            {%- if link.url != '#' -%}
+                                <a href="{{ link.url }}" class="Nav__Link Nav__Link--firstLevel {% if link.links != blank %}TitleMedium{% endif %} {% if link.active %}Active{% endif %}">
+                                    {{ link.title | escape }}
+                                </a>
+                            {%- else -%}
+                                <div class="Nav__Link Nav__Link--firstLevel {% if link.links != blank %}TitleMedium{% endif %} {% if link.active %}Active{% endif %}">
+                                    {{ link.title | escape }}
+                                </div>
+                            {%- endif -%}
+                            {%- if link.links != blank -%}
+                                <ul class="Nav Nav--vertical Nav--secondLevel">
+                                    {%- for sub_link in link.links -%}
+                                        <li class="Nav__Item Nav__Item--secondLevel">
+                                            <a href="{{ sub_link.url }}" class="Nav__Link Nav__Link--secondLevel {% if sub_link.active %}Active{% endif %}">
+                                                {{ sub_link.title | escape }}
+                                            </a>
+                                        </li>
+                                    {%- endfor -%}
+                                </ul>
+                            {%- endif -%}
+                        </li>
+                    {%- endfor -%}
+                </ul>
+            </div>
+        </div>
+    </div>
+{%- endif -%}

@@ -1,0 +1,79 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Featured nav
+ * ----------------------------------------------------------------------------
+ */
+:root {
+  --tg-sys-section-featured-nav-image-border-radius: 5000px;
+}
+
+section-featured-nav {
+  display: block;
+}
+
+.NavCard__Image {
+  border-radius: var(--tg-sys-section-featured-nav-image-border-radius);
+}
+
+.NavCard__Title {
+  margin-top: 0.75rem;
+  text-align: center;
+  word-break: break-all;
+}
+.NavCard__Title:not(.CustomSize) {
+  font-family: var(--tg-sys-typescale-label-large-font);
+  font-style: var(--tg-sys-typescale-label-large-style);
+  font-weight: var(--tg-sys-typescale-label-large-weight);
+  font-size: var(--tg-sys-typescale-label-large-size);
+  line-height: var(--tg-sys-typescale-label-large-line-height);
+  letter-spacing: var(--tg-sys-typescale-label-large-tracking);
+}
+
+.NavCard__Subtitle {
+  margin-top: 0.75rem;
+  margin-bottom: -0.5rem;
+  font-family: var(--tg-sys-typescale-body-small-font);
+  font-style: var(--tg-sys-typescale-body-small-style);
+  font-weight: var(--tg-sys-typescale-body-small-weight);
+  font-size: var(--tg-sys-typescale-body-small-size);
+  line-height: var(--tg-sys-typescale-body-small-line-height);
+  letter-spacing: var(--tg-sys-typescale-body-small-tracking);
+  text-align: center;
+}
+
+@media screen and (max-width: 1007px) {
+  .FeaturedNav__Body {
+    overflow: hidden;
+  }
+}
+.NavCardList--carousel {
+  margin-left: calc(var(--tg-grid-gutter-x) * -0.5);
+  margin-right: calc(var(--tg-grid-gutter-x) * -0.5);
+}
+.NavCardList--carousel::after {
+  content: "";
+}
+.NavCardList--carousel .Carousel__Item {
+  padding: 0.4rem calc(var(--tg-grid-gutter-x) * 0.5);
+}
+@media screen and (max-width: 1007px) {
+  .NavCardList--carousel {
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1rem;
+    margin-bottom: -1rem;
+  }
+  .NavCardList--carousel .Carousel__Item {
+    white-space: normal;
+    display: inline-block !important;
+    width: 22%;
+  }
+}
+@media screen and (max-width: 640px) {
+  .NavCardList--carousel .Carousel__Item {
+    display: inline-block !important;
+    width: 30%;
+  }
+}

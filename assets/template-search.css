@@ -1,0 +1,19 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Template Search
+ * ----------------------------------------------------------------------------
+ */
+.Template--search .PageHeader__Form {
+  display: flex;
+  padding: 2px;
+}
+.Template--search .PageHeader__Form .Form__Submit {
+  word-break: keep-all;
+}
+.Template--search .PageHeader__Form .Form__Input {
+  z-index: 2;
+}
+.Template--search .PageHeader__Content {
+  width: 100%;
+  max-width: 30rem;
+}

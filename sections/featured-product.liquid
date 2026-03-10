@@ -1,0 +1,627 @@
+{{ 'component-product-blocks.css' | asset_url | stylesheet_tag }}
+{{ 'section-featured-product.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'component-product-variants.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'section-featured-product.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign product = section.settings.product
+
+  assign show_sku = false
+  assign show_payment_button = false 
+
+  assign show_inventory_quantity = false
+  assign inventory_quantity_threshold = 5
+
+  for block in section.blocks
+    case block.type
+    when 'sku' 
+        assign show_sku = true
+    when 'buy_buttons'
+        assign show_payment_button = block.settings.show_dynamic_checkout
+    when 'quantity_selector'
+        assign show_inventory_quantity = block.settings.show_inventory_quantity 
+        assign inventory_quantity_threshold = block.settings.inventory_quantity_threshold 
+    endcase 
+  endfor
+
+  assign animation_image_loading_tag = 'div'
+  assign animation_image_loading_class = ''
+  if settings.animation_image_loading == 'circle_icon'
+    assign animation_image_loading_tag = 'feature-img'
+    assign animation_image_loading_class = 'Image--withLoader'
+  endif
+ -%}
+
+{%- capture section_settings -%}
+{
+  "productForm": "featured-product",
+  "enableHistoryState": false,
+  "showInventoryQuantity": {{ show_inventory_quantity | json }},
+  "showSku": {{ show_sku | json }},
+  "inventoryQuantityThreshold": {{ inventory_quantity_threshold }},
+  "showPaymentButton": {{ show_payment_button | json }}
+}
+{%- endcapture -%}
+
+<section-featured-product class="Container Container--specialSpacingFirstSection Container--{{ section.settings.section_spacing }} {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %} FeaturedProduct {% unless product.featured_media %}FeaturedProduct--noMedia{% endunless %}" data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}' data-product-url="{{ product.url }}">
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'section_header' -%}
+          <header class="SectionHeader SectionHeader--{{ block.settings.header_align }}" {{ block.shopify_attributes }}>
+            <div class="SectionHeader__Text">
+              {%- if block.settings.heading != blank -%}
+                  <h2 class="SectionHeader__Heading CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+
+              {%- if block.settings.subheading != blank -%}
+                  <div class="SectionHeader__Subheading TextMuted">{{ block.settings.subheading }} </div>
+              {%- endif -%}
+            </div>
+          </header>
+
+      {%- endcase -%}
+    {%- endfor -%}
+
+    <div class="SectionBody FeaturedProduct__Body Grid">
+      {%- if product != blank and product != empty -%}
+        {%- if product.media.size > 0 -%}
+          <div class="Grid__Item 1/2--medium-up">
+            <a href="{{ product.url }}" class="FeaturedProduct__Gallery">
+
+              <{{- animation_image_loading_tag }} class="Ratio" style="--tg-aspect-ratio: {{ product.featured_media.aspect_ratio | default: product.featured_media.preview_image.aspect_ratio }};">
+                <img
+                  srcset="{%- if product.featured_media.width >= 375 -%}{{ product.featured_media | image_url: width: 375 }} 375w,{%- endif -%}
+                    {%- if product.featured_media.width >= 550 -%}{{ product.featured_media | image_url: width: 550 }} 550w,{%- endif -%}
+                    {%- if product.featured_media.width >= 750 -%}{{ product.featured_media | image_url: width: 750 }} 750w,{%- endif -%}
+                    {%- if product.featured_media.width >= 1100 -%}{{ product.featured_media | image_url: width: 1100 }} 1100w,{%- endif -%}
+                    {%- if product.featured_media.width >= 1500 -%}{{ product.featured_media | image_url: width: 1500 }} 1500w,{%- endif -%}
+                    {%- if product.featured_media.width >= 1800 -%}{{ product.featured_media | image_url: width: 1800 }} 1800w,{%- endif -%}
+                    {{ product.featured_media | image_url }} {{ product.featured_media.width }}w"
+                  sizes="(min-width: 641px) calc(100vw / 2), 100vw"
+                  src="{{ product.featured_media | image_url: width: 1000 }}"
+                  loading="lazy"
+                  alt="{{ product.featured_media.alt | escape }}"
+                  width="{{ product.featured_media.width }}"
+                  height="{{ product.featured_media.height }}"
+                  class="{{ animation_image_loading_class }}"
+                >
+                  
+                  {%- if settings.animation_image_loading != 'none' -%}
+                    <span class="Image--loader"></span>
+                  {%- endif -%}
+
+              </{{- animation_image_loading_tag }}>
+            </a>
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'short_description' and block.settings.short_description_position == 'left'  and block.settings.content != blank -%}
+                <div class="Product__ShortDescription Product__ShortDescription--left RTE" {{ block.shopify_attributes }} 
+                  {% if block.settings.short_description_background != blank  and block.settings.short_description_background != 'rgba(0,0,0,0)' %} 
+                    style="--tg-product-short-description-background: {{ block.settings.short_description_background }};"
+                  {% endif %}
+                >
+                  {{ block.settings.content }}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        
+        <div class="FeaturedProduct__Summary Grid__Item 1/2--medium-up">
+          {%- render 'product-blocks', product: product, product_from: 'featured-product' -%}
+
+          <div class="FeaturedProduct__ViewMore">
+            <a href="{{ product.url }}" class="Button Button--underline" aria-label="{{ 'sections.featured_product.view_product' | t }} {{ product.title | truncate: 50 | escape }}">{{ 'sections.featured_product.view_product' | t }}</a>
+          </div>
+        </div>
+      {%- else -%}
+        <div class="FeaturedProduct__Gallery Grid__Item 1/2--medium-up">
+          {{- 'product-6' | placeholder_svg_tag -}}
+        </div>
+
+        <div class="FeaturedProduct__Summary Grid__Item 1/2--medium-up">
+          <div class="Product__Block">
+
+            <h2 class="Product__Title">{{ 'sections.onboarding.product_title' | t }}</h2>
+
+            <div class="Product__PriceList">
+              <span class="Price">
+                {%- if settings.price_currency_format == 'money' -%}
+                  {{ 6800 | money }}
+                {%- elsif settings.price_currency_format == 'money_with_currency' -%}
+                  {{ 6800 | money_with_currency }}
+                {%- elsif settings.price_currency_format == 'money_without_currency' -%}
+                  {{ 6800 | money_without_currency }}
+                {%- else -%}
+                  {{ 6800 | money_without_trailing_zeros }}
+                {%- endif -%}
+              </span>
+            </div>
+
+            <div class="Product__ShortDescription RTE">
+              {{ 'sections.onboarding.product_description' | t }}
+            </div>
+  
+          </div>
+
+          <div class="Product__Block">
+            <button type="button" class="ProductForm__AddToCart Button Button--primary Button--full" disabled>
+              <span>{{ 'product.form.sold_out' | t }}</span>
+            </button>
+          </div>
+
+          <div class="FeaturedProduct__ViewMore">
+            <a href="#" class="Button Button--underline">{{ 'sections.featured_product.view_product' | t }}</a>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+</section-featured-product>
+
+{% schema %}
+{
+  "name": "Featured product",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "section_header",
+      "name": "Section header",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Featured product"
+        },
+        {
+          "type": "select",
+          "id": "header_align",
+          "label": "Header alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "heading_font_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineSmall"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom Liquid",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "refresh_when_variant_changes",
+          "label": "Refresh when variant changes",
+          "default": false
+        },
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid",
+          "info": "Add app snippets or other Liquid code to create advanced customizations."
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "text_size",
+          "options": [
+            {
+              "value": "HeadlineSmall",
+              "label": "Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "HeadlineMedium",
+          "label": "Title size"
+        }
+      ]
+    },
+    {
+      "type": "rating",
+      "name": "Product rating",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-product-rating)"
+        }
+      ]
+    },
+    {
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1
+    },
+    {
+      "type": "sku",
+      "name": "SKU",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Price"
+        },
+        {
+          "type": "select",
+          "id": "price_size",
+          "options": [
+            {
+              "value": "BodyMedium",
+              "label": "Small"
+            },
+            {
+              "value": "BodyLarge",
+              "label": "Medium"
+            },
+            {
+              "value": "TitleLarge",
+              "label": "Large"
+            }
+          ],
+          "default": "BodyMedium",
+          "label": "Size"
+        },
+        {
+          "type": "color",
+          "id": "price_color",
+          "label": "Color"
+        },
+        {
+          "type": "color",
+          "id": "sale_price_color",
+          "label": "Sale color"
+        },
+        {
+          "type": "checkbox",
+          "id": "bold_font",
+          "label": "Bold font",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Taxes notice"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_taxes_included",
+          "label": "Show price taxes notice",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "quantity_selector",
+      "name": "Quantity selector",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_inventory_quantity",
+          "label": "Show inventory quantity",
+          "info": "Make sure that your inventory is tracked. [Learn more](https://help.shopify.com/manual/products/inventory#set-up-inventory-tracking).",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "inventory_quantity_threshold",
+          "label": "Inventory quantity threshold",
+          "info": "Only show inventory quantity if below threshold. Choose 0 to always show.",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "hide_sold_out_variants",
+          "label": "Hide sold out variants",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_unavailable_variants",
+          "label": "Hide unavailable variants",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "picker_type",
+          "options": [
+            {
+              "value": "dropdown",
+              "label": "Dropdown"
+            },
+            {
+              "value": "block",
+              "label": "Button"
+            },
+            {
+              "value": "color_swatch_dropdown",
+              "label": "Color swatch and dropdown"
+            },
+            {
+              "value": "color_image_swatch_dropdown",
+              "label": "Color image swatch and dropdown"
+            },
+            {
+              "value": "color_swatch_button",
+              "label": "Color swatch and button"
+            },
+            {
+              "value": "color_image_swatch_button",
+              "label": "Color image swatch and button"
+            }
+          ],
+          "default": "block",
+          "label": "Picker type"
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "default": true,
+          "label": "Show dynamic checkout buttons",
+          "info": "Using the payment methods available on your store, customers see their preferred option, like PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_pickup_availability",
+          "label": "Show local pickup availability",
+          "info": "Show customers where they can pick up the product. [Learn more](https://help.shopify.com/en/manual/shipping/setting-up-and-managing-your-shipping/local-methods/local-pickup#show-pickup-availability-to-your-customers)",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Text block",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "text_size",
+          "options": [
+            {
+              "value": "BodySmall",
+              "label": "Body Small"
+            },
+            {
+              "value": "BodyMedium",
+              "label": "Body Medium"
+            },
+            {
+              "value": "BodyLarge",
+              "label": "Body Large"
+            },
+            {
+              "value": "TitleSmall",
+              "label": "Title Small"
+            },
+            {
+              "value": "TitleMedium",
+              "label": "Title Medium"
+            },
+            {
+              "value": "TitleLarge",
+              "label": "Title Large"
+            },
+            {
+              "value": "HeadlineSmall",
+              "label": "HeadLine Small"
+            },
+            {
+              "value": "HeadlineMedium",
+              "label": "HeadLine Medium"
+            },
+            {
+              "value": "HeadlineLarge",
+              "label": "HeadLine Large"
+            }
+          ],
+          "default": "BodySmall",
+          "label": "Text size"
+        }
+      ]
+    },
+    {
+      "type": "short_description",
+      "name": "Short description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "short_description_position",
+          "label": "Position",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "right"
+        },
+        {
+          "type": "color",
+          "id": "short_description_background",
+          "label": "Background color"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "Share",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "If you include a link in social media posts, the page’s featured image will be shown as the preview image. [Learn more](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)."
+        },
+        {
+          "type": "paragraph",
+          "content": "A store title and description are included with the preview image. [Learn more](https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords#set-a-title-and-description-for-your-online-store)."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured product",
+      "blocks": [
+        {
+          "type": "title"
+        },
+        {
+          "type": "price"
+        },
+        {
+          "type": "variant_picker"
+        },
+        {
+          "type": "quantity_selector"
+        },
+        {
+          "type": "buy_buttons"
+        },
+        {
+          "type": "share"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

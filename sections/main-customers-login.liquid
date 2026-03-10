@@ -1,0 +1,209 @@
+{%- liquid
+    assign login_header_title =  'customer.login.title' | t 
+    assign add_gap =  true 
+    if section.settings.page_header_width == 'full_width_no_gap'
+        assign add_gap =  false 
+    endif 
+-%}
+
+{% render 'page-header', 
+    page_header_title: login_header_title,
+    background_image: section.settings.page_header_bg_image,
+    background_color: section.settings.page_header_bg_color,
+    page_header_height: section.settings.page_header_height,
+    add_gap: add_gap
+%}
+
+<script src="{{ 'section-login.js' | asset_url }}" defer="defer"></script>
+
+<section-login style="display: block;" class="Container Container--customers" data-section-id="login">
+    {%- assign is_recover_active = false -%}
+
+    {%- form 'recover_customer_password' -%}
+        {%- if form.errors or form.posted_successfully? -%}
+            {%- assign is_recover_active = true -%}
+        {%- endif -%}
+    {%- endform -%}
+
+    {%- comment -%}
+    -------------------------------------------------------------------------------------
+    Login form
+    -------------------------------------------------------------------------------------
+    {%- endcomment -%}
+
+    {%- liquid
+    if is_recover_active 
+        assign login_default_visibility = 'display: none'
+    else 
+        assign login_default_visibility = 'display: block' 
+    endif 
+    if section.settings.enable_shop_login_button == false
+      assign hide_shop_login_button = true
+    endif
+    -%}
+
+    {%- form 'customer_login', name: 'login', class: 'Form Form--login', id: 'CustomerLogin', style: login_default_visibility -%}
+
+        {%- if form.errors -%}
+            <div class="Form__Alert Alert Alert--danger">
+            <ul class="List List--unstyle">
+                {%- for field in form.errors -%}
+                {%- if field == 'form' -%}
+                    <li>{{ form.errors.messages[field] }}</li>
+                {%- else -%}
+                    <li><strong>{{ form.errors.translated_fields[field] }}</strong> {{ form.errors.messages[field] }}</li>
+                {%- endif -%}
+                {%- endfor -%}
+            </ul>
+            </div>
+        {%- endif -%}
+
+        {%- if shop.features.login_with_shop_classic_customer_accounts? -%}
+          <div class="SignInWithShopProvider">
+            {{ shop | login_button: hide_button: hide_shop_login_button }}
+  
+            {%- unless hide_shop_login_button -%}
+              <div class="SignInWithShopProvider__Separator">
+                {{ 'customer.login.alternate_provider_separator' | t }}
+              </div>
+            {%- endunless -%}
+          </div>
+        {%- endif -%}
+
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="floatingLoginEmail--{{ section.id }}" type="email" class="Form__Input" name="customer[email]" placeholder="name@example.com">
+            <label class="Form__Label" for="floatingLoginEmail--{{ section.id }}">{{ 'customer.login.email' | t }}</label>
+        </div>
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="floatingLoginPassword--{{ section.id }}" type="password" class="Form__Input" placeholder="Password" name="customer[password]">
+            <label class="Form__Label" for="floatingLoginPassword--{{ section.id }}">{{ 'customer.login.password' | t }}</label>
+        </div>
+
+        <button type="submit" class="Form__Submit Button Button--primary Button--full">{{ 'customer.login.submit' | t }}</button>
+
+        <div class="Form__Text" style="margin-top: 1rem;">
+            <span class="TextMuted">{{ 'customer.login.register_label' | t }}</span>
+            <a href="{{ routes.account_register_url }}" class="Button Button--underline"> {{ 'customer.login.register_link' | t }}</a>
+        </div>
+        <div class="Form__Text">
+            <span class="TextMuted">{{ 'customer.login.forgot' | t }}</span>
+            <button type="button" class="Button Button--underline" data-action="toggle-customer-form"> {{ 'customer.recover_password.title' | t }}</button>
+        </div>
+    {%- endform -%}
+
+    {%- comment -%}
+    -------------------------------------------------------------------------------------
+    Recovery form
+    -------------------------------------------------------------------------------------
+    {%- endcomment -%}
+
+    {%- if is_recover_active -%}
+        {%- assign recover_default_visibility = 'display: block' -%}
+    {%- else -%}
+        {%- assign recover_default_visibility = 'display: none' -%}
+    {%- endif -%}
+
+    {%- form 'recover_customer_password', name: 'recover', class: 'Form Form--recoverPassword', id: 'RecoverCustomerPassword', style: recover_default_visibility -%}
+        <header class="TextCenter" style="margin-bottom: 1.5rem;">
+            <h2 class="TitleLarge">{{ 'customer.recover_password.title' | t }}</h2>
+
+            {%- unless form.posted_successfully? -%}
+            <p class="Form__Text">{{ 'customer.recover_password.description' | t }}</p>
+            {%- endunless -%}
+        </header>
+
+        {%- if form.errors -%}
+            <p class="Form__Alert Alert Alert--danger">
+                {{- form.errors.messages['form'] -}}
+            </p>
+        {%- endif -%}
+
+        {%- if form.posted_successfully? -%}
+            <p class="Form__Text Alert Alert--success">
+                {{- 'customer.recover_password.success' | t -}}
+            </p>
+        {%- endif -%}
+
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="floatingRecoverEmail--{{ section.id }}" type="email" class="Form__Input" required="required" name="email" placeholder="{{ 'customer.recover_password.email' | t }}" autofocus>
+            <label for="floatingRecoverEmail--{{ section.id }}">{{ 'customer.recover_password.email' | t }}</label>
+        </div>
+
+        <button type="submit" class="Form__Submit Button Button--primary Button--full">{{ 'customer.recover_password.submit' | t }}</button>
+
+        <div class="Form__Text" style="margin-top: 1rem;">
+            <span class="TextMuted">{{ 'customer.recover_password.login_label' | t }}</span>
+            <button type="button" class="Button Button--underline" data-action="toggle-customer-form">{{ 'customer.recover_password.login_link' | t }}</button>
+        </div>
+    {%- endform -%}
+</section-login>
+
+{% schema %}
+{
+  "name": "Login page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_shop_login_button",
+      "label": "Enable shop login button",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "page_header_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    }
+  ]
+}
+{% endschema %}

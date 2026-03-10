@@ -1,0 +1,301 @@
+{%- liquid 
+    assign order_header_title =  'customer.order.title' | t: order_number: order.name 
+    assign add_gap =  true 
+    if section.settings.page_header_width == 'full_width_no_gap'
+        assign add_gap =  false 
+    endif 
+  
+    assign is_entirely_fulfilled = false
+    assign has_one_fulfillment = false
+  
+    if order.fulfillment_status == 'fulfilled'
+        assign is_entirely_fulfilled = true
+        assign tracking_numbers = ''
+    
+        for line_item in order.line_items
+            assign tracking_numbers = tracking_numbers | append: line_item.fulfillment.tracking_number | append: ',' 
+        endfor
+    
+        assign tracking_numbers = tracking_numbers | split: ',' | compact | uniq 
+    
+        if tracking_numbers.size == 1 
+            assign has_one_fulfillment = true 
+        endif
+    endif 
+  -%}
+  
+{% render 'page-header', 
+    page_header_title: order_header_title,
+    background_image: section.settings.page_header_bg_image,
+    background_color: section.settings.page_header_bg_color,
+    page_header_height: section.settings.page_header_height,
+    add_gap: add_gap
+%}
+  
+
+{{ 'component-widget.css' | asset_url | stylesheet_tag }}
+
+<div class="Container Container--customers Order">
+    {%- if order.cancelled -%}
+        {%- assign cancelled_at = order.cancelled_at | date: format: 'month_day_year_time' -%}
+        <p class="Aler Alert--danger">{{ 'customer.order.cancelled_at' | t: date: cancelled_at }}</p>
+    {%- endif -%}
+  
+    {%- if is_entirely_fulfilled and has_one_fulfillment -%}
+        {%- liquid
+                assign fulfillment = ''
+                for line_item in order.line_items
+                    if line_item.fulfillment
+                        assign fulfillment = line_item.fulfillment
+                        break
+                    endif
+                endfor 
+        -%}
+  
+        <p class="Alert Alert--success">{{ 'customer.order.fulfillment_html' | t: tracking_url: fulfillment.tracking_url, tracking_number: fulfillment.tracking_number }}</p>
+    {%- endif -%}
+  
+    <div class="Grid">
+        <div class="Grid__Item 2/3--large Order__Details">
+            <div class="TableWrapper">
+                <table class="Table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'customer.order.product' | t }}</th> 
+                            <th scope="col" class="TextCenter HiddenMediumDown">{{ 'customer.order.quantity' | t }}</th>
+                            <th scope="col" class="TextEnd">{{ 'customer.order.line_price' | t }}</th>
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        {%- for line_item in order.line_items -%}
+                            <tr class="OrderItem">
+                                <td>
+                                    <div class="OrderItem__ImageAndImage">
+                                    <div class="OrderItem__ImageWrapper">
+                                        {%- if line_item.image -%}
+                                            <div class="Ratio" style="--tg-aspect-ratio: {{ line_item.image.aspect_ratio }}; max-width: 200px;">
+                                                <img class="OrderItem__Image" src="{{ line_item.image | image_url: width: 240 }}" alt="{{ line_item.image.alt | escape }}"
+                                                    loading="lazy"
+                                                    width="{{ line_item.image.width }}"
+                                                    height="{{ line_item.image.height }}"
+                                                >
+                                            </div>
+                                        {%- endif -%}
+                                    </div>
+                
+                                    <div class="OrderItem__Info">
+                                        <h2 class="OrderItem__Title">
+                                        <a href="{{ line_item.url }}">{{ line_item.product.title }}</a>
+                                        </h2>
+                
+                                        <div class="OrderItem__Meta">
+                                        {%- unless line_item.product.has_only_default_variant -%}
+                                            <p class="OrderItem__Variant TextMuted">{{ line_item.variant.title }}</p>
+                                        {%- endunless -%}
+                
+                                        {%- if line_item.selling_plan_allocation -%}
+                                            <p class="OrderItem__PlanAllocation">{{ line_item.selling_plan_allocation.selling_plan.name }}</p>
+                                        {%- endif -%}
+                
+                                        {%- if line_item.properties != empty -%}
+                                            <ul class="OrderItem__PropertyList List List--unstyle">
+                                            {%- for property in line_item.properties -%}
+                                                {%- assign first_character_in_key = property.first | truncate: 1, '' -%}
+                
+                                                {%- if property.last == blank or first_character_in_key == '_' -%}
+                                                {%- continue -%}
+                                                {%- endif -%}
+                
+                                                <li class="OrderItem__Property List__Item TextMuted">{{ property.first }}: {{ property.last }}</li>
+                                            {%- endfor -%}
+                                            </ul>
+                                        {%- endif -%}
+                
+                                        <div class="OrderItem__PriceList">
+                                            {%- if line_item.original_price != line_item.final_price -%}
+                                            <span class="OrderItem__OriginalPrice  Price Price--saleRegular">{{ line_item.original_price | money }}</span>
+                                            <span class="OrderItem__Price Price Price--sale">{{ line_item.final_price | money }}</span>
+                                            {%- else -%}
+                                            <span class="OrderItem__Price Price">{{ line_item.final_price | money }}</span>
+                                            {%- endif -%}
+                
+                                            {%- if line_item.line_level_discount_allocations != blank -%}
+                                            <ul class="OrderItem__DiscountList List List--unstyle">
+                                                {%- for discount_allocation in line_item.line_level_discount_allocations -%}
+                                                <li class="OrderItem__Discount">
+                                                    {%- render 'icons', icon: 'sale' -%}{{ discount_allocation.discount_application.title }}: -{{ discount_allocation.amount | money }}
+                                                </li>
+                                                {%- endfor -%}
+                                            </ul>
+                                            {%- endif -%}
+                                        </div>
+                
+                                        {%- if line_item.unit_price_measurement -%}
+                                            <div class="OrderItem__UnitPrice">
+                                            <div class="UnitPrice TextMuted">
+                                                <span class="UnitPrice__Price">{{ line_item.unit_price | money }}</span>
+                                                <span class="UnitPrice__Separator">/ </span>
+                
+                                                {%- if line_item.unit_price_measurement.reference_value != 1 -%}
+                                                <span class="UnitPrice__ReferenceValue">{{ line_item.unit_price_measurement.reference_value }}</span>
+                                                {%- endif -%}
+                
+                                                <span class="UnitPrice__ReferenceUnit">{{ line_item.unit_price_measurement.reference_unit }}</span>
+                                            </div>
+                                            </div>
+                                        {%- endif -%}
+                                        </div>
+                                    </div>
+                                    </div>
+                                </td>
+                
+                                <td class="TextCenter TextMuted HiddenMediumDown">{{ line_item.quantity }}</td>
+                
+                                <td class="TextEnd TextMuted">
+                                    {%- if line_item.original_line_price != line_item.final_line_price -%}
+                                    <span class="OrderItem__OriginalPrice  Price Price--saleRegular">{{ line_item.original_line_price | money }}</span>
+                                    <span class="OrderItem__Price Price Price--sale">{{ line_item.final_line_price | money }}</span>
+                                    {%- else -%}
+                                    <span class="OrderItem__Price Price">{{ line_item.final_line_price | money }}</span>
+                                    {%- endif -%}
+                                </td>
+                            </tr>
+            
+                            {%- if line_item.fulfillment and has_one_fulfillment == false and line_item.fulfillment.tracking_number != blank -%}
+                                <tr>
+                                    <td colspan="3">
+                                        <p class="Alert Alert--success">{{ 'customer.order.line_fulfillment_html' | t: product_title: line_item.product.title, tracking_url: line_item.fulfillment.tracking_url, tracking_number: line_item.fulfillment.tracking_number }}</p>
+                                    </td>
+                                </tr>
+                            {%- endif -%}
+                        {%- endfor -%}
+                    </tbody>
+        
+                    <tfoot>
+                        <tr>
+                            <td class="HiddenMediumDown" style="border-bottom-width:0;"></td>
+                            <td class="TextMuted">{{ 'customer.order.subtotal' | t }}</td>
+                            <td class="TextMuted TextEnd">{{ order.line_items_subtotal_price | money }}</td>
+                        </tr>
+        
+                        {%- for discount_application in order.cart_level_discount_applications -%}
+                            <tr>
+                                <td class="HiddenMediumDown" style="border-bottom-width:0;"></td>
+                                <td><span class="TextMuted">{{ 'customer.order.discount' | t }}</span> <span class="TextMuted">({{ discount_application.title }})</span></td>
+                                <td class="TextMuted TextEnd">-{{ discount_application.total_allocated_amount | money }}</td>
+                            </tr>
+                        {%- endfor -%}
+        
+                        {%- for shipping_method in order.shipping_methods -%}
+                            <tr>
+                                <td class="HiddenMediumDown" style="border-bottom-width:0;"></td>
+                                <td><span class="TextMuted">{{ 'customer.order.shipping' | t }}</span> <span class="TextMuted">({{ shipping_method.title }})</span></td>
+                                <td class="TextMuted TextEnd">{{ shipping_method.price | money }}</td>
+                            </tr>
+                        {%- endfor -%}
+        
+                        {%- for tax_line in order.tax_lines -%}
+                            <tr>
+                                <td class="HiddenMediumDown" style="border-bottom-width:0;"></td>
+                                <td><span class="heading TextMuted">{{ 'customer.order.tax' | t }}</span> <span class="TextMuted">({{ tax_line.title }} {{ tax_line.rate_percentage }}%)</span></td>
+                                <td class="TextMuted TextEnd">{{ tax_line.price | money }}</td>
+                            </tr>
+                        {%- endfor -%}
+        
+                        <tr>
+                            <td class="HiddenMediumDown" style="border-bottom-width:0;"></td>
+                            <td class="">{{ 'customer.order.total' | t }}</td>
+                            <td class="TextEnd">{{ order.total_price | money_with_currency }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+  
+        <div class="Grid__Item 1/3--large Order__Addresses">
+            <div class="Widget">
+                <h2 class="Widget__Title LabelLarge">{{ 'customer.order.shipping_address' | t }}</h2>
+                <div class="Widget__Content">
+                    {%- if order.shipping_address -%}
+                    {{ order.shipping_address | format_address | replace: '<p>', '<p><span>' | replace_first: '<br>', '</span><br>' }}
+                    {%- else -%}
+                    <p>{{ 'customer.order.no_shipping_address' | t }}</p>
+                    {%- endif -%}
+                </div>
+            </div>
+  
+            <div class="Widget">
+                <h2 class="Widget__Title LabelLarge">{{ 'customer.order.billing_address' | t }}</h2>
+                <div class="Widget__Content">
+                    {{ order.billing_address | format_address | replace: '<p>', '<p><span>' | replace_first: '<br>', '</span><br>' }}
+                </div>
+            </div>
+        </div>
+  
+    </div>
+</div>
+
+{% schema %}
+{
+  "name": "Order page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "select",
+      "id": "page_header_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "full_width"
+    },
+    {
+      "type": "select",
+      "id": "page_header_height",
+      "options": [
+        {
+          "value": "fitContent",
+          "label": "Fit Content"
+        },
+        {
+          "value": "Small",
+          "label": "Small"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Large",
+          "label": "Large"
+        }
+      ],
+      "default": "Medium",
+      "label": "Height"
+    },
+    {
+      "type": "image_picker",
+      "id": "page_header_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "page_header_bg_color",
+      "label": "Background color",
+      "info": "Visible when the ‘Background image’ setting is blank."
+    }
+  ]
+}
+{% endschema %}

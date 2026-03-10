@@ -1,0 +1,65 @@
+:root {
+  --tg-product-swatch-border-color: var(--tg-sys-color-outline);
+  --tg-product-swatch-border-checked-color: var(--tg-sys-color-primary);
+}
+
+.SwatchList {
+  margin-bottom: -0.5rem;
+}
+.SwatchList label {
+  border: 1px solid var(--tg-product-swatch-border-color);
+}
+.SwatchList input:checked + label {
+  border: 1px solid var(--tg-product-swatch-border-checked-color);
+  box-shadow: 1px 1px var(--tg-product-swatch-border-checked-color) inset, -1px -1px var(--tg-product-swatch-border-checked-color) inset;
+}
+.SwatchList li {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.SwatchList .ImageSwatchWrapper {
+  width: 5rem;
+}
+.SwatchList .ImageSwatchWrapper .ImageSwatch {
+  cursor: pointer;
+  display: block;
+  background-size: cover;
+  background-position: center;
+}
+.SwatchList .ImageSwatchWrapper .ImageSwatch.Unavailable {
+  opacity: 0.6;
+}
+.SwatchList .ImageSwatchWrapper .ImageSwatch.Unavailable::before {
+  background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0) 50%, var(--tg-product-swatch-border-color) 50% calc(50% + 1px), rgba(0, 0, 0, 0) calc(50% + 1px));
+  opacity: 0.6;
+}
+.SwatchList .ColorSwatchWrapper .ColorSwatch {
+  cursor: pointer;
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  background-size: cover;
+  background-position: center;
+}
+.SwatchList .ColorSwatchWrapper .ColorSwatch.Unavailable {
+  opacity: 0.6;
+}
+.SwatchList .ColorSwatchWrapper .ColorSwatch.Unavailable::before {
+  background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0) 50%, var(--tg-product-swatch-border-color) 50% calc(50% + 1px), rgba(0, 0, 0, 0) calc(50% + 1px));
+  opacity: 0.6;
+}
+.SwatchList .ColorSwatch--white {
+  border: 1px solid var(--tg-sys-color-outline);
+}
+.SwatchList .BlockSwatchWrapper .BlockSwatch {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  text-align: center;
+  justify-content: center;
+  min-width: 3rem;
+}
+.SwatchList .BlockSwatchWrapper .BlockSwatch.Unavailable {
+  text-decoration: line-through;
+  opacity: 0.6;
+}

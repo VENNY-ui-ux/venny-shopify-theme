@@ -1,0 +1,22 @@
+{%- form 'product', product_variant.product -%}
+    <input type="hidden" name="id" value="{{ product_variant.id }}">
+    <div class="Product__PayInstallments">
+        {{ form | payment_terms }}
+    </div>
+{%- endform -%}
+
+
+{%- render 'product-price', product: product_variant.product -%}
+
+<div class="Product__Sku" style="{% if product_variant.sku == blank %}display: none;{% endif %}">{{ 'product.form.sku' | t }}: <span class="Product__SkuNum">{{ product_variant.sku }}</span></div>
+
+
+{%- if product_variant.inventory_quantity == 1 -%}
+    <div class="ProductForm__Inventory">
+        {{- 'product.form.inventory_quantity_count' | t: count: product_variant.inventory_quantity -}}
+    </div>
+{%- elsif product_variant.inventory_quantity > 1 -%}
+    <div class="ProductForm__Inventory">
+        {{- 'product.form.low_inventory_quantity_count' | t: count: product_variant.inventory_quantity -}}
+    </div>
+{%- endif -%}

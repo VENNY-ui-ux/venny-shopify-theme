@@ -1,0 +1,10 @@
+{%- capture section_settings -%}
+{
+  "itemCount": {{ cart.item_count }}
+}
+{%- endcapture -%}
+
+<section class="Toast CartNotification" data-section-settings='{{ section_settings }}'>
+  {%- render 'cart-notification-product' -%}
+  {%- render 'cart-notification-body' -%}
+</section>

@@ -1,0 +1,39 @@
+.CartNotification.Toast {
+  position: absolute;
+  right: 0;
+}
+
+.CartNotification__Links {
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+}
+
+.CartNotification__Checkout {
+  margin-top: 0.5rem;
+}
+
+.CartNotification__Form {
+  display: block;
+  width: 100%;
+}
+
+.CartNotification__Product {
+  margin-bottom: 0.75rem;
+}
+.CartNotification__Product .CartItem__ImageWrapper {
+  width: 40%;
+}
+.CartNotification__Product .CartItem__Info {
+  width: 60%;
+  -webkit-padding-start: 1rem;
+          padding-inline-start: 1rem;
+}
+.CartNotification__Product .CartItem__QuantityWrapper {
+  margin-top: 1rem;
+}
+
+[dir=rtl] .CartNotification.Toast {
+  right: auto;
+  left: 0;
+}

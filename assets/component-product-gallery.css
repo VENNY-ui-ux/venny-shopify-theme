@@ -1,0 +1,93 @@
+.ProductGallery {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc(var(--tg-header-height, 0px) * var(--use-sticky-header) + 1.5rem + var(--tg-other-sticky-elements-height, 0px));
+}
+
+@media screen and (min-width: 1008px) {
+  .ProductGallery--zoom .PSWPImage {
+    cursor: zoom-in;
+}
+
+.Modal--zoomModal {
+  --tg-component-modal-background: none;
+}
+.Modal--zoomModal .Modal__Body {
+  padding: 0;
+}
+.Modal--zoomModal .Modal__Dialog {
+  max-width: 100%;
+  padding: 1rem;
+}
+@media screen and (min-width: 1008px) {
+  .Modal--zoomModal .Modal__Dialog {
+    margin: 2rem;
+  }
+}
+.Modal--zoomModal .Modal__Dialog .ButtonClose {
+  position: fixed;
+  background-color: #fff;
+  border-radius: 200px;
+  opacity: 1;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.ProductGallery--zoomModal .ProductGallery__Inner {
+  overflow: auto;
+}
+.ProductGallery--zoomModal .Product__MediaWrapper:not(:last-child) {
+  margin-bottom: 1rem;
+}
+@media screen and (max-width: 640px) {
+  .ProductGallery--zoomModal .Product__MediaWrapper {
+    display: none;
+  }
+  .ProductGallery--zoomModal .Product__MediaWrapper.Active {
+    display: block;
+    margin-bottom: 0;
+  }
+}
+
+.Product__ActionList {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: -1;
+  visibility: visible;
+  opacity: 0;
+  transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.MediaModalOpener .Product__ActionList {
+  width: auto;
+}
+@media screen and (min-width: 1008px) {
+  .MediaModalOpener:hover .Product__ActionList, .MediaModalOpener:focus .Product__ActionList {
+    opacity: 1;
+    z-index: 1;
+  }
+}
+@media screen and (max-width: 1007px) {
+  .MediaModalOpener .Product__ActionList {
+    opacity: 1;
+    z-index: 1;
+  }
+}
+
+.Product__ActionItem {
+  display: block;
+  position: relative;
+}
+.Product__ActionItem .Button {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 300px;
+  width: 3rem;
+  height: 3rem;
+  border-color: var(--tg-sys-color-outline);
+}
+@media screen and (max-width: 640px) {
+  .Product__ActionItem .Button {
+    padding: 6px;
+  }
+}

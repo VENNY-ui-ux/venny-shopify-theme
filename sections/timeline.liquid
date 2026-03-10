@@ -1,0 +1,266 @@
+{{ 'section-timeline.css' | asset_url | stylesheet_tag }}
+<style>
+  {%- if  section.settings.item_background_color != blank and  section.settings.item_background_color != 'rgba(0,0,0,0)' -%}
+    #section-{{ section.id }}{
+      --tg-section-timeline-item-background-color: {{ section.settings.item_background_color }};
+    }
+  {%- endif -%}
+
+  {%- if  section.settings.item_text_color != blank and  section.settings.item_text_color != 'rgba(0,0,0,0)' -%}
+    #section-{{ section.id }}{
+      --tg-section-timeline-item-text-color: {{ section.settings.item_text_color }};
+    }
+  {%- endif -%}
+
+  {%- if  section.settings.item_separation_border_color != blank and  section.settings.item_separation_border_color != 'rgba(0,0,0,0)' -%}
+    #section-{{ section.id }}{
+      --tg-section-timeline-item-separation-border-color: {{ section.settings.item_separation_border_color }};
+    }
+  {%- endif -%}
+</style>
+<section class="Container Container--specialSpacingFirstSection {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %} Container--{{ section.settings.section_spacing }} Timeline"
+  id="section-{{ section.id }}" data-section-id="{{ section.id }}">
+   <header class="SectionHeader SectionHeader--{{ section.settings.header_align }}">
+    <div class="SectionHeader__Text">
+      {%- if section.settings.heading != blank -%}
+          <h2 class="SectionHeader__Heading CustomSize {{ section.settings.heading_font_size }}">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.subheading != blank -%}
+          <div class="SectionHeader__Subheading TextMuted">{{ section.settings.subheading }} </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.header_align == 'left' and section.settings.button_label != blank -%} 
+      <div class="SectionHeader__Button"> 
+        <a href="{{ section.settings.button_link }}" class="SectionHeader__Button Button Button--outline">{{ section.settings.button_label | escape }}</a>        
+      </div>
+    {%- endif -%}
+  </header>
+
+    <div class="SectionBody Timeline__Body">
+      {%- for block in section.blocks -%}
+     
+        {%- case block.type -%}
+            {%- when 'item' -%}
+                {%- liquid
+                    assign item_index = forloop.index | modulo: 2
+                    assign item_position = 'left'
+                    if item_index == 0
+                        assign item_position = 'right'
+                    endif
+                -%}
+                <div class="TimelineItem TimelineItem--{{ item_position }}">
+                    <div class="TimelineItem__Content SectionHeader">
+                      {%- if block.settings.subheading != blank -%} 
+                        <h3 class="SectionHeader__Subheading RTE">{{ block.settings.subheading }}</h3>
+                      {%- endif -%}
+                      {%- if block.settings.heading != blank -%} 
+                        <h2 class="SectionHeader__Heading RTE CustomSize {{ block.settings.heading_font_size }}">{{ block.settings.heading }}</h2>
+                      {%- endif -%}
+                      {%- if block.settings.description != blank -%} 
+                        <div class="SectionHeader__Description RTE">{{ block.settings.description }}</div>
+                      {%- endif -%}
+                    </div>
+                </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Timeline",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Timeline"
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "Header alignment",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "HeadlineSmall",
+          "label": "Small"
+        },
+        {
+          "value": "HeadlineMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "HeadlineLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "HeadlineMedium"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Item color"
+    },
+    {
+      "type": "color",
+      "id": "item_background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "item_text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "id": "item_separation_border_color",
+      "label": "Separation border color"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "subheading",
+            "label": "Subheading",
+            "default": "2023"
+        },
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Heading"
+        },
+        {
+            "type": "select",
+            "id": "heading_font_size",
+            "label": "Heading size",
+            "options": [
+                {
+                    "value": "HeadlineSmall",
+                    "label": "Small"
+                },
+                {
+                    "value": "HeadlineMedium",
+                    "label": "Medium"
+                },
+                {
+                    "value": "HeadlineLarge",
+                    "label": "Large"
+                }
+            ],
+            "default": "HeadlineLarge"
+        },
+        {
+            "type": "inline_richtext",
+            "id": "description",
+            "label": "Description",
+            "default": "Use this text to share information about what happened to your brand at a specific time."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+        "name": "Timeline",
+        "settings": {
+        },
+        "blocks": [
+            {
+                "type": "item",
+                "settings": {
+                    "subheading": "2000"
+                }
+            },
+            {
+                "type": "item",
+                "settings": {
+                    "subheading": "2010"
+                }
+            },
+            {
+                "type": "item",
+                "settings": {
+                    "subheading": "2020"
+                }
+            }
+        ]
+    }
+  ]
+}
+{% endschema %}

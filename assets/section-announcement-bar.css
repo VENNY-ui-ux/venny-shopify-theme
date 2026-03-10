@@ -1,0 +1,67 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Announcement bar
+ * ----------------------------------------------------------------------------
+ */
+:root {
+  --tg-announcement-bar-background-color: var(--tg-sys-color-background);
+  --tg-announcement-bar-text-color: var(--tg-sys-color-on-background);
+}
+
+section-announcement-bar {
+  display: block;
+}
+
+.Announcement {
+  background-color: var(--tg-announcement-bar-background-color);
+  color: var(--tg-announcement-bar-text-color);
+}
+
+.Announcement__Body {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  font-family: var(--tg-sys-typescale-body-medium-font);
+  font-style: var(--tg-sys-typescale-body-medium-style);
+  font-weight: var(--tg-sys-typescale-body-medium-weight);
+  font-size: var(--tg-sys-typescale-body-medium-size);
+  line-height: var(--tg-sys-typescale-body-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-body-medium-tracking);
+}
+
+.Announcement[aria-hidden=true] {
+  display: none;
+}
+
+.Announcement[aria-hidden=false] {
+  display: block;
+}
+
+.Announcement__Body {
+  padding: 0.5rem;
+}
+
+.Announcement__Content {
+  color: var(--tg-announcement-bar-text-color);
+  margin: 0;
+}
+.Announcement__Content a {
+  color: var(--tg-announcement-bar-text-color);
+  -webkit-text-decoration-color: var(--tg-announcement-bar-text-color);
+          text-decoration-color: var(--tg-announcement-bar-text-color);
+}
+
+.Announcement__Close {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--tg-announcement-bar-text-color);
+}
+
+.Announcement__Close svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  fill: var(--tg-announcement-bar-text-color);
+}

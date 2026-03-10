@@ -1,0 +1,125 @@
+{{ 'section-countdown-timer-bar.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-countdown-timer-bar.js' | asset_url }}" defer="defer"></script>
+
+{%- assign accessibility_expiration_date = section.settings.expiration_date | date: format: 'date_at_time' -%}
+{%- assign accessibility_text = 'sections.countdown_timer.expires_accessibility_text' | t: expiration_date: accessibility_expiration_date -%}
+
+<countdown-timer-bar class="Container Container--specialSpacingFirstSection Container--noGutter Container--fluid {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}Container--specialSpacingLastSection Container--{{ section.settings.section_spacing }}Padding{% else %}Container--{{ section.settings.section_spacing }}{% endif %} CountdownTimerBar" aria-label="{{ accessibility_text | escape }}" 
+    style="{% if section.settings.text_color != blank and section.settings.text_color != 'rgba(0,0,0,0)' %}--tg-countdown-timer-bar-text-color: {{ section.settings.text_color }};{% endif %} 
+    {% if section.settings.background != blank and section.settings.background != 'rgba(0,0,0,0)' %}--tg-countdown-timer-bar-background-color: {{ section.settings.background }};{% endif %}
+  "
+   data-section-id="{{ section.id }}" data-expiration-date="{{ section.settings.expiration_date | date: '%FT%T%:z' | escape }}" data-expiration-behavior="{%- if section.settings.hide_bar_after_expiration -%}hide{%- else -%}show{%- endif -%}">
+  
+    <div class="CountdownTimerBar__Inner Container {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}">
+        <div class="CountdownTimerBar__Content">
+            {%- if section.settings.content != blank -%} 
+                <div class="CountdownTimerBar__Message RTE">{{ section.settings.content }}</div>
+            {%- endif -%}
+        </div>
+
+        <div class="CountdownTimerBar__Timer CountdownTimer">
+            <div class="CountdownTimer__Inner">
+                <div class="CountdownTimer__Item CountdownTimer__Item--days">
+                    <div class="CountdownTimer__Amount CountdownTimer__Amount--days">00</div>
+                    <div class="CountdownTimer__Unit">{{ 'sections.countdown_timer.days' | t }}</div>
+                </div>
+                <div class="CountdownTimer__Item CountdownTimer__Item--hours">
+                    <div class="CountdownTimer__Amount CountdownTimer__Amount--hours">00</div>
+                    <div class="CountdownTimer__Unit">{{ 'sections.countdown_timer.hours' | t }}</div>
+                </div>
+                <div class="CountdownTimer__Item CountdownTimer__Item--minutes">
+                    <div class="CountdownTimer__Amount CountdownTimer__Amount--minutes">00</div>
+                    <div class="CountdownTimer__Unit">{{ 'sections.countdown_timer.minutes' | t }}</div>
+                </div>
+                <div class="CountdownTimer__Item CountdownTimer__Item--seconds">
+                    <div class="CountdownTimer__Amount CountdownTimer__Amount--seconds">00</div>
+                    <div class="CountdownTimer__Unit">{{ 'sections.countdown_timer.seconds' | t }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+</countdown-timer-bar>
+  
+{% schema %}
+{
+    "name": "Countdown timer bar",
+    "class": "shopify-section--countdown-timer-bar",
+    "settings": [
+        {
+            "type": "select",
+            "id": "section_width",
+            "label": "Section width",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "Grid"
+                },
+                {
+                    "value": "full_width",
+                    "label": "Full width"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "select",
+            "id": "section_spacing",
+            "label": "Section spacing",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "None"
+                },
+                {
+                    "value": "spacingSmall",
+                    "label": "Small"
+                },
+                {
+                    "value": "spacingMedium",
+                    "label": "Medium"
+                },
+                {
+                    "value": "spacingLarge",
+                    "label": "Large"
+                }
+            ],
+            "default": "none"
+        },
+        {
+            "type": "color",
+            "id": "background",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text color"
+        },
+        {
+            "type": "inline_richtext",
+            "id": "content",
+            "label": "Content",
+            "default": "Tell something about your offers, sale or discounts."
+        },
+        {
+            "type": "text",
+            "id": "expiration_date",
+            "label": "Expiration date",
+            "placeholder": "Eg. 2028-12-25 12:00",
+            "info": "Use the format YYYY-MM-DD HH:MM (hours and minutes are optional), Eg. 2026-12-25 12:00"
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_bar_after_expiration",
+            "label": "Hide bar after timer ends",
+            "default": false
+        }
+    ],
+    "presets": [
+        {
+            "name": "Countdown timer bar"
+        }
+    ]
+}
+{% endschema %}

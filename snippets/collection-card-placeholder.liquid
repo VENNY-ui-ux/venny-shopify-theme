@@ -1,0 +1,22 @@
+{%- liquid 
+    assign collection_card_image_ratio = section.settings.image_ratio  
+-%}
+
+<div class="CollectionCard">
+    <a href="#" class="TextOnImage TextOnImage--bottomCenter TextOnImage--{{ collection_card_image_ratio }}" 
+        {% if collection_card_image_ratio == 'natural' %} style="--tg-component-text-on-image-image-ratio-mobile: 0.75; --tg-component-text-on-image-image-ratio: 0.75;"{% endif %}>
+
+        <div class="TextOnImage__ImageWrapper Ratio">
+            {%- capture placeholder -%}{% cycle 'collection-6', 'collection-5', 'collection-4' %}{%- endcapture -%}
+            {{ placeholder | placeholder_svg_tag: 'TextOnImage__Image SvgPlaceholder' }} 
+        </div>
+
+        <div class="TextOnImage__Content">
+            <div class="TextOnImage__ContentInner">
+                <button type="button" class="Button Button--secondary">
+                    {{ 'sections.onboarding.collection_title' | t }}
+                </button>
+            </div>
+        </div>
+    </a>
+</div>

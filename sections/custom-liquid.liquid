@@ -1,0 +1,72 @@
+<div class="Container Container--specialSpacingFirstSection Container--customLiquid Container--{{ section.settings.section_spacing }}
+{% if section.settings.section_width == 'full_width' %}
+  Container--fluid
+{% elsif section.settings.section_width ==  'full_width_no_gap' %}
+  Container--fluid Container--noGutter
+{% endif %}">
+  {{ section.settings.custom_liquid }}
+</div> 
+{% schema %}
+{
+  "name": "Custom Liquid",
+  "tag": "section",
+  "class": "Section Section--customLiquid",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Grid"
+        },
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "full_width_no_gap",
+          "label": "Full width no gap"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "spacingSmall",
+          "label": "Small"
+        },
+        {
+          "value": "spacingMedium",
+          "label": "Medium"
+        },
+        {
+          "value": "spacingLarge",
+          "label": "Large"
+        }
+      ],
+      "default": "spacingMedium"
+    },
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "Custom Liquid",
+      "info": "Add app snippets or other Liquid code to create advanced customizations."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Liquid"
+    }
+  ]
+}
+{% endschema %}

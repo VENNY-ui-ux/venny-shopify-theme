@@ -1,0 +1,32 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Rich text
+  * ----------------------------------------------------------------------------
+  */
+.RichText .SectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+.RichText.RichText--left .SectionHeader {
+  align-items: flex-start;
+  text-align: start;
+}
+.RichText.RichText--left .ButtonGroup {
+  justify-content: flex-start;
+}
+.RichText.RichText--center .SectionHeader {
+  align-items: center;
+  text-align: center;
+}
+.RichText.RichText--center .ButtonGroup {
+  justify-content: center;
+}
+.RichText.RichText--right .SectionHeader {
+  align-items: flex-end;
+  text-align: end;
+}
+.RichText.RichText--right .ButtonGroup {
+  justify-content: flex-end;
+}

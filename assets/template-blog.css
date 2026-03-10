@@ -1,0 +1,51 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Template Blog
+ * ----------------------------------------------------------------------------
+ */
+.Template--blog .Blog__Articles .ArticleCard__Wrapper {
+  margin-bottom: calc(var(--tg-container-gutter-x) * 2 - 1rem);
+}
+
+@media screen and (min-width: 641px) {
+  .Template--blog .Blog__Articles .ArticleCard__Wrapper {
+    margin-bottom: calc(var(--tg-container-gutter-x) * 3 - 1rem);
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .Template--blog .Blog__Articles .ArticleCard__Wrapper {
+    margin-bottom: calc(var(--tg-container-gutter-x) * 4 - 1rem);
+  }
+}
+
+.Template--blog .Blog__Articles .ArticleCard__Wrapper .ArticleCard--noImage {
+  height: 100%;
+  padding: 1.5rem 1rem;
+  color: var(--tg-sys-color-on-surface);
+  background: var(--tg-sys-color-surface1);
+}
+
+.Template--blog .PageHeader--blog .PageHeader__Title {
+  color: transparent;
+  font-family: var(--tg-ref-typescale-display-font);
+  font-size: calc(var(--tg-ref-display-font-scale) * 6rem);
+  font-weight: 500;
+  line-height: 1.2;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-color: var(--tg-sys-color-on-surface);
+  -webkit-text-stroke-width: 1px;
+  text-transform: uppercase;
+}
+
+@media screen and (min-width: 1008px) {
+  .Template--blog .PageHeader--blog .PageHeader__Title {
+    font-size: calc(var(--tg-ref-display-font-scale) * 12rem);
+    letter-spacing: 2.5px;
+    -webkit-text-stroke-width: 2px;
+  }
+}
+
+.Template--blog .PageHeader--withBackgroundImage .PageHeader__Title {
+  -webkit-text-stroke-color: #fff;
+}

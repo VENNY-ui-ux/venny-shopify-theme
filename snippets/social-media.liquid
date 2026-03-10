@@ -1,0 +1,130 @@
+{%- assign social_media_count = 0 -%}
+
+{%- capture social_media -%}
+  {%- if settings.social_facebook != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_facebook | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="Facebook">
+        {% render 'icons', icon: 'facebook' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_twitter != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_twitter | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="Twitter">
+        {% render 'icons', icon: 'twitter' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_instagram != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_instagram | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="Instagram">
+        {% render 'icons', icon: 'instagram' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_pinterest != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_pinterest | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="Pinterest">
+        {% render 'icons', icon: 'pinterest' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_tiktok != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_tiktok | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="TikTok">
+        {% render 'icons', icon: 'tiktok' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_youtube != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_youtube | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="YouTube">
+        {% render 'icons', icon: 'youtube' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_vimeo != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_vimeo | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="Vimeo">
+        {% render 'icons', icon: 'vimeo' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_snapchat != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_snapchat | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="SnapChat">
+        {% render 'icons', icon: 'snapchat' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_tumblr != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_tumblr | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="Tumblr">
+        {% render 'icons', icon: 'tumblr' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_whatsapp != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_whatsapp | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="WhatsApp">
+        {% render 'icons', icon: 'whatsapp' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_linkedin != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_linkedin | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="Linkedin">
+        {% render 'icons', icon: 'linkedin' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+  {%- if settings.social_messenger != blank -%}
+    <li class="Nav__Item">
+      <a href="{{ settings.social_messenger | replace_first: 'https://', '' | replace_first: 'http://', '' | prepend: 'https://' }}" class="Button Button--icon Nav__Link" role="button" target="_blank" rel="noopener" aria-label="Messenger">
+        {% render 'icons', icon: 'messenger' %}
+      </a>
+    </li>
+
+    {% assign social_media_count = social_media_count | plus: 1 %}
+  {%- endif -%}
+
+{%- endcapture -%}
+
+{%- if social_media_count > 0 -%}
+  <ul class="{{ class }} Nav Nav--icons SocialMedia">
+    {{ social_media }}
+  </ul>
+{%- endif -%}

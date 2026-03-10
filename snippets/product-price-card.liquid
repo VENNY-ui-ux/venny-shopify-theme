@@ -1,0 +1,56 @@
+{%- liquid
+    if settings.price_currency_format == 'money'
+        assign money_price = product.price | money
+        assign money_price_compare = product.compare_at_price | money
+        assign money_price_unit = product.selected_or_first_available_variant.unit_price | money
+    elsif settings.price_currency_format == 'money_with_currency'
+        assign money_price = product.price | money_with_currency
+        assign money_price_compare = product.compare_at_price | money_with_currency
+        assign money_price_unit = product.selected_or_first_available_variant.unit_price | money_with_currency
+    elsif settings.price_currency_format == 'money_without_currency'
+        assign money_price = product.price | money_without_currency
+        assign money_price_compare = product.compare_at_price | money_without_currency
+        assign money_price_unit = product.selected_or_first_available_variant.unit_price | money_without_currency
+    else
+        assign money_price = product.price | money_without_trailing_zeros
+        assign money_price_compare = product.compare_at_price | money_without_trailing_zeros
+        assign money_price_unit = product.selected_or_first_available_variant.unit_price | money_without_trailing_zeros
+    endif 
+-%}
+
+<div class="Product__PriceList">
+    {%- if product.compare_at_price > product.price -%}
+        <span class="Price Price--saleRegular">{{ money_price_compare }}</span>
+        <span class="Price Price--sale">
+            {%- if product.price_varies -%}
+                {{ 'product.price.from_price_html' | t: min_price: money_price }}
+            {%- else -%}
+                {{ money_price }}
+            {%- endif -%}
+        </span>
+    {%- elsif product.price_varies -%}
+        <span class="Price">{{ 'product.price.from_price_html' | t: min_price: money_price }}</span>
+    {% else %}
+  <span class="PriceWithTax">
+  {{ money_price }}
+  {% if cart.taxes_included %}
+    <span class="TaxNote" style="margin-left: 6px; font-size: 14px;"></span>
+  {% endif %}
+    
+  {% endif %}
+</div>
+
+{%- if product.selected_or_first_available_variant.unit_price_measurement -%}
+<div class="Product__UnitPrice">
+    <div class="UnitPrice">
+        <span class="UnitPrice__Price">{{ money_price_unit }}</span>
+        <span class="UnitPrice__Separator">/ </span>
+
+        {%- if product.selected_or_first_available_variant.unit_price_measurement.reference_value != 1 -%}
+            <span class="UnitPrice__ReferenceValue">{{ product.selected_or_first_available_variant.unit_price_measurement.reference_value }}</span>
+        {%- endif -%}
+
+        <span class="UnitPrice__ReferenceUnit">{{ product.selected_or_first_available_variant.unit_price_measurement.reference_unit }}</span>
+    </div>
+</div>
+{% endif %}

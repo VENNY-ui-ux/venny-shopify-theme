@@ -1,0 +1,121 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Featured columns
+  * ----------------------------------------------------------------------------
+  */
+:root {
+  --tg-featured-columns-background-color: var(--tg-sys-color-background);
+  --tg-featured-columns-text-color: var(--tg-sys-color-on-background);
+  --tg-featured-columns-card-badge-text-color: var(--tg-sys-color-on-tertiary);
+  --tg-featured-columns-card-badge-border-radius: 0;
+  --tg-featured-columns-card-badge-background-color: var(--tg-sys-color-tertiary);
+}
+
+section-featured-columns {
+  display: block;
+}
+
+.FeaturedColumns {
+  background-color: var(--tg-featured-columns-background-color);
+}
+
+@media screen and (max-width: 640px) {
+  .FeaturedColumns--horizontal .FeaturedColumns__Body {
+    overflow: hidden;
+  }
+  .FeaturedColumns--horizontal .FeaturedColumns__Body .Grid {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: -1rem;
+    padding-bottom: 1rem;
+  }
+  .FeaturedColumns--horizontal .FeaturedColumns__Body .Grid .Grid__Item {
+    white-space: normal;
+    display: inline-block !important;
+    width: 88%;
+  }
+}
+
+.FeaturedColumnsCard {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+.FeaturedColumnsCard .FeaturedColumnsCard__Content {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+.FeaturedColumnsCard .FeaturedColumnsCard__Heading,
+.FeaturedColumnsCard .FeaturedColumnsCard__Excerpt {
+  word-break: break-word;
+  width: 100%;
+  color: var(--tg-featured-columns-text-color);
+}
+.FeaturedColumnsCard .FeaturedColumnsCard__Heading a,
+.FeaturedColumnsCard .FeaturedColumnsCard__Excerpt a {
+  color: var(--tg-featured-columns-text-color);
+}
+.FeaturedColumnsCard .FeaturedColumnsCard__Heading a:hover,
+.FeaturedColumnsCard .FeaturedColumnsCard__Excerpt a:hover {
+  color: var(--tg-featured-columns-text-color);
+}
+.FeaturedColumnsCard .FeaturedColumnsCard__BadgeWrapper,
+.FeaturedColumnsCard .FeaturedColumnsCard__Heading,
+.FeaturedColumnsCard .FeaturedColumnsCard__Excerpt {
+  width: 100%;
+}
+.FeaturedColumnsCard.FeaturedColumnsCard--imageBottom .FeaturedColumnsCard__Content {
+  margin-top: 0;
+}
+.FeaturedColumnsCard.FeaturedColumnsCard--imageBottom .FeaturedColumnsCard__ImageWrapper {
+  margin-top: 1.25rem;
+  order: 2;
+}
+.FeaturedColumnsCard .FeaturedColumnsCard__Excerpt {
+  margin-bottom: 0.5rem;
+}
+
+@media screen and (max-width: 640px) {
+  .FeaturedColumns__Body .Grid__Item:not(:last-child) {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.FeaturedColumnsCard__Content {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.FeaturedColumnsCard--withBadge .FeaturedColumnsCard__Content {
+  -webkit-padding-start: 4rem;
+          padding-inline-start: 4rem;
+}
+
+.FeaturedColumnsCard__BadgeWrapper {
+  position: relative;
+  display: flex;
+}
+.FeaturedColumnsCard__BadgeWrapper .FeaturedColumnsCard__Badge {
+  font-family: var(--tg-sys-typescale-label-large-font);
+  font-style: var(--tg-sys-typescale-label-large-style);
+  font-weight: var(--tg-sys-typescale-label-large-weight);
+  font-size: var(--tg-sys-typescale-label-large-size);
+  line-height: var(--tg-sys-typescale-label-large-line-height);
+  letter-spacing: var(--tg-sys-typescale-label-large-tracking);
+  margin: -80px 0px 20px 0;
+  padding: 80px 15px 20px 15px;
+  background-color: var(--tg-featured-columns-card-badge-background-color);
+  color: var(--tg-featured-columns-card-badge-text-color);
+  border-radius: var(--tg-featured-columns-card-badge-border-radius);
+}
+
+.FeaturedColumnsCard--imageBottom .FeaturedColumnsCard__BadgeWrapper {
+  order: 1;
+}
+.FeaturedColumnsCard--imageBottom .FeaturedColumnsCard__Badge {
+  margin: 20px 0 -80px;
+  padding: 80px 15px 20px 15px;
+}

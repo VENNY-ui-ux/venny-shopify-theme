@@ -1,0 +1,860 @@
+{%- liquid
+    assign color_label = 'color,colour,couleur,colore,farbe,färg,farve,kleur,barva,väri,색상,색,色,farge,kolor,cor,สี,renk,màu sắc,颜色,顏色' | split: ','
+
+    assign selected_variant = product.selected_or_first_available_variant
+
+    assign sectiion_id = section.id
+
+    assign show_inventory_quantity = false 
+    assign inventory_quantity_threshold = 5 
+    assign has_quantity_selector = false 
+    assign has_variant_picker = false 
+
+    for block in section.blocks 
+        if block.type == 'quantity_selector' 
+            assign has_quantity_selector = true 
+            assign show_inventory_quantity = block.settings.show_inventory_quantity 
+            assign inventory_quantity_threshold = block.settings.inventory_quantity_threshold 
+        endif
+        if block.type == 'variant_picker' 
+            assign has_variant_picker = true 
+        endif
+    endfor
+
+    if settings.product_image_size == 'natural' 
+        assign use_natural_size = true 
+    else
+        assign use_natural_size = false
+    endif
+
+    assign product_form_id = 'product-form-' | append: sectiion_id 
+
+    assign animation_image_loading_tag = 'div'
+    assign animation_image_loading_class = 'Image--fadeIn'
+    if settings.animation_image_loading == 'circle_icon'
+        assign animation_image_loading_tag = 'feature-img'
+        assign animation_image_loading_class = 'Image--withLoader Image--fadeIn'
+    endif
+-%}
+
+{%- for block in section.blocks -%}
+    {%- case block.type -%}
+        {%- when '@app' -%}
+            <div class="Product__Block Product__Block--app Product__Block--app{{ block.id }}">
+                {% render block %}
+            </div>
+
+        {%- when 'custom_liquid' -%}
+            <div id="block-{{ block.id }}" class="Product__Block Product__Block--customLiquid {% if block.settings.refresh_when_variant_changes %}Product__Block--refreshVariantChange{% endif %}" {{ block.shopify_attributes }}>
+                {{ block.settings.custom_liquid }}
+            </div>
+
+        {%- when 'breadcrumb' -%}
+             {%- if product.collections.size > 0 -%}
+                {%- assign product_collection_first = product.collections[0] -%}
+                <div class="Product__Block Product__Block--breadcrumb" {{ block.shopify_attributes }}>
+                    <ul class="Breadcrumb TextMuted">
+                        <li class="Breadcrumb__Item"><a href="{{ routes.root_url }}" title="{{ 'general.breadcrumb.home' | t }}">{{ 'general.breadcrumb.home' | t }}</a></li> 
+                        <li class="Breadcrumb__Item"><a href="{{ product_collection_first.url }}" title="{{ product_collection_first.title }}">{{- product_collection_first.title -}}</a></li>
+                    </ul>
+                </div>
+             {%- endif -%}
+
+        {%- when 'text' -%}
+            <div class="Product__Block Product__Block--text CustomSize {{ block.settings.text_size }}" {{ block.shopify_attributes }}>
+                {{- block.settings.text -}}
+            </div>
+
+        {%- when 'trust_badges' -%}
+            {%- if block.settings.trust_badges_img != blank -%}
+                <{{- animation_image_loading_tag }} class="Product__Block Product__Block--trustBadges Ratio" style="--tg-aspect-ratio: {{ block.settings.trust_badges_img.aspect_ratio }};" {{ block.shopify_attributes }}>
+                    <img class="{{ animation_image_loading_class }}" 
+                        loading="lazy"
+                        width="{{ block.settings.trust_badges_img.width }}"
+                        height="{{ block.settings.trust_badges_img.height }}"
+                        src="{{ block.settings.trust_badges_img | image_url : width: 400 }}"
+                    >
+                    {%- if settings.animation_image_loading != 'none' -%}
+                        <span class="Image--loader"></span>
+                    {%- endif -%}    
+                </{{- animation_image_loading_tag }}>
+            {%- endif -%}
+
+        {%- when 'title' -%}
+            {%- if product_from == 'main-product' -%}
+                <div class="Product__Block Product__Block--title" {{ block.shopify_attributes }}>
+                  {% assign clean_title = product.title 
+  | remove: ' (Golden)' 
+  | remove: ' (Silver)' 
+%}
+                    <h1 class="Product_Title CustomSize {{ block.settings.text_size }}">{{ clean_title }}</h1>
+                </div>
+            {%- else -%}
+                <h2 class="Product__Block Product__Block--title" {{ block.shopify_attributes }}>
+                    <a href="{{ product.url }}" class="Product__Title CustomSize {{ block.settings.text_size }}">{{ product.title }}</a>
+                </h2>
+            {%- endif -%}
+        {%- when 'rating' -%}
+            {%- if product.metafields.reviews.rating.value != blank -%}
+              {% liquid
+               assign rating_decimal = 0
+               assign decimal = product.metafields.reviews.rating.value.rating | modulo: 1
+               if decimal >= 0.3 and decimal <= 0.7
+                assign rating_decimal = 0.5
+              elsif decimal > 0.7
+                assign rating_decimal = 1
+               endif
+              %}
+              <div class="Product__Block Product__Block--rating">
+                <div class="Rating" role="img" aria-label="{{ 'general.accessibility.star_reviews_info' | t: rating_value: product.metafields.reviews.rating.value, rating_max: product.metafields.reviews.rating.value.scale_max }}">
+                    <span aria-hidden="true" class="Rating__Star" style="--rating: {{ product.metafields.reviews.rating.value.rating | floor }}; --rating-max: {{ product.metafields.reviews.rating.value.scale_max }}; --rating-decimal: {{ rating_decimal }};"></span>
+                </div>
+                <p class="Rating__Text">
+                    <span aria-hidden="true">{{ product.metafields.reviews.rating.value }} / {{ product.metafields.reviews.rating.value.scale_max }}</span>
+                </p>
+                <p class="Rating__Count">
+                    <span aria-hidden="true">({{ product.metafields.reviews.rating_count }})</span>
+                    <span class="VisuallyHidden">{{ product.metafields.reviews.rating_count }} {{ "general.accessibility.total_reviews" | t }}</span>
+                </p>
+              </div>
+            {%- endif -%}
+
+        {%- when 'sku' -%}
+            <div class="Product__Block Product__Block--sku Product__Sku TextMuted no-js-hidden" style="{% if product.selected_or_first_available_variant.sku == blank %}display: none;{% endif %}" {{ block.shopify_attributes }}>{{ 'product.form.sku' | t }}: <span class="Product__SkuNum">{{ product.selected_or_first_available_variant.sku }}</span></div>
+        {%- when 'vendor' -%}
+            {%- if product.vendor != blank -%}
+                <div class="Product__Block Product__Block--vendor Product__Vendor TextMuted" {{ block.shopify_attributes }}>
+                    {%- assign vendor_handle = product.vendor | handle -%}
+                    {%- assign collection_for_vendor = collections[vendor_handle] -%}
+
+                    {%- if collection_for_vendor !=  empty -%}
+                        <a href="{{ collection_for_vendor.url }}" class="TextMuted">{{ product.vendor }}</a>
+                    {%- else -%}
+                        {{- product.vendor -}}
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+
+        {%- when 'price' -%}
+            <div class="Product__Block Product__Block--price no-js-hidden" {{ block.shopify_attributes }}>
+                 {%- render 'product-price', product: product, block: block -%}
+
+                {%- if block.settings.show_taxes_included -%}
+                    {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
+                    <p class="Product__TaxNotice">
+                        {%- if cart.taxes_included -%}
+                            {{ 'product.general.include_taxes' | t }}
+                        {%- endif -%}
+
+                        {%- if shop.shipping_policy.body != blank -%}
+                            {{ 'product.general.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                        {%- endif -%}
+                    </p>
+                    {%- endif -%}
+                {%- endif -%}
+            </div>
+{% assign base_title = product.title | remove: ' (Golden)' | remove: ' (Silver)' | handle %}
+{% assign color_label = product.title | split: '(' | last | remove: ')' | strip | downcase %}
+
+<div class="ColorDotWrapper" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+  {% for p in collections['all-products'].products %}
+    {% assign other_base_title = p.title | remove: ' (Golden)' | remove: ' (Silver)' | handle %}
+    {% if base_title == other_base_title %}
+      {% assign this_color = p.title | split: '(' | last | remove: ')' | strip | downcase %}
+      <a href="{{ p.url }}"
+         class="ColorDot ColorDot--{{ this_color }}{% if p.id == product.id %} ColorDot--active{% endif %}"
+         aria-label="{{ this_color }}"
+         title="{{ this_color }}">
+      </a>
+    {% endif %}
+  {% endfor %}
+
+  {% if color_label == 'golden' %}
+    <span style="font-size: 13px;">Premium 14k Gold Plated Stainless Steel</span>
+  {% elsif color_label == 'silver' %}
+    <span style="font-size: 13px;">Premium Polished Stainless Steel</span>
+  {% endif %}
+</div>
+
+  {% if material_text != '' %}
+    <span style="font-size: 13px;">{{ material_text }}</span>
+  {% endif %}
+
+</div>
+
+        {%- when 'short_description' -%}
+            {%- if block.settings.content != blank -%}
+                {%- if block.settings.short_description_position == 'right' or product.media.size < 1 -%}
+                    <div class="Product__Block Product__Block--description Product__ShortDescription RTE" {{ block.shopify_attributes }} 
+                        {% if block.settings.short_description_background != blank and block.settings.short_description_background != 'rgba(0,0,0,0)' %} 
+                             style="--tg-product-short-description-background: {{ block.settings.short_description_background }};"
+                        {% endif %}
+                    >
+                        {{ block.settings.content }}
+                    </div>
+                {%- endif -%}
+            {%- endif -%}
+        {%- when 'share' -%}
+            <div class="Product__Block Product__Block--share ShareButtons {{ breakpoint_class }}" {{ block.shopify_attributes }}>
+                <span class="ShareTitle TextMuted">{{ 'product.form.share' | t }}</span>
+
+                {%- assign share_url = shop.url | append: product.url -%}
+                {%- assign twitter_text = product.title -%}
+                {%- assign pinterest_description = product.description | strip_html | truncatewords: 15 | url_param_escape -%}
+                {%- assign pinterest_image = product.featured_image | image_url | prepend: 'https:' -%}
+
+                <div class="ShareList">
+                    <a class="TextMuted Button Button--icon" role="button" href="https://www.facebook.com/sharer.php?u={{ share_url }}" target="_blank" rel="noopener" aria-label="Facebook">{% render 'icons', icon: 'facebook' %}</a>
+                    <a class="TextMuted Button Button--icon" role="button" href="https://twitter.com/intent/tweet?{% if twitter_text != blank %}text={{ twitter_text | url_param_escape }}&{% endif %}url={{ share_url }}" target="_blank" rel="noopener" aria-label="Twitter">{% render 'icons', icon: 'twitter' %}</a>
+                    <a class="TextMuted Button Button--icon" role="button" href="https://pinterest.com/pin/create/button/?url={{ share_url }}{% if pinterest_image != blank %}&media={{ pinterest_image }}{% endif %}&description={{ pinterest_description }}" target="_blank" rel="noopener" aria-label="Pinterest">{% render 'icons', icon: 'pinterest' %}</a>
+                </div>
+            </div>
+        {%- when 'description' -%}
+            {%- if product.description != blank -%}
+                <div class="Product__Block Product__Block--drawerTitle Product__Block--description ProductInfoDrawer__Title ProductInfoDrawer__Title--description no-js-hidden" {{ block.shopify_attributes }}>
+                    {% assign default_description_drawer_title = 'product.general.description' | t %}
+                    <button class="Nav__Link" data-tg-toggle="Drawer" data-tg-target="#product-drawer-{{ block.id }}" type="button" role="button">{{ block.settings.heading | default: default_description_drawer_title }}</button>
+                </div>
+                <noscript class="Product__Block Product__Block--drawerTitle">
+                    <h2 class="TitleMedium">{{ block.settings.heading | default: default_description_drawer_title }}</h2>
+                    <div class="Product__BlockContainer">
+                        <div class="RTE">
+                            {{ product.description }}
+                        </div>
+                    </div>
+                </noscript>
+                {%- if request.design_mode -%}
+                    <div class="Hidden" id="product-drawer-design-mode-{{ block.id }}">
+                        <header class="Drawer__Header">
+                            {% assign default_description_drawer_title = 'product.general.description' | t %}
+                            <h5 class="Drawer__Title">{{ block.settings.heading | default: default_description_drawer_title }}</h5>
+                            <button type="button" class="ButtonClose" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}"></button>
+                        </header>
+                        <div class="Drawer__Body">
+                            <div class="RTE">
+                                {{ product.description }}
+                            </div>
+                        </div>
+                    </div>
+                {%- endif -%}
+            {%- endif -%}
+        {%- when 'description_collapsible' -%}
+            {%- if product.description != blank -%}
+                <div class="Accordion__Item Product__Block Product__Block--collapsibleInfoJS Product__Block--descriptionCollapsible Product__Block--collapsibleInfo no-js-hidden" {{ block.shopify_attributes }}>
+                    <div class="Accordion__Header">
+                        <button class="Accordion__Button {% unless block.settings.open_collapsible_tab %}Collapsed{% endunless %}" type="button" data-tg-toggle="Collapse" {% if block.settings.open_collapsible_tab %}aria-expanded="true"{% else %}aria-expanded="false"{% endif %} data-tg-target="#ProductBlockAccordion-{{ block.id }}">
+                            {% assign default_description_drawer_title = 'product.general.description' | t %}
+                            {{ block.settings.heading | default: default_description_drawer_title }}
+                        </button>
+                    </div>
+                    <div id="ProductBlockAccordion-{{ block.id }}" class="Accordion__Collapse Collapse {% if block.settings.open_collapsible_tab %}Show{% endif %}">
+                        <div class="Accordion__Body RTE">
+                            {{ product.description }}
+                        </div>
+                    </div>
+                </div>
+
+                <noscript class="Product__Block Product__Block--collapsibleInfo Product__Block--descriptionCollapsible">
+                    <details {% if block.settings.open_collapsible_tab %} open{% endif %}>
+                        {% assign default_description_drawer_title = 'product.general.description' | t %}
+                        <summary class="ProductInfoCollapsible__Title" role="button">
+                            {{ block.settings.heading | default: default_description_drawer_title }}
+                        </summary>
+                        <div class="Product__BlockContainer">
+                            <div class="RTE">
+                                {{ product.description }}
+                            </div>
+                        </div>
+                    </details>
+                </noscript>
+            {%- endif -%}
+        {%- when 'drawer_info' -%}
+            {%- if block.settings.content != blank or block.settings.page.content != blank or block.settings.image != blank -%}
+                <div class="Product__Block Product__Block--drawerTitle ProductInfoDrawer__Title no-js-hidden" {{ block.shopify_attributes }}>
+                    <button class="Nav__Link" data-tg-toggle="Drawer" data-tg-target="#product-drawer-{{ block.id }}" type="button" role="button">
+                        {{ block.settings.heading | default: block.settings.page.title }}
+                    </button>
+                </div>
+                <noscript class="Product__Block Product__Block--drawerTitle">
+                    <h2 class="TitleMedium">{{ block.settings.heading | default: block.settings.page.title }}</h2>
+                    <div class="Product__BlockContainer">
+                        {%- if block.settings.image != blank -%}
+                            <div class="Ratio" style="margin-bottom: 1rem; --tg-aspect-ratio: {{ block.settings.image.aspect_ratio }};">
+                                <img width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy" src="{{ block.settings.image | image_url : width: 800 }}"> 
+                            </div>
+                        {%- endif -%}
+                        <div class="RTE" style="margin-bottom: 1rem;">
+                            {{ block.settings.content }}
+                        </div>
+                        <div class="RTE">
+                            {{ block.settings.page.content }}
+                        </div>
+                    </div>
+                </noscript>
+
+                {%- if request.design_mode -%}
+                    <div class="Hidden" id="product-drawer-design-mode-{{ block.id }}">
+                        <header class="Drawer__Header">
+                            <h5 class="Drawer__Title">
+                                {{ block.settings.heading | default: block.settings.page.title }}
+                            </h5>
+                            <button type="button" class="ButtonClose" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}"></button>
+                        </header>
+                        <div class="Drawer__Body">
+                            {%- if block.settings.image != blank -%}
+                                <div class="Ratio" style="--tg-aspect-ratio: {{ block.settings.image.aspect_ratio }};">
+                                    <img width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy" src="{{ block.settings.image | image_url : width: 800 }}"> 
+                                </div>
+                            {%- endif -%}
+                            <div class="RTE">
+                                {{ block.settings.content }}
+                                {{ block.settings.page.content }}
+                            </div>
+                        </div>
+                    </div>
+                {%- endif -%}
+            {%- endif -%}
+        {%- when 'collapsible_info' -%}
+            {%- if block.settings.content != blank or block.settings.page.content != blank -%}
+                <div class="Accordion__Item Product__Block Product__Block--collapsibleInfoJS Product__Block--collapsibleInfo no-js-hidden" {{ block.shopify_attributes }}>
+                    <div class="Accordion__Header">
+                        <button class="Accordion__Button {% unless block.settings.open_collapsible_tab %}Collapsed{% endunless %}" type="button" data-tg-toggle="Collapse" {% if block.settings.open_collapsible_tab %}aria-expanded="true"{% else %}aria-expanded="false"{% endif %} data-tg-target="#ProductBlockAccordion-{{ block.id }}">
+                            {{ block.settings.heading | default: block.settings.page.title }}
+                        </button>
+                    </div>
+                    <div id="ProductBlockAccordion-{{ block.id }}" class="Accordion__Collapse Collapse {% if block.settings.open_collapsible_tab %}Show{% endif %}">
+                        <div class="Accordion__Body">
+                            <div class="RTE">
+                                {{ block.settings.content }}
+                            </div>
+                            <div class="RTE">
+                                {{ block.settings.page.content }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <noscript class="Product__Block Product__Block--collapsibleInfo">
+                    <details {% if block.settings.open_collapsible_tab %} open{% endif %}>
+                        <summary class="ProductInfoCollapsible__Title" role="button">
+                            {{ block.settings.heading | default: block.settings.page.title }}
+                        </summary>
+                        <div class="Product__BlockContainer">
+                            <div class="RTE">
+                                {{ block.settings.content }}
+                            </div>
+                            <div class="RTE">
+                                {{ block.settings.page.content }}
+                            </div>
+                        </div>
+                    </details>
+                </noscript>
+            {%- endif -%}
+
+        {%- when 'variant_picker' -%}
+            {%- unless product.has_only_default_variant -%}
+                {%- if product.available or block.settings.hide_sold_out_variants == false -%}
+                <div id="Block-{{ block.id }}" class="Product__Block Product__Block--variantPicker {% if block.settings.hide_sold_out_variants %}Product__Block--hideSoldOutVariants{% endif %}" {{ block.shopify_attributes }}>
+                    {%- for option in product.options_with_values -%}
+
+                        {%- liquid
+                            assign downcase_option = option.name | downcase
+
+                            assign is_color_image_swatch_picker = false
+                            assign is_color_swatch_picker = false
+                            assign is_button_picker = false
+
+                            if block.settings.picker_type == 'color_image_swatch_dropdown' or block.settings.picker_type == 'color_image_swatch_button'
+                                assign is_color_image_swatch_picker = true
+                            endif
+                            if block.settings.picker_type == 'color_swatch_dropdown' or block.settings.picker_type == 'color_swatch_button'
+                                assign is_color_swatch_picker = true
+                            endif
+                            if block.settings.picker_type == 'block' or block.settings.picker_type == 'color_swatch_button' or block.settings.picker_type == 'color_image_swatch_button'
+                                assign is_button_picker = true
+                            endif 
+                        -%}
+
+                        <div class="ProductForm__Option no-js-hidden">
+                            {%- if color_label contains downcase_option and is_color_image_swatch_picker -%}
+                                <div class="ProductForm__Label">
+                                    {{ option.name }}: <span class="ProductForm__SelectedValue TextMuted">{{ option.selected_value }}</span>
+                                </div>
+
+                                <ul class="SwatchList List List--horizontal">
+                                {%- for value in option.values -%}
+                                        {%- liquid
+
+                                            comment variant does not exist, not 'sold out' 
+                                            endcomment
+                                                if block.settings.hide_unavailable_variants
+                                                unless value.variant.id
+                                                    continue
+                                                endunless
+                                            endif
+
+                                            if value.swatch.color and block.settings.swatch_type != 'none'
+                                                assign background_color = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                                            else
+                                                assign background_color = value | replace: ' ', '' | downcase
+                                            endif
+
+                                            assign image_swatch_image = blank
+
+                                            if value.swatch.image and block.settings.swatch_type != 'none'
+                                                assign image_swatch_image = value.swatch.image
+                                            else
+                                                assign image_swatch_name = value | handle | append: '-' | append: product.handle | append: '.jpg'
+                                                assign image_swatch_image = images[image_swatch_name]
+
+                                                if image_swatch_image == blank
+                                                    assign image_swatch_name = value | handle | append: '-' | append: product.handle | append: '.png'
+                                                    assign image_swatch_image = images[image_swatch_name]
+                                                endif 
+
+                                                if image_swatch_image == blank
+                                                    assign image_swatch_name = value | handle | append: '.jpg'
+                                                    assign image_swatch_image = images[image_swatch_name]
+                                                endif
+
+                                                if image_swatch_image == blank
+                                                    assign image_swatch_name = value | handle | append: '.png'
+                                                    assign image_swatch_image = images[image_swatch_name]
+                                                endif 
+
+                                                if value.variant.image != empty 
+                                                    assign image_swatch_image = value.variant.image 
+                                                endif
+                                            endif
+
+                                            assign option_disabled = true
+
+                                            if value.variant.available
+                                                assign option_disabled = false
+                                            endif
+                                        -%}
+                                    <li class="ImageSwatchWrapper {% if option_disabled %}Unavailable{% endif %}">
+                                        <input id="option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="Hidden" type="radio" name="option-{{ block.id }}-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}" {% if value == option.selected_value %}checked="checked"{% endif %} data-variant-id="{{ value.variant.id }}" data-product-url="{{ value.product_url }}">
+                                        <label for="option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" tabindex="0" class="Ratio {% if option_disabled %}Unavailable{% endif %} {% unless use_natural_size %}Ratio--{{ settings.product_image_size }}{% endunless %} ImageSwatch ImageSwatch--large" title="{{ value | escape }}" 
+                                            style="{% if use_natural_size %}--tg-aspect-ratio: {{ image_swatch_image.aspect_ratio | default: product.featured_image.aspect_ratio }};{% endif %}  {% unless image_swatch_image != blank %}background-color: {{ background_color }};{% endunless %}
+                                            {%- if image_swatch_image != blank -%}
+                                                background-image: -webkit-image-set(
+                                                    url({{ image_swatch_image | image_url: width: 300 }}) 1x,
+                                                    url({{ image_swatch_image | image_url: width: 600 }}) 2x);
+                                                background-image:image-set(
+                                                    url({{ image_swatch_image | image_url: width: 300 }}) 1x,
+                                                    url({{ image_swatch_image | image_url: width: 600 }}) 2x);
+                                            {%- endif -%}"
+                                        >
+                                            <span class="VisuallyHidden">{{ value }}</span>
+                                        </label>
+                                    </li>
+                                {%- endfor -%}
+                                </ul>
+                            {%- elsif color_label contains downcase_option and is_color_swatch_picker -%}
+                                <div class="ProductForm__Label">
+                                {{ option.name }}: <span class="ProductForm__SelectedValue TextMuted">{{ option.selected_value }}</span>
+                                </div>
+
+                                <ul class="SwatchList List List--horizontal">
+                                {%- for value in option.values -%}
+                                        {%- liquid
+
+                                            comment variant does not exist, not 'sold out' 
+                                            endcomment
+                                            if block.settings.hide_unavailable_variants
+                                                unless value.variant.id
+                                                    continue
+                                                endunless
+                                            endif
+                                            
+                                            assign downcase_value = value | downcase
+
+                                            if value.swatch.color and block.settings.swatch_type != 'none'
+                                                assign background_color = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                                            else
+                                                assign background_color = value | replace: ' ', '' | downcase
+                                            endif
+
+                                            assign color_swatch_name = blank
+
+                                            if value.swatch.image and block.settings.swatch_type != 'none'
+                                                assign color_swatch_image = value.swatch.image
+                                            else
+                                                assign color_swatch_name = value | handle | append: '-' | append: product.handle | append: '.jpg'
+                                                assign color_swatch_image = images[color_swatch_name]
+
+                                                if color_swatch_image == blank
+                                                    assign color_swatch_name = value | handle | append: '-' | append: product.handle | append: '.png'
+                                                    assign color_swatch_image = images[color_swatch_name]
+                                                endif 
+
+                                                if color_swatch_image == blank
+                                                    assign color_swatch_name = value | handle | append: '.jpg'
+                                                    assign color_swatch_image = images[color_swatch_name]
+                                                endif
+
+                                                if color_swatch_image == blank
+                                                    assign color_swatch_name = value | handle | append: '.png'
+                                                    assign color_swatch_image = images[color_swatch_name]
+                                                endif 
+                                            endif
+
+                                            assign option_disabled = true
+
+                                            if value.variant.available
+                                                assign option_disabled = false
+                                            endif
+                                        -%}
+                                    <li class="ColorSwatchWrapper {% if option_disabled %}Unavailable{% endif %}">
+                                        <input id="option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="Hidden" type="radio" name="option-{{ block.id }}-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}" {% if value == option.selected_value %}checked="checked"{% endif %} data-variant-id="{{ value.variant.id }}" data-product-url="{{ value.product_url }}">
+                                        <label for="option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" tabindex="0" class="{% if option_disabled %}Unavailable Ratio Ratio--1x1{% endif %} ColorSwatch ColorSwatch--large {% if downcase_value == 'white' and color_swatch_image == blank %}ColorSwatch--white{% endif %}" title="{{ value | escape }}" 
+                                            style="{% unless color_swatch_image != blank %}background-color: {{ background_color }};{% endunless %}
+                                            {%- if color_swatch_image != blank -%}
+                                                background-image: -webkit-image-set(
+                                                    url({{ color_swatch_image | image_url: width: 64 }}) 1x,
+                                                    url({{ color_swatch_image | image_url: width: 128 }}) 2x);
+                                                background-image:image-set(
+                                                    url({{ color_swatch_image | image_url: width: 64 }}) 1x,
+                                                    url({{ color_swatch_image | image_url: width: 128 }}) 2x);
+                                            {%- endif -%}"
+                                        >
+                                            <span class="VisuallyHidden">{{ value }}</span>
+                                        </label>
+                                    </li>
+                                {%- endfor -%}
+                                </ul>
+                            {%- elsif is_button_picker -%}
+                                <div class="ProductForm__Label">
+                                    {{ option.name }}: <span class="ProductForm__SelectedValue TextMuted">{{ option.selected_value }}</span>
+                                </div>
+                                <ul class="SwatchList List List--horizontal">
+                                    {%- liquid
+                                        assign swatch_ratio = blank
+                                        for value in option.values
+                                            if value.swatch.image and block.settings.swatch_type != 'none'
+                                                assign swatch_ratio = value.swatch.image.aspect_ratio
+                                                break
+                                            endif
+                                        endfor
+                                    -%}
+                                    {%- for value in option.values -%}
+                                        {%- liquid
+                                            comment variant does not exist, not 'sold out' 
+                                            endcomment
+                                            if block.settings.hide_unavailable_variants
+                                                unless value.variant.id
+                                                    continue
+                                                endunless
+                                            endif
+
+                                            assign option_disabled = true
+
+                                            assign image_swatch_image = blank
+
+                                            if value.swatch.color and block.settings.swatch_type != 'none'
+                                                assign background_color = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                                            else
+                                                assign background_color = value | replace: ' ', '' | downcase
+                                            endif
+
+                                            if value.swatch.image and block.settings.swatch_type != 'none'
+                                                assign image_swatch_image = value.swatch.image
+                                            endif
+                                        
+                                            if value.variant.available
+                                                assign option_disabled = false
+                                            endif
+                                        -%}
+                                        <li class="{% if option_disabled %}Unavailable{% endif %} {{swatch_ratio}} {% if swatch_ratio != blank -%}
+                                            ImageSwatchWrapper
+                                        {%- elsif value.swatch.color and block.settings.swatch_type != 'none' -%}
+                                            ColorSwatchWrapper
+                                        {%- else -%}
+                                            BlockSwatchWrapper 
+                                        {%- endif %}">
+                                            <input id="option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="Hidden" type="radio" name="option-{{ block.id }}-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}" {% if value == option.selected_value %}checked="checked"{% endif %} data-variant-id="{{ value.variant.id }}" data-product-url="{{ value.product_url }}">
+                                            {%- if swatch_ratio != blank -%}
+                                                <label for="option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" tabindex="0" class="Ratio {% if option_disabled %}Unavailable{% endif %} ImageSwatch ImageSwatch--large" title="{{ value | escape }}" 
+                                                    style="--tg-aspect-ratio: {{ swatch_ratio }}; {% unless image_swatch_image != blank %}background-color: {{ background_color }};{% endunless %}
+                                                    {%- if image_swatch_image != blank -%}
+                                                        background-image: -webkit-image-set(
+                                                            url({{ image_swatch_image | image_url: width: 200 }}) 1x,
+                                                            url({{ image_swatch_image | image_url: width: 400 }}) 2x);
+                                                        background-image:image-set(
+                                                            url({{ image_swatch_image | image_url: width: 200 }}) 1x,
+                                                            url({{ image_swatch_image | image_url: width: 400 }}) 2x);
+                                                    {%- endif -%}"
+                                                >
+                                                    <span class="VisuallyHidden">{{ value | escape }}</span>
+                                                </label>
+                                            {%- elsif value.swatch.color and block.settings.swatch_type != 'none' -%}
+                                                <label for="option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" tabindex="0" class="{% if option_disabled %}Unavailable Ratio Ratio--1x1{% endif %} ColorSwatch ColorSwatch--large {% if downcase_value == 'white' and color_swatch_image == blank %}ColorSwatch--white{% endif %}" title="{{ value | escape }}" 
+                                                    style="background-color: {{ background_color }};">
+                                                    <span class="VisuallyHidden">{{ value | escape }}</span>
+                                                </label>
+                                            {%- else -%}
+                                                <label for="option-{{ sectiion_id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" tabindex="0" class="Button BlockSwatch {% if option_disabled %}Unavailable{% endif %}">{{ value }}</label>
+                                            {%- endif -%}
+                                        </li>
+                                    {%- endfor -%}
+                                </ul>
+                            {%- else -%}
+                                <div class="Form__Item Form__Item--floatingLabel">
+                                    <select id="options-{{ block.id }}-[{{ option.name | escape }}]" class="Form__Select" name="options-{{ block.id }}-[{{ option.name | escape }}]">
+                                        {%- for value in option.values -%}
+                                            {%- liquid
+                                                comment variant does not exist, not 'sold out' 
+                                                endcomment
+                                                if block.settings.hide_unavailable_variants
+                                                    unless value.variant.id
+                                                        continue
+                                                    endunless
+                                                endif
+
+                                                assign option_disabled = true
+                                            
+                                                if value.variant.available
+                                                    assign option_disabled = false
+                                                endif
+                                            -%}
+                                            <option value="{{ value | escape }}" class="{% if option_disabled %}Unavailable{% endif %}" {% if option.selected_value == value %}selected="selected"{% endif %}  data-variant-id="{{ value.variant.id }}" data-product-url="{{ value.product_url }}">
+                                                {% if option_disabled -%}
+                                                    {{- 'product.form.value_unavailable' | t: option_value: value -}}
+                                                {%- else -%}
+                                                    {{- value -}}
+                                                {%- endif %}
+                                            </option>
+                                        {%- endfor -%}
+                                    </select>
+                                    <label class="Form__Label" for="options-{{ block.id }}-[{{ option.name | escape }}]"> {{ option.name }}</label>
+                                </div>
+                            {%- endif -%}
+                        </div>
+                    {%- endfor -%}
+
+                    <input type="hidden" name="id" value="{{ selected_variant.id }}" form="{{ product_form_id }}">
+                </div>
+                {%- endif -%}
+            {%- else -%}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" form="{{ product_form_id }}">
+            {%- endunless -%}
+
+        {%- when 'quantity_selector' -%}
+
+            <div class="ProductForm__QuantityWrapper Product__Block Product__Block--quantitySelector" {{ block.shopify_attributes }}>
+                <div class="ProductForm__Quantity">
+                    <button type="button" class="Button ProductForm__QuantityButton ProductForm__QuantityButton--minus no-js-hidden" aria-label="{{ 'general.accessibility.minus' | t }}" data-action="decrease-quantity"> {%- render 'icons', icon: 'minus' -%}</button>
+                    <input id="ProductFormQuantityNum--{{ section.id }}-{{ block.id }}" type="text" class="ProductForm__QuantityNum Form__Input" aria-label="{{ 'product.form.quantity' | t }}" pattern="[0-9]*" name="quantity" value="1" form="{{ product_form_id }}">
+                    <label class="VisuallyHidden" for="ProductFormQuantityNum--{{ section.id }}-{{ block.id }}">{{ 'product.form.quantity' | t }}</label>
+                    <button type="button" class="Button ProductForm__QuantityButton ProductForm__QuantityButton--plus no-js-hidden" aria-label="{{ 'general.accessibility.plus' | t }}" data-action="increase-quantity">{%- render 'icons', icon: 'plus' -%}</button>
+                </div>
+            </div>
+
+        {%- when 'buy_buttons' -%}
+            <div class="Product__Block Product__Block--buyButtons" {{ block.shopify_attributes }}>
+
+                {%- if show_inventory_quantity -%}
+                    {%- liquid
+                        assign hide_inventory_quantity = false
+                
+                        if selected_variant.inventory_management == blank or selected_variant.inventory_quantity <= 0
+                            assign hide_inventory_quantity = true
+                        endif
+
+                        if inventory_quantity_threshold != 0 and selected_variant.inventory_quantity > inventory_quantity_threshold
+                            assign hide_inventory_quantity = true
+                        endif
+                    -%}
+
+                    <div class="ProductForm__Inventory TextMuted" {% if hide_inventory_quantity %}style="display: none"{% endif %}>
+                        {%- if inventory_quantity_threshold == 0 -%}
+                            {{- 'product.form.inventory_quantity_count' | t: count: selected_variant.inventory_quantity -}}
+                        {%- else -%}
+                            {{- 'product.form.low_inventory_quantity_count' | t: count: selected_variant.inventory_quantity -}}
+                        {%- endif -%}
+                    </div>
+
+                {%- endif -%}
+
+                {%- liquid
+                    assign gift_card_recipient_feature_active = false
+                    if block.settings.show_gift_card_recipient and product.gift_card?
+                        assign gift_card_recipient_feature_active = true
+                    endif
+
+                    assign show_dynamic_checkout = false
+                    if block.settings.show_dynamic_checkout and gift_card_recipient_feature_active == false
+                        assign show_dynamic_checkout = true
+                    endif
+                -%}
+
+                {%- form 'product', product, id: product_form_id, class: 'ProductForm' -%}
+                    {%- unless has_variant_picker -%}
+                        <input type="hidden" name="id" value="{{ selected_variant.id }}">
+                    {%- endunless -%}
+                    
+                    {%- unless has_quantity_selector -%}
+                        <input type="hidden" name="quantity" value="1">
+                    {%- endunless -%}
+
+                    {%- if gift_card_recipient_feature_active -%}
+                        {%- render 'product-block-gift-card-recipient', product_form_id: product_form_id, block: block, section: section -%}
+                    {%- endif -%}
+
+                    <button type="submit" class="ProductForm__AddToCart Button Button--full {% if selected_variant.available and show_dynamic_checkout == false %}Button--primary{% else %}Button--secondary{% endif %}" {% if selected_variant.available %}data-action="add-to-cart"{% else %}disabled="disabled"{% endif %}>
+                        {%- if selected_variant.available -%}
+                            <span>{{ 'product.form.add_to_cart' | t }}</span>
+                        {%- else -%}
+                            {{- 'product.form.sold_out' | t -}}
+                        {%- endif -%}
+                    </button>
+
+                    {%- if selected_variant.available == false -%}
+                        <style>
+                        #shopify-section-{{ sectiion_id }} .shopify-payment-button {
+                            display: none;
+                        }
+                        </style>
+                    {%- endif -%}
+
+                    {%- if show_dynamic_checkout -%}
+                        <div class="ProductForm__Checkout">
+                            {{ form | payment_button }}
+                        </div>
+                    {%- endif -%}
+                    {% comment %} Shop Pay Installments {% endcomment %}
+                    <div class="Product__PayInstallments">
+                        {{ form | payment_terms }}
+                    </div>
+
+                    {%- comment -%}The availability container will be added automatically if there is store pickup available{%- endcomment -%}
+                    {%- if block.settings.show_pickup_availability -%}
+                        <div class="Product__StoreAvailabilityContainer"></div>
+                    {%- endif -%}
+                {%- endform -%}
+            </div>
+        {%- when 'style_with' -%}
+            {%- render 'product-group-buy', block: block -%}
+        {%- when 'custom_property' -%}
+            {%- render 'product-custom-property', block: block, product_form_id: product_form_id -%}
+        {%- when 'product_recom_related' -%}
+            {%- render 'product-block-recommendations-related', block: block, recommendations_type: 'related' -%}
+        {%- when 'complementary_products' -%}
+            {%- render 'product-block-recommendations-related', block: block, recommendations_type: 'complementary' -%}
+    {%- endcase -%}
+{%- endfor -%}
+
+
+{% comment %} Drawer use position: fixed, which can sometimes be a bit particular about its rendering. 
+  Whenever possible, place your modal HTML in a top-level position to avoid potential interference from other elements. 
+  You’ll likely run into issues when nesting a .modal within another fixed element. {% endcomment %}
+<div class="Site__TopLevelElment">
+    {%- for block in section.blocks -%}
+        {%- if block.type == 'description' and product.description != blank -%}
+            <div class="Drawer Drawer--end" id="product-drawer-{{ block.id }}" {{ block.shopify_attributes }}>
+                <header class="Drawer__Header">
+                    {% assign default_description_drawer_title = 'product.general.description' | t %}
+                    <h5 class="Drawer__Title">{{ block.settings.heading | default: default_description_drawer_title }}</h5>
+                    <button type="button" class="ButtonClose" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}"></button>
+                </header>
+                <div class="Drawer__Body">
+                    <div class="RTE">
+                        {{ product.description }}
+                    </div>
+                </div>
+            </div>
+        {%- elsif block.type == 'drawer_info' -%}
+            <div class="Drawer Drawer--end Drawer--productInfo" id="product-drawer-{{ block.id }}" {{ block.shopify_attributes }}>
+                <header class="Drawer__Header">
+                    <h5 class="Drawer__Title">
+                        {{ block.settings.heading | default: block.settings.page.title }}
+                    </h5>
+                    <button type="button" class="ButtonClose" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}"></button>
+                </header>
+                <div class="Drawer__Body">
+                    {%- if block.settings.image != blank -%}
+                        <div class="Ratio" style="margin-bottom: 1rem; --tg-aspect-ratio: {{ block.settings.image.aspect_ratio }};">
+                            <img width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy" src="{{ block.settings.image | image_url : width: 800 }}"> 
+                        </div>
+                    {%- endif -%}
+                    {%- if block.settings.content != blank -%}
+                        <div class="RTE" style="margin-bottom: 1rem;">
+                            {{ block.settings.content }}
+                        </div>
+                    {%- endif -%}
+                    {%- if block.settings.page != blank -%}
+                        <div class="RTE">
+                            {{ block.settings.page.content }}
+                        </div>
+                {%- endif -%}
+                </div>
+            </div>
+        {%- endif -%}
+    {%- endfor -%}
+</div>
+
+<script type="application/json" data-product-json>
+  {
+    "section_id": {{ sectiion_id | json }},
+    "product": { 
+        "id": {{ product.id | json }},
+        "handle": {{ product.handle | json }},
+        "url": {{ product.url | json }},
+        "title": {{ product.title | json }},
+        "selected_or_first_available_variant": {{ selected_variant | json }}
+    }
+    {%- if selected_variant != blank -%},
+    "inventories": {
+        "inventory_management": {{ selected_variant.inventory_management | json }},
+        "inventory_policy": {{ selected_variant.inventory_policy | json }},
+        "inventory_quantity": {{ selected_variant.inventory_quantity | json }}
+    }
+    {%- endif -%}
+
+  }
+</script>
+{%- if product.media != blank -%}
+    {% liquid
+        assign enable_media_grouping = false 
+        if section.settings.enable_media_grouping and product.metafields.themegoal.media_grouping_set.value != blank
+            assign enable_media_grouping = true
+        endif
+        if enable_media_grouping
+            assign set_start_index = 1
+            assign set_end_index = product.media.size
+            assign current_first_option_value = product.selected_or_first_available_variant.options | first| downcase
+            for item in product.metafields.themegoal.media_grouping_set.value
+                assign item_set = item | split: ','
+                assign item_set_key = item_set | first | downcase
+                if current_first_option_value == item_set_key
+                    if item_set.size != 3
+                        break;
+                    endif
+                    assign set_start_index = item_set[1] | times: 1
+                    assign set_end_index = item_set | last | times: 1
+                    break
+                endif
+            endfor
+        endif
+        assign c_index = -1
+     %}
+    <script type="application/json" data-product-media-id-index-json>
+        {
+            "media_id_index":{
+                "id_":"00"
+                {%- for media in product.media -%}
+                    {% liquid
+                        if enable_media_grouping
+                            if media.position < set_start_index or media.position > set_end_index
+                                continue
+                            endif
+                        endif
+                        assign c_index = c_index | plus: 1
+                     %}
+                    ,"id_{{ media.id }}": {{ c_index }}
+                {%- endfor -%}
+            }
+        }
+    </script>
+{%- endif -%}

@@ -1,0 +1,82 @@
+/**
+  * ----------------------------------------------------------------------------
+  * Icon boxes
+  * ----------------------------------------------------------------------------
+  */
+:root {
+  --tg-icon-box-icon-with: 80px;
+}
+
+.IconBox {
+  display: flex;
+}
+
+.IconBox__Icon {
+  margin-bottom: 1rem;
+  max-width: var(--tg-icon-box-icon-with);
+}
+.IconBox__Icon svg, .IconBox__Icon img {
+  width: var(--tg-icon-box-icon-with);
+  height: auto;
+  max-width: 100%;
+}
+
+.IconBox__Title {
+  font-family: var(--tg-sys-typescale-title-medium-font);
+  font-style: var(--tg-sys-typescale-title-medium-style);
+  font-weight: var(--tg-sys-typescale-title-medium-weight);
+  font-size: var(--tg-sys-typescale-title-medium-size);
+  line-height: var(--tg-sys-typescale-title-medium-line-height);
+  letter-spacing: var(--tg-sys-typescale-title-medium-tracking);
+  margin-bottom: 4px;
+}
+
+.IconBox--center {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.IconBox--center .IconBox__Text {
+  width: 100%;
+}
+.IconBox--center .IconBox__Text {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+.IconBox--center .IconBox__Title, .IconBox--center p {
+  width: 100%;
+  text-align: center;
+}
+
+@media screen and (min-width: 1008px) {
+  .IconBox--aside {
+    align-items: center;
+  }
+  .IconBox--aside .IconBox__Icon {
+    margin-bottom: 0;
+  }
+  .IconBox--aside .IconBox__Text {
+    -webkit-padding-start: 1rem;
+            padding-inline-start: 1rem;
+  }
+}
+@media screen and (max-width: 1007px) {
+  .IconBox--aside {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .IconBox--aside .IconBox__Text {
+    width: 100%;
+  }
+  .IconBox--aside .IconBox__Text {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .IconBox--aside .IconBox__Title, .IconBox--aside p {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,0 +1,86 @@
+<div class="Product__Block Product__Block--cutomProperty ProductForm__CustomProperty" {{ block.shopify_attributes }}>
+    {%- if block.settings.property_type == 'text' -%}
+        <div class="Form__Item Form__Item--floatingLabel">
+            <input id="option-{{ section.id }}-{{ block.id }}" aria-label="{{ block.settings.property_name | escape }}" class="Form__Input" type="text" name="properties[{{ block.settings.property_name | escape }}]" placeholder="{{ block.settings.property_name | escape }}" {% if block.settings.property_is_required %}required{% endif %} form="{{ product_form_id }}"> 
+            <label for="option-{{ section.id }}-{{ block.id }}">{{ block.settings.property_name | escape }}{% if block.settings.property_is_required %} *{% endif %}</label> 
+        </div>
+        {%- if block.settings.property_is_required -%}<span class="InvalidFeedback InvalidFeedback--underFeild">{{ 'product.form.custom_property_input_invalid_feedback' | t: property_name: block.settings.property_name }}</span>{%- endif -%}
+
+    {%- elsif block.settings.property_type == 'long_text' -%}
+        <div class="Form__Item Form__Item--floatingLabel">
+            <textarea id="option-{{ section.id }}-{{ block.id }}" class="Form__Input" name="properties[{{ block.settings.property_name | escape }}]" cols="30" rows="10" aria-label="{{ block.settings.property_name | escape }}" placeholder="{{ block.settings.property_name | escape }}" style="height: 200px" {% if block.settings.property_is_required %}required{% endif %} form="{{ product_form_id }}"></textarea>
+            <label for="option-{{ section.id }}-{{ block.id }}" class="Form__Label">{{ block.settings.property_name | escape }}{% if block.settings.property_is_required %} *{% endif %}</label>
+        </div>
+        {%- if block.settings.property_is_required -%}<span class="InvalidFeedback InvalidFeedback--underFeild">{{ 'product.form.custom_property_input_invalid_feedback' | t: property_name: block.settings.property_name }}</span>{%- endif -%}
+    {%- elsif block.settings.property_type == 'dropdown' -%}
+        {%- assign values = block.settings.property_values | split: ',' -%}
+
+        {%- if values == empty -%}
+            {%- continue -%}
+        {%- endif -%}
+        <div class="Form__Item Form__Item--floatingLabel">
+            <select id="option-{{ section.id }}-{{ block.id }}" class="Form__Select" name="properties[{{ block.settings.property_name | escape }}]" title="{{ block.settings.property_name | escape }}" {% if block.settings.property_is_required %}required{% endif %} form="{{ product_form_id }}">
+                {% unless block.settings.property_first_value_is_selected %}<option value="" selected>{{ 'product.form.custom_property_invalid_feedback' | t: property_name: block.settings.property_name }}</option>{% endunless %}
+                {%- for value in values -%}
+                    {%- assign trim_value = value | strip -%}
+                    <option value="{{ trim_value | escape }}" {% if forloop.first and block.settings.property_first_value_is_selected %}selected{% endif %}>{{ trim_value | escape }}</option>
+                {%- endfor -%}
+            </select>
+       
+            <label for="option-{{ section.id }}-{{ block.id }}" class="Form__Label">{{ block.settings.property_name | escape }}{% if block.settings.property_is_required %} *{% endif %}</label>
+        </div>
+        {% unless block.settings.property_first_value_is_selected %}{%- if block.settings.property_is_required -%}<span class="InvalidFeedback InvalidFeedback--underFeild">{{ 'product.form.custom_property_invalid_feedback' | t: property_name: block.settings.property_name }}</span>{%- endif -%}{% endunless %}
+    {%- elsif block.settings.property_type == 'block' -%}
+        {%- assign values = block.settings.property_values | split: ',' -%}
+        <div class="ProductForm__Label">
+            {{ block.settings.property_name }}{% if block.settings.property_is_required %} * {% endif %}: <span class="ProductForm__SelectedValue TextMuted">{% if block.settings.property_first_value_is_selected %}{{ values.first }}{% endif %}</span>
+            {% unless block.settings.property_first_value_is_selected %}{%- if block.settings.property_is_required -%}<span class="InvalidFeedback">{{ 'product.form.custom_property_invalid_feedback' | t: property_name: block.settings.property_name }}</span>{%- endif -%}{% endunless %}
+        </div>
+        <ul class="SwatchList List List--horizontal">
+            {%- for value in values -%}
+                <li class="BlockSwatchWrapper">
+                    <input id="option-{{ section.id }}-{{ block.id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="Hidden" type="radio" name="properties[{{ block.settings.property_name | escape }}]" value="{{ value | escape }}" {% if forloop.first and block.settings.property_first_value_is_selected %}checked="checked"{% endif %} {% if block.settings.property_is_required %}required{% endif %} form="{{ product_form_id }}">
+                    <label for="option-{{ section.id }}-{{ block.id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" tabindex="0" class="Button BlockSwatch">{{ value }}</label>
+                </li>
+            {%- endfor -%}
+        </ul>
+
+    {%- elsif block.settings.property_type == 'image' -%}
+        {%- assign values = block.settings.property_values | split: ',' -%}
+        <div class="ProductForm__Label">
+            {{ block.settings.property_name }}{% if block.settings.property_is_required %} * {% endif %}: <span class="ProductForm__SelectedValue TextMuted">{% if block.settings.property_first_value_is_selected %}{{ values.first }}{% endif %}</span>
+            {% unless block.settings.property_first_value_is_selected %}{%- if block.settings.property_is_required -%}<span class="InvalidFeedback">{{ 'product.form.custom_property_invalid_feedback' | t: property_name: block.settings.property_name }}</span>{%- endif -%}{% endunless %}
+        </div>
+        <ul class="SwatchList List List--horizontal">
+            {% assign image_prefix_name = block.settings.image_prefix %}
+            {%- for value in values -%}
+                <li class="ImageSwatchWrapper">
+                    {%- liquid
+                        assign image_swatch_name = image_prefix_name | append: ' ' | append: value | handle | append: '.jpg'
+                        assign image_swatch_image = images[image_swatch_name]
+
+                        if image_swatch_image == blank
+                            assign image_swatch_name = image_prefix_name | append: ' ' | append: value | handle | append: '.png'
+                            assign image_swatch_image = images[image_swatch_name]
+                        endif 
+                    -%}
+
+                    <input id="option-{{ section.id }}-{{ block.id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" class="Hidden" type="radio" name="properties[{{ block.settings.property_name | escape }}]" value="{{ value | escape }}" {% if forloop.first and block.settings.property_first_value_is_selected %}checked="checked"{% endif %} {% if block.settings.property_is_required %}required{% endif %} form="{{ product_form_id }}">
+                    <label for="option-{{ section.id }}-{{ block.id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}" tabindex="0" class="Ratio ImageSwatch ImageSwatch--large" title="{{ value | escape }}" 
+                        style="--tg-aspect-ratio: {{ image_swatch_image.aspect_ratio | default: product.featured_image.aspect_ratio }}; {%- unless image_swatch_image != blank -%}background-color: {{ value | replace: ' ', '' | downcase }};{%- endunless -%}
+                        {%- if image_swatch_image != blank -%}
+                            background-image: -webkit-image-set(
+                                url({{ image_swatch_image | image_url: width: 300 }}) 1x,
+                                url({{ image_swatch_image | image_url: width: 600 }}) 2x);
+                            background-image:image-set(
+                                url({{ image_swatch_image | image_url: width: 300 }}) 1x,
+                                url({{ image_swatch_image | image_url: width: 600 }}) 2x);
+                        {%- endif -%}"
+                    >
+                        <span class="VisuallyHidden">{{ value }}</span>
+                    </label>
+                </li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+</div>

@@ -1,0 +1,9 @@
+<div class="NavCard Animate__Item">
+    <div class="NavCard__ImageWrapper Ratio {% if section.settings.featured_image_size != 'natural' %} Ratio--{{ section.settings.featured_image_size }}{% endif %}"
+      {% if section.settings.featured_image_size == 'natural' %}style="--tg-aspect-ratio: 1;"{% endif %}>
+      {{ 'image' | placeholder_svg_tag: 'NavCard__Image SvgPlaceholder' }}
+    </div>
+    <div class="NavCard__Text">
+      <h3 class="NavCard__Title CustomSize TitleSmall">{{ 'sections.onboarding.heading' | t }}</h3>
+    </div>
+</div>
