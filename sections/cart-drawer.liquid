@@ -62,13 +62,11 @@
     </section>
 
     {% if cart.item_count > 0 %}
-      <div class="CartDrawer__ItemsScroll">
+      <div class="CartDrawer__Scrollable">
         <section class="CartDrawer__Items" data-cart-items aria-label="{{ section.settings.drawer_title | default: 'Shopping cart items' }}">
           {% render 'cart-items-drawer' %}
         </section>
-      </div>
 
-      <div class="CartDrawer__StickyStack">
         {% render 'cart-drawer-recommendations', section: section %}
 
         <section class="CartDrawer__Summary">
@@ -89,12 +87,13 @@
           <div class="CartDrawer__Delivery">{{ section.settings.estimated_delivery_text | default: 'Estimated delivery: 2-4 business days' }}</div>
           <p class="CartDrawer__TaxNote">{{ section.settings.tax_note | default: 'We cover all import duties & taxes for EU orders' }}</p>
         </section>
-        <footer class="CartDrawer__Footer">
-          <a href="{{ routes.checkout_url }}" class="Button Button--primary CartDrawer__CheckoutButton" aria-label="{{ section.settings.checkout_button_label | default: 'CHECKOUT SECURELY' }}">
-            {{ section.settings.checkout_button_label | default: 'CHECKOUT SECURELY' }}
-          </a>
-        </footer>
       </div>
+
+      <footer class="CartDrawer__Footer">
+        <a href="{{ routes.checkout_url }}" class="Button Button--primary CartDrawer__CheckoutButton" aria-label="{{ section.settings.checkout_button_label | default: 'CHECKOUT SECURELY' }}">
+          {{ section.settings.checkout_button_label | default: 'CHECKOUT SECURELY' }}
+        </a>
+      </footer>
     {% else %}
       <section class="CartDrawer__EmptyState">
         <p class="CartDrawer__EmptyTitle">{{ section.settings.empty_title | default: 'Your cart is empty' }}</p>

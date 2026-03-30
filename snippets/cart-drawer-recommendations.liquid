@@ -28,7 +28,6 @@
         {% endif %}
         {% assign rendered_count = rendered_count | plus: 1 %}
         {% assign first_variant = product.selected_or_first_available_variant %}
-        {% assign clean_title = product.title | remove: ' (Golden)' | remove: ' (Silver)' %}
         <article class="CartDrawerRecCard" role="listitem">
           <a href="{{ product.url }}" class="CartDrawerRecCard__ImageLink" aria-label="{{ product.title | escape }}">
             {% if product.featured_image %}
@@ -46,7 +45,7 @@
             {% endif %}
           </a>
           <div class="CartDrawerRecCard__Info">
-            <a href="{{ product.url }}" class="CartDrawerRecCard__Title">{{ clean_title }}</a>
+            <a href="{{ product.url }}" class="CartDrawerRecCard__Title">{{ product.title }}</a>
             <div class="CartDrawerRecCard__Prices">
               <span class="CartDrawerRecCard__Price">{{ first_variant.price | money }}</span>
               {% if first_variant.compare_at_price > first_variant.price %}
