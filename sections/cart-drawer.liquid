@@ -4,6 +4,7 @@
   assign cart_total = cart.total_price | divided_by: 100.0
   assign progress_pct = 0
   assign shipping_text = section.settings.shipping_paid_label | default: 'Calculated at checkout'
+  assign checkout_label = section.settings.checkout_button_label | default: 'Checkout'
   assign first_product_id = blank
   if cart.items.first and cart.items.first.product
     assign first_product_id = cart.items.first.product.id
@@ -62,11 +63,13 @@
     </section>
 
     {% if cart.item_count > 0 %}
-      <div class="CartDrawer__Scrollable">
+      <div class="CartDrawer__ItemsScroll">
         <section class="CartDrawer__Items" data-cart-items aria-label="{{ section.settings.drawer_title | default: 'Shopping cart items' }}">
           {% render 'cart-items-drawer' %}
         </section>
+      </div>
 
+      <div class="CartDrawer__StickyStack">
         {% render 'cart-drawer-recommendations', section: section %}
 
         <section class="CartDrawer__Summary">
@@ -87,13 +90,12 @@
           <div class="CartDrawer__Delivery">{{ section.settings.estimated_delivery_text | default: 'Estimated delivery: 2-4 business days' }}</div>
           <p class="CartDrawer__TaxNote">{{ section.settings.tax_note | default: 'We cover all import duties & taxes for EU orders' }}</p>
         </section>
+        <footer class="CartDrawer__Footer">
+          <a href="{{ routes.checkout_url }}" class="Button Button--primary CartDrawer__CheckoutButton" aria-label="{{ checkout_label }}">
+            {{ checkout_label }}
+          </a>
+        </footer>
       </div>
-
-      <footer class="CartDrawer__Footer">
-        <a href="{{ routes.checkout_url }}" class="Button Button--primary CartDrawer__CheckoutButton" aria-label="{{ section.settings.checkout_button_label | default: 'CHECKOUT SECURELY' }}">
-          {{ section.settings.checkout_button_label | default: 'CHECKOUT SECURELY' }}
-        </a>
-      </footer>
     {% else %}
       <section class="CartDrawer__EmptyState">
         <p class="CartDrawer__EmptyTitle">{{ section.settings.empty_title | default: 'Your cart is empty' }}</p>
@@ -192,7 +194,7 @@
       "type": "text",
       "id": "checkout_button_label",
       "label": "Checkout button label",
-      "default": "CHECKOUT SECURELY"
+      "default": "Checkout"
     },
     {
       "type": "text",
