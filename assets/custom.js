@@ -27,7 +27,7 @@
 (function () {
   let isUpdating = false;
 
-  // klik på plus/minus/kryds + recommendation add
+  // klik på plus/minus/kryds
   document.addEventListener('click', function (event) {
     const recAdd = event.target.closest('[data-cart-rec-add]');
     const minus  = event.target.closest('[data-cart-qty-minus]');
@@ -39,16 +39,6 @@
     event.preventDefault();
 
     if (isUpdating) return;
-
-    if (recAdd) {
-      const variantId = parseInt(recAdd.getAttribute('data-variant-id'), 10);
-      if (!variantId) return;
-      setLoadingState(recAdd, true);
-      addVariantToCart(variantId).finally(function () {
-        setLoadingState(recAdd, false);
-      });
-      return;
-    }
 
     const target = minus || plus || remove;
     const line = parseInt(target.getAttribute('data-line'), 10);
@@ -123,38 +113,6 @@
     countTexts.forEach(function (node) {
       node.classList.toggle('Visible', itemCount === 0);
     });
-  }
-
-  function addVariantToCart(variantId) {
-    isUpdating = true;
-    setDrawerBusy(true);
-    return fetch('/cart/add.js', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        id: variantId,
-        quantity: 1
-      })
-    })
-      .then(function (res) { return res.json(); })
-      .then(function () {
-        return fetch('/cart.js', { headers: { 'Accept': 'application/json' } });
-      })
-      .then(function (res) { return res.json(); })
-      .then(function (cart) {
-        updateCartCounters(cart.item_count || 0);
-        return refreshCartDrawer();
-      })
-      .catch(function (err) {
-        console.error('Recommendation add failed', err);
-      })
-      .finally(function () {
-        isUpdating = false;
-        setDrawerBusy(false);
-      });
   }
 
   function updateCartLine(line, quantity) {

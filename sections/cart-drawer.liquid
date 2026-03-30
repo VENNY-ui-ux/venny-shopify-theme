@@ -69,8 +69,6 @@
       </div>
 
       <div class="CartDrawer__StickyStack">
-        {% render 'cart-drawer-recommendations', section: section %}
-
         <section class="CartDrawer__Summary">
           <div class="CartDrawer__Row">
             <span>{{ section.settings.subtotal_label | default: 'Subtotal' }}</span>
@@ -206,20 +204,6 @@
       "id": "empty_button_label",
       "label": "Empty cart button label",
       "default": "Continue shopping"
-    },
-    {
-      "type": "collection",
-      "id": "recommendations_collection",
-      "label": "Recommendations collection (fallback)"
-    },
-    {
-      "type": "range",
-      "id": "recommendations_limit",
-      "label": "Recommendations limit",
-      "min": 2,
-      "max": 12,
-      "step": 1,
-      "default": 6
     }
   ]
 }
