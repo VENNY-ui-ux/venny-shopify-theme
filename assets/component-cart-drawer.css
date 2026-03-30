@@ -341,6 +341,9 @@
   width: 100%;
   min-height: 48px;
   border-radius: 4px;
+  background: #121b50;
+  color: #ffffff;
+  border-color: #121b50;
 }
 
 .CartDrawer--v2 .CartDrawer__EmptyState {

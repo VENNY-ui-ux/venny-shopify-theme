@@ -4,7 +4,6 @@
   assign cart_total = cart.total_price | divided_by: 100.0
   assign progress_pct = 0
   assign shipping_text = section.settings.shipping_paid_label | default: 'Calculated at checkout'
-  assign checkout_label = section.settings.checkout_button_label | default: 'Checkout'
   assign first_product_id = blank
   if cart.items.first and cart.items.first.product
     assign first_product_id = cart.items.first.product.id
@@ -91,8 +90,8 @@
           <p class="CartDrawer__TaxNote">{{ section.settings.tax_note | default: 'We cover all import duties & taxes for EU orders' }}</p>
         </section>
         <footer class="CartDrawer__Footer">
-          <a href="{{ routes.checkout_url }}" class="Button Button--primary CartDrawer__CheckoutButton" aria-label="{{ checkout_label }}">
-            {{ checkout_label }}
+          <a href="{{ routes.cart_url }}" class="Button Button--primary CartDrawer__CheckoutButton" aria-label="CHECKOUT SECURELY">
+            CHECKOUT SECURELY
           </a>
         </footer>
       </div>
@@ -189,12 +188,6 @@
       "id": "tax_note",
       "label": "Tax note",
       "default": "We cover all import duties & taxes for EU orders"
-    },
-    {
-      "type": "text",
-      "id": "checkout_button_label",
-      "label": "Checkout button label",
-      "default": "Checkout"
     },
     {
       "type": "text",
