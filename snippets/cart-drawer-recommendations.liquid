@@ -1,0 +1,74 @@
+{% liquid
+  assign recommendations_limit = section.settings.recommendations_limit | default: 6
+  assign cart_product_ids = ''
+  for line_item in cart.items
+    assign cart_product_ids = cart_product_ids | append: ',' | append: line_item.product.id | append: ','
+  endfor
+
+  assign recommendation_products = blank
+  if section.settings.recommendations_collection != blank
+    assign recommendation_products = section.settings.recommendations_collection.products
+  elsif collections.all != blank
+    assign recommendation_products = collections.all.products
+  endif
+%}
+
+{% if recommendation_products != blank %}
+  <section class="CartDrawerRecommendations" aria-label="You may like">
+    <h3 class="CartDrawerRecommendations__Title">{{ 'You may like' }}</h3>
+    <div class="CartDrawerRecommendations__Track" role="list">
+      {% assign rendered_count = 0 %}
+      {% for product in recommendation_products %}
+        {% if rendered_count >= recommendations_limit %}
+          {% break %}
+        {% endif %}
+        {% assign cart_match = ',' | append: product.id | append: ',' %}
+        {% if cart_product_ids contains cart_match %}
+          {% continue %}
+        {% endif %}
+        {% assign rendered_count = rendered_count | plus: 1 %}
+        {% assign first_variant = product.selected_or_first_available_variant %}
+        <article class="CartDrawerRecCard" role="listitem">
+          <a href="{{ product.url }}" class="CartDrawerRecCard__ImageLink" aria-label="{{ product.title | escape }}">
+            {% if product.featured_image %}
+              <img
+                class="CartDrawerRecCard__Image"
+                src="{{ product.featured_image | img_url: '240x' }}"
+                alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                loading="lazy"
+                width="120"
+                height="150">
+            {% endif %}
+            {% if first_variant.compare_at_price > first_variant.price %}
+              {% assign rec_discount_pct = first_variant.compare_at_price | minus: first_variant.price | times: 100 | divided_by: first_variant.compare_at_price %}
+              <span class="CartDrawerRecCard__Badge">-{{ rec_discount_pct }}%</span>
+            {% endif %}
+          </a>
+          <div class="CartDrawerRecCard__Info">
+            <a href="{{ product.url }}" class="CartDrawerRecCard__Title">{{ product.title }}</a>
+            <div class="CartDrawerRecCard__Prices">
+              <span class="CartDrawerRecCard__Price">{{ first_variant.price | money }}</span>
+              {% if first_variant.compare_at_price > first_variant.price %}
+                <span class="CartDrawerRecCard__Compare">{{ first_variant.compare_at_price | money }}</span>
+              {% endif %}
+            </div>
+            {% if product.has_only_default_variant and first_variant.available %}
+              <button
+                type="button"
+                class="Button Button--secondary CartDrawerRecCard__Add"
+                data-cart-rec-add
+                data-variant-id="{{ first_variant.id }}"
+                aria-label="Add {{ product.title | escape }} to cart">
+                Add
+              </button>
+            {% else %}
+              <a href="{{ product.url }}" class="Button Button--secondary CartDrawerRecCard__Add">
+                View
+              </a>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
