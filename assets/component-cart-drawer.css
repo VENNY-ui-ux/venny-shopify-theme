@@ -22,6 +22,7 @@
   flex-direction: column;
   border-radius: 4px 0 0 4px;
   box-shadow: none;
+  box-sizing: border-box;
 }
 
 .CartDrawer--v2 .CartDrawer__Header,
@@ -88,6 +89,8 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 10px;
 }
 
 .CartDrawer--v2 .CartDrawer__Items {
@@ -110,6 +113,7 @@
 
 .CartDrawer--v2 .CartDrawerItem__Image {
   width: 100%;
+  height: auto;
   display: block;
 }
 
@@ -142,6 +146,7 @@
   line-height: 1;
   cursor: pointer;
   border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
 .CartDrawer--v2 .CartDrawerItem__BottomRow {
@@ -168,6 +173,7 @@
   background: transparent;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .CartDrawer--v2 .CartDrawerItem__QtyInput {
@@ -217,6 +223,7 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .CartDrawerRecCard {
@@ -225,6 +232,7 @@
   border-radius: 4px;
   overflow: hidden;
   background: #fff;
+  transition: border-color 0.2s ease;
 }
 
 .CartDrawerRecCard__ImageLink {
@@ -318,8 +326,7 @@
 }
 
 .CartDrawer--v2 .CartDrawer__Footer {
-  position: sticky;
-  bottom: 0;
+  margin-top: auto;
   background: var(--tg-sys-color-surface1, #fff);
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   padding-top: 12px;
@@ -356,14 +363,58 @@
   pointer-events: none;
 }
 
+.CartDrawer--v2 .CartDrawer__Close:focus-visible,
+.CartDrawer--v2 .CartDrawerItem__QtyBtn:focus-visible,
+.CartDrawer--v2 .CartDrawerItem__Remove:focus-visible,
+.CartDrawer--v2 .CartDrawer__CheckoutButton:focus-visible,
+.CartDrawerRecCard__Add:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .CartDrawer--v2 .CartDrawer__Close:hover,
+  .CartDrawer--v2 .CartDrawerItem__QtyBtn:hover,
+  .CartDrawer--v2 .CartDrawerItem__Remove:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .CartDrawerRecCard:hover {
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
 @media (max-width: 749px) {
   .CartDrawer--v2 .CartDrawer__Inner {
     width: 100vw;
     border-radius: 0;
   }
 
+  .CartDrawer--v2 .CartDrawer__Header,
+  .CartDrawer--v2 .CartDrawer__Campaign,
+  .CartDrawer--v2 .CartDrawer__Summary,
+  .CartDrawer--v2 .CartDrawer__Footer,
+  .CartDrawer--v2 .CartDrawer__EmptyState {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .CartDrawer--v2 .CartDrawer__Items {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .CartDrawerRecommendations {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
   .CartDrawer--v2 .CartDrawerItem {
     grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .CartDrawer--v2 .CartDrawerItem__BottomRow {
+    align-items: center;
   }
 
   .CartDrawerRecommendations__Track {

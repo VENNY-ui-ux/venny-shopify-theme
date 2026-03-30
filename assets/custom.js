@@ -82,7 +82,7 @@
 
     let quantity = parseInt(input.value, 10);
     if (Number.isNaN(quantity)) quantity = 1;
-    quantity = Math.max(0, quantity);
+    quantity = Math.max(1, quantity);
     input.value = quantity;
 
     if (isUpdating) return;
@@ -95,6 +95,16 @@
   function setLoadingState(element, enabled) {
     if (!element) return;
     element.classList.toggle('is-loading', enabled);
+  }
+
+  function setDrawerBusy(enabled) {
+    const drawerInner = document.querySelector('#CartDrawer .CartDrawer__Inner');
+    if (!drawerInner) return;
+    if (enabled) {
+      drawerInner.setAttribute('aria-busy', 'true');
+    } else {
+      drawerInner.removeAttribute('aria-busy');
+    }
   }
 
   function updateCartCounters(itemCount) {
@@ -117,6 +127,7 @@
 
   function addVariantToCart(variantId) {
     isUpdating = true;
+    setDrawerBusy(true);
     return fetch('/cart/add.js', {
       method: 'POST',
       headers: {
@@ -142,11 +153,13 @@
       })
       .finally(function () {
         isUpdating = false;
+        setDrawerBusy(false);
       });
   }
 
   function updateCartLine(line, quantity) {
     isUpdating = true;
+    setDrawerBusy(true);
     return fetch('/cart/change.js', {
       method: 'POST',
       headers: {
@@ -170,6 +183,7 @@
       })
       .finally(function () {
         isUpdating = false;
+        setDrawerBusy(false);
       });
   }
 

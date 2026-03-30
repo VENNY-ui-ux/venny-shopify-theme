@@ -15,7 +15,7 @@
 
 {% if recommendation_products != blank %}
   <section class="CartDrawerRecommendations" aria-label="You may like">
-    <h3 class="CartDrawerRecommendations__Title">{{ 'You may like' }}</h3>
+    <h3 class="CartDrawerRecommendations__Title">You may like</h3>
     <div class="CartDrawerRecommendations__Track" role="list">
       {% assign rendered_count = 0 %}
       {% for product in recommendation_products %}

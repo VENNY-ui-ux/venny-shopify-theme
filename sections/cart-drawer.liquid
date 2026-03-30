@@ -39,6 +39,7 @@
   aria-modal="true"
   aria-hidden="true"
   aria-labelledby="CartDrawerHeading"
+  tabindex="-1"
   data-section-id="{{ section.id }}"
   data-campaign-threshold="{{ campaign_threshold }}"
   data-first-product-id="{{ first_product_id }}"
@@ -55,14 +56,14 @@
 
     <section class="CartDrawer__Campaign" aria-live="polite">
       <p class="CartDrawer__CampaignText">{{ campaign_message | strip }}</p>
-      <div class="CartDrawer__ProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="{{ campaign_threshold }}" aria-valuenow="{{ cart.item_count }}">
+      <div class="CartDrawer__ProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="{{ campaign_threshold }}" aria-valuenow="{{ cart.item_count | at_most: campaign_threshold }}">
         <div class="CartDrawer__ProgressBarFill" style="width: {{ progress_pct }}%;"></div>
       </div>
     </section>
 
     {% if cart.item_count > 0 %}
       <div class="CartDrawer__Scrollable">
-        <section class="CartDrawer__Items" data-cart-items>
+        <section class="CartDrawer__Items" data-cart-items aria-label="{{ section.settings.drawer_title | default: 'Shopping cart items' }}">
           {% render 'cart-items-drawer' %}
         </section>
 

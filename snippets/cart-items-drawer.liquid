@@ -42,6 +42,7 @@
           aria-label="Remove {{ item.product.title }}"
           data-line="{{ forloop.index }}">
           ×
+          <span class="VisuallyHidden">{{ 'cart.items.remove' | t }}</span>
         </button>
       </div>
 
@@ -58,6 +59,7 @@
             class="CartDrawerItem__QtyInput"
             value="{{ item.quantity }}"
             min="1"
+            inputmode="numeric"
             data-cart-qty-input
             aria-label="{{ 'product.form.quantity' | t }}"
             data-line="{{ forloop.index }}">
