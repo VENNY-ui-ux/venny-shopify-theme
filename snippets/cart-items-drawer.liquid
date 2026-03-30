@@ -1,42 +1,12 @@
-{% comment %}
-  Cart items for cart drawer – VENNY
-  - Viser produktbillede, titel, farve og størrelse på egne linjer
-  - Forventet titel-format: "Produktnavn (Farve)"
-  - Variant-titel (hvis ikke "Default Title") vises som Size: ...
-{% endcomment %}
-
 {% for item in cart.items %}
-
-  {%- comment -%}
-    Split produktnavn op i:
-    - base_title: tekst før første " ("
-    - color_name: teksten inde i første parentes, hvis den findes
-  {%- endcomment -%}
-  {% assign base_title = item.product.title %}
-  {% assign color_name = '' %}
-
-  {% if base_title contains ' (' %}
-    {% assign title_parts = base_title | split: ' (' %}
-    {% assign base_title = title_parts[0] %}
-    {% if title_parts.size > 1 %}
-      {% assign color_raw = title_parts[1] | split: ')' | first %}
-      {% assign color_name = color_raw %}
-    {% endif %}
-  {% endif %}
-
-  {%- comment -%}
-    Variant-titel bruges som størrelse, hvis den ikke bare er "Default Title"
-  {%- endcomment -%}
-  {% assign size_text = '' %}
-  {% if item.variant.title and item.variant.title != 'Default Title' %}
-    {% assign size_text = item.variant.title %}
+  {% assign has_compare = false %}
+  {% if item.original_price > item.final_price %}
+    {% assign has_compare = true %}
   {% endif %}
 
   <article class="CartDrawerItem"
            data-cart-item
            data-line="{{ forloop.index }}">
-
-    <!-- Billede -->
     <div class="CartDrawerItem__ImageWrapper">
       <a href="{{ item.url }}">
         {% if item.image %}
@@ -50,24 +20,18 @@
       </a>
     </div>
 
-    <!-- Tekst / qty / pris -->
     <div class="CartDrawerItem__Content">
-      <div class="CartDrawerItem__TopRow" style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div class="CartDrawerItem__TitleBlock" style="flex:1;">
-          <a href="{{ item.url }}" class="CartDrawerItem__Title" style="margin:0;">
-            {{ base_title }}
+      <div class="CartDrawerItem__TopRow">
+        <div class="CartDrawerItem__TitleBlock">
+          <a href="{{ item.url }}" class="CartDrawerItem__Title">
+            {{ item.product.title }}
           </a>
-
-          {% if color_name != '' %}
-            <div class="CartDrawerItem__Meta CartDrawerItem__Meta--color">
-              {{ color_name }}
-            </div>
+          {% unless item.variant.title == 'Default Title' %}
+            <div class="CartDrawerItem__Meta">{{ item.variant.title }}</div>
           {% endif %}
 
-          {% if size_text != '' %}
-            <div class="CartDrawerItem__Meta CartDrawerItem__Meta--size">
-              Size: {{ size_text }}
-            </div>
+          {% if item.selling_plan_allocation != blank %}
+            <div class="CartDrawerItem__Meta">{{ item.selling_plan_allocation.selling_plan.name }}</div>
           {% endif %}
         </div>
 
@@ -78,6 +42,7 @@
           aria-label="Remove {{ item.product.title }}"
           data-line="{{ forloop.index }}">
           ×
+          <span class="VisuallyHidden">{{ 'cart.items.remove' | t }}</span>
         </button>
       </div>
 
@@ -86,27 +51,41 @@
           <button type="button"
                   class="CartDrawerItem__QtyBtn"
                   data-cart-qty-minus
-                  data-line="{{ forloop.index }}">-</button>
+                  data-line="{{ forloop.index }}"
+                  aria-label="{{ 'general.accessibility.minus' | t }}">-</button>
 
           <input
             type="number"
             class="CartDrawerItem__QtyInput"
             value="{{ item.quantity }}"
-            min="0"
+            min="1"
+            inputmode="numeric"
             data-cart-qty-input
+            aria-label="{{ 'product.form.quantity' | t }}"
             data-line="{{ forloop.index }}">
 
           <button type="button"
                   class="CartDrawerItem__QtyBtn"
                   data-cart-qty-plus
-                  data-line="{{ forloop.index }}">+</button>
+                  data-line="{{ forloop.index }}"
+                  aria-label="{{ 'general.accessibility.plus' | t }}">+</button>
         </div>
 
-        <div class="CartDrawerItem__Price">
-          {{ item.final_line_price | money }}
+        <div class="CartDrawerItem__PriceGroup">
+          <div class="CartDrawerItem__Price">{{ item.final_line_price | money }}</div>
+          {% if has_compare %}
+            <div class="CartDrawerItem__ComparePrice">{{ item.original_line_price | money }}</div>
+          {% endif %}
         </div>
       </div>
+
+      {% if item.line_level_discount_allocations.size > 0 %}
+        <ul class="CartDrawerItem__Discounts" role="list">
+          {% for discount_allocation in item.line_level_discount_allocations %}
+            <li class="CartDrawerItem__Discount">{{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
     </div>
   </article>
-
 {% endfor %}
