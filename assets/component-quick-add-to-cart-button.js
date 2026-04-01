@@ -7,7 +7,6 @@ if (!customElements.get('quick-add-to-cart-button')) {
         connectedCallback() {
           this.delegateElement = new themegoal.libs.Delegate(this);
           this.delegateElement.on('submit', 'form.ProductCard__AddToCartForm', this._addToCart.bind(this));
-          this.delegateElement.on('click', '[data-action="quick-add-to-cart"]', this._addToCart.bind(this));
         }
 
         disconnectedCallback(){
@@ -81,8 +80,6 @@ if (!customElements.get('quick-add-to-cart-button')) {
               }
             });
           });
-      
-          event.preventDefault();
         }
     }
     

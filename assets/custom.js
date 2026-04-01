@@ -63,6 +63,28 @@
     });
   });
 
+  // opdater drawer/count med det samme når et produkt er tilføjet via PDP/quick add
+  document.addEventListener('product:added', function () {
+    if (isUpdating) return;
+
+    setDrawerBusy(true);
+
+    fetch(window.routes.cartUrl + '.js', {
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (cart) {
+        updateCartCounters(cart.item_count || 0);
+        return refreshCartDrawer();
+      })
+      .catch(function (err) {
+        console.error('Cart refresh after product add failed', err);
+      })
+      .finally(function () {
+        setDrawerBusy(false);
+      });
+  });
+
   document.addEventListener('change', function (event) {
     const input = event.target.closest('[data-cart-qty-input]');
     if (!input) return;
