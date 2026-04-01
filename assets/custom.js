@@ -25,6 +25,8 @@
 // Simple cart drawer quantity + remove handler
 // --- CART DRAWER: qty + remove uden reload ---
 (function () {
+  let isUpdating = false;
+
   // klik på plus/minus/kryds
   document.addEventListener('click', function (event) {
     const minus  = event.target.closest('[data-cart-qty-minus]');
@@ -34,6 +36,8 @@
     if (!minus && !plus && !remove) return;
 
     event.preventDefault();
+
+    if (isUpdating) return;
 
     const target = minus || plus || remove;
     const line = parseInt(target.getAttribute('data-line'), 10);
@@ -52,16 +56,100 @@
       newQty = minus ? Math.max(0, current - 1) : current + 1;
     }
 
-    // disable knapper midlertidigt
-    if (minus) minus.disabled = true;
-    if (plus) plus.disabled = true;
-    if (remove) remove.disabled = true;
-
-    updateCartLine(line, newQty);
+    setLoadingState(target.closest('.CartDrawerItem') || target, true);
+    updateCartLine(line, newQty).finally(function () {
+      setLoadingState(target.closest('.CartDrawerItem') || target, false);
+    });
   });
 
+  // opdater drawer/count med det samme når et produkt er tilføjet via PDP/quick add
+  document.addEventListener('product:added', function () {
+    if (isUpdating) return;
+
+    setDrawerBusy(true);
+
+    fetch(window.routes.cartUrl + '.js', {
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (cart) {
+        updateCartCounters(cart.item_count || 0);
+        return refreshCartDrawer();
+      })
+      .catch(function (err) {
+        console.error('Cart refresh after product add failed', err);
+      })
+      .finally(function () {
+        setDrawerBusy(false);
+      });
+  });
+
+  document.addEventListener('change', function (event) {
+    const input = event.target.closest('[data-cart-qty-input]');
+    if (!input) return;
+
+    const line = parseInt(input.getAttribute('data-line'), 10);
+    if (!line) return;
+
+    let quantity = parseInt(input.value, 10);
+    if (Number.isNaN(quantity)) quantity = 1;
+    quantity = Math.max(1, quantity);
+    input.value = quantity;
+
+    if (isUpdating) return;
+    setLoadingState(input.closest('.CartDrawerItem') || input, true);
+    updateCartLine(line, quantity).finally(function () {
+      setLoadingState(input.closest('.CartDrawerItem') || input, false);
+    });
+  });
+
+  function setLoadingState(element, enabled) {
+    if (!element) return;
+    element.classList.toggle('is-loading', enabled);
+  }
+
+  function setDrawerBusy(enabled) {
+    const drawerInner = document.querySelector('#CartDrawer .CartDrawer__Inner');
+    if (!drawerInner) return;
+    if (enabled) {
+      drawerInner.setAttribute('aria-busy', 'true');
+    } else {
+      drawerInner.removeAttribute('aria-busy');
+    }
+  }
+
+  function openCartDrawerIfNeeded() {
+    if (!window.theme || window.theme.cartType !== 'drawer') return;
+
+    const cartDrawer = document.getElementById('CartDrawer');
+    if (cartDrawer && cartDrawer.classList.contains('Show')) return;
+
+    const cartTrigger = document.getElementById('Header__CartTrigger');
+    if (cartTrigger) cartTrigger.click();
+  }
+
+  function updateCartCounters(itemCount) {
+    const bubbles = document.querySelectorAll('.CartCountBubble');
+    const bubbleCounts = document.querySelectorAll('.CartCountBubble__Count:not(.VisuallyHidden)');
+    const countTexts = document.querySelectorAll('.CartCountText');
+
+    bubbles.forEach(function (bubble) {
+      bubble.classList.toggle('Visible', itemCount > 0);
+    });
+
+    bubbleCounts.forEach(function (node) {
+      node.textContent = itemCount;
+    });
+
+    countTexts.forEach(function (node) {
+      node.classList.toggle('Visible', itemCount === 0);
+    });
+  }
+
   function updateCartLine(line, quantity) {
-    fetch('/cart/change.js', {
+    isUpdating = true;
+    setDrawerBusy(true);
+    return fetch('/cart/change.js', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -73,19 +161,25 @@
       })
     })
       .then(function (res) {
-        return res.json(); // vi bruger ikke data direkte, men godt at tjekke for fejl
+        return res.json();
       })
-      .then(function () {
-        refreshCartDrawer(); // hent kun drawer-sektionen igen
+      .then(function (cart) {
+        updateCartCounters(cart.item_count || 0);
+        return refreshCartDrawer().then(function () {
+          openCartDrawerIfNeeded();
+        });
       })
       .catch(function (err) {
         console.error('Cart update failed', err);
+      })
+      .finally(function () {
+        isUpdating = false;
+        setDrawerBusy(false);
       });
   }
 
   function refreshCartDrawer() {
-    // hent kun cart-drawer sektionen fra serveren
-    fetch(window.location.pathname + '?section_id=cart-drawer')
+    return fetch(window.routes.cartUrl + '?section_id=cart-drawer')
       .then(function (res) { return res.text(); })
       .then(function (html) {
         const parser = new DOMParser();
@@ -95,8 +189,8 @@
 
         if (!newInner || !currentInner) return;
 
-        // bevar om drawer er åben (klassen "Show" ligger på #CartDrawer, ikke på Inner)
         currentInner.replaceWith(newInner);
+        document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
       })
       .catch(function (err) {
         console.error('Failed to refresh cart drawer', err);

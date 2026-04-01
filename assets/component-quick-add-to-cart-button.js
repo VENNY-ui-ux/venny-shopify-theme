@@ -6,7 +6,7 @@ if (!customElements.get('quick-add-to-cart-button')) {
   
         connectedCallback() {
           this.delegateElement = new themegoal.libs.Delegate(this);
-          this.delegateElement.on('click', '[data-action="quick-add-to-cart"]', this._addToCart.bind(this));
+          this.delegateElement.on('submit', 'form.ProductCard__AddToCartForm', this._addToCart.bind(this));
         }
 
         disconnectedCallback(){
@@ -35,34 +35,14 @@ if (!customElements.get('quick-add-to-cart-button')) {
             }
           }).then(function (response) {
             document.dispatchEvent(new CustomEvent('theme:loading:end'));
-      
-            if (response.ok) {
-          addToCartButton.removeAttribute('disabled');
 
-response.json().then(function (data) {
-  _this.dispatchEvent(new CustomEvent('product:added', {
-    bubbles: true,
-    detail: {
-      variant: _this.currentVariant,
-      quantity: parseInt(_this.querySelector('[name="quantity"]')?.value || 1),
-      cartItemKey: data.key
-    }
-  }));
-
-  const drawer = document.querySelector('cart-drawer, cart-notification');
-if (drawer && typeof drawer.open === 'function') {
-  drawer.open();
-}
-});
-
-              }
-            } else {
+            if (!response.ok) {
               response.json().then(function (content) {
                 var errorMessageElement = document.createElement('div');
                 errorMessageElement.className = 'Alert Alert--danger';
                 if (typeof content['description'] === 'object') {
                   errorMessageElement.innerHTML = content['message'];
-                }else{
+                } else {
                   errorMessageElement.innerHTML = content['description'];
                 }
                 addToCartButton.removeAttribute('disabled');
@@ -71,10 +51,35 @@ if (drawer && typeof drawer.open === 'function') {
                   errorMessageElement.remove();
                 }, 8000);
               });
+              return;
             }
+
+            if (window.theme.cartType == "page") {
+              window.location.href = window.routes.cartUrl;
+              return;
+            }
+
+            addToCartButton.removeAttribute('disabled');
+
+            response.json().then(function (data) {
+              const variantInput = formElement.querySelector('[name="id"]');
+              const quantityInput = formElement.querySelector('[name="quantity"]');
+
+              _this.dispatchEvent(new CustomEvent('product:added', {
+                bubbles: true,
+                detail: {
+                  variant: variantInput ? parseInt(variantInput.value, 10) : null,
+                  quantity: parseInt(quantityInput?.value || 1, 10),
+                  cartItemKey: data.key
+                }
+              }));
+
+              const cartTrigger = document.getElementById('Header__CartTrigger');
+              if (window.theme.cartType == "drawer" && cartTrigger) {
+                cartTrigger.click();
+              }
+            });
           });
-      
-          event.preventDefault();
         }
     }
     

@@ -1,118 +1,104 @@
-{% comment %}
-  Cart drawer section for VENNY (Chord theme / Chord-like)
-  - Viser drawer med progress bar, items, totals og knapper
-  - Bruger temaets Drawer-system via data-tg-dismiss / data-tg-toggle
-{% endcomment %}
+{% liquid
+  assign free_shipping_threshold = section.settings.free_shipping_threshold | default: 499
+  assign campaign_threshold = section.settings.campaign_item_threshold | default: 3
+  assign cart_total = cart.total_price | divided_by: 100.0
+  assign progress_pct = 0
+  assign shipping_text = section.settings.shipping_paid_label | default: 'Calculated at checkout'
+  assign first_product_id = blank
+  if cart.items.first and cart.items.first.product
+    assign first_product_id = cart.items.first.product.id
+  endif
 
-{% assign free_shipping_threshold = section.settings.free_shipping_threshold | default: 499 %}
-{% assign cart_total = cart.total_price | divided_by: 100 %}
+  if cart.item_count > 0 and campaign_threshold > 0
+    assign progress_pct = cart.item_count | times: 100.0 | divided_by: campaign_threshold
+    if progress_pct > 100
+      assign progress_pct = 100
+    endif
+  endif
+%}
+
+{% capture campaign_message %}
+  {% if cart.item_count == 0 %}
+    {{ section.settings.campaign_message_empty | default: 'ADD [remaining] ITEMS & GET ONE FREE' | replace: '[remaining]', campaign_threshold }}
+  {% elsif cart.item_count >= campaign_threshold %}
+    {{ section.settings.campaign_message_success | default: 'YOU UNLOCKED YOUR REWARD' }}
+  {% else %}
+    {% assign remaining_campaign = campaign_threshold | minus: cart.item_count %}
+    {{ section.settings.campaign_message_progress | default: 'ADD [remaining] ITEMS & GET ONE FREE' | replace: '[remaining]', remaining_campaign }}
+  {% endif %}
+{% endcapture %}
+
+{% if free_shipping_threshold > 0 and cart_total >= free_shipping_threshold %}
+  {% assign shipping_text = section.settings.shipping_free_label | default: 'Free' %}
+{% endif %}
 
 <div
   id="CartDrawer"
-  class="Drawer Drawer--end CartDrawer"
+  class="Drawer Drawer--end CartDrawer CartDrawer--v2"
   role="dialog"
   aria-modal="true"
   aria-hidden="true"
+  aria-labelledby="CartDrawerHeading"
+  tabindex="-1"
   data-section-id="{{ section.id }}"
+  data-campaign-threshold="{{ campaign_threshold }}"
+  data-first-product-id="{{ first_product_id }}"
 >
-
-  {%- comment -%}
-    Overlay inde i drawer – klik uden for selve boksen for at lukke
-  {%- endcomment -%}
   <div class="CartDrawer__Overlay" data-tg-dismiss="Drawer"></div>
 
-  {%- comment -%}
-    Selve indholdet i drawer’en
-  {%- endcomment -%}
   <div class="CartDrawer__Inner" data-drawer-inner>
-    <!-- Header -->
     <header class="CartDrawer__Header">
-      <h2 class="CartDrawer__Title">Your cart</h2>
-      <button
-        type="button"
-        class="ButtonClose CartDrawer__Close"
-        data-tg-dismiss="Drawer"
-        aria-label="Close cart"
-      >
-        ✕
+      <h2 id="CartDrawerHeading" class="CartDrawer__Title">{{ section.settings.drawer_title | default: 'SHOPPING CART' }}</h2>
+      <button type="button" class="ButtonClose CartDrawer__Close" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}">
+        {% render 'icons', icon: 'close' %}
       </button>
     </header>
 
-    <!-- Progress bar / free shipping -->
-    <section class="CartDrawer__ProgressSection">
-      {% if cart.item_count > 0 %}
-        {% if cart_total >= free_shipping_threshold %}
-          <p class="CartDrawer__ProgressText CartDrawer__ProgressText--success">
-            You have free shipping 🎉
-          </p>
-          <div class="CartDrawer__ProgressBar">
-            <div class="CartDrawer__ProgressBarFill CartDrawer__ProgressBarFill--full"></div>
-          </div>
-        {% else %}
-          {% assign remaining = free_shipping_threshold | minus: cart_total %}
-          <p class="CartDrawer__ProgressText">
-            You are {{ remaining | money_without_trailing_zeros }} away from free shipping
-          </p>
-          {% assign pct = cart_total | times: 100 | divided_by: free_shipping_threshold %}
-          <div class="CartDrawer__ProgressBar">
-            <div class="CartDrawer__ProgressBarFill" style="width: {{ pct }}%;"></div>
-          </div>
-        {% endif %}
-      {% else %}
-        <p class="CartDrawer__ProgressText">
-          Your cart is empty.
-        </p>
-      {% endif %}
-    </section>
-
-    <!-- Items -->
-    <section class="CartDrawer__Items" data-cart-items>
-      {% if cart.item_count > 0 %}
-        {% render 'cart-items-drawer' %}
-      {% else %}
-        <p class="CartDrawer__Empty">
-          There are no items in your cart yet.
-        </p>
-      {% endif %}
+    <section class="CartDrawer__Campaign" aria-live="polite">
+      <p class="CartDrawer__CampaignText">{{ campaign_message | strip }}</p>
+      <div class="CartDrawer__ProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="{{ campaign_threshold }}" aria-valuenow="{{ cart.item_count | at_most: campaign_threshold }}">
+        <div class="CartDrawer__ProgressBarFill" style="width: {{ progress_pct }}%;"></div>
+      </div>
     </section>
 
     {% if cart.item_count > 0 %}
-      <!-- Small info / note row -->
-      <section class="CartDrawer__InfoRow">
-        <div class="CartDrawer__InfoPill">
-          <span>✅ 30 days return</span>
-        </div>
-        <div class="CartDrawer__InfoPill">
-          <span>🔒 Secure checkout</span>
-        </div>
-      </section>
+      <div class="CartDrawer__ItemsScroll">
+        <section class="CartDrawer__Items" data-cart-items aria-label="{{ section.settings.drawer_title | default: 'Shopping cart items' }}">
+          {% render 'cart-items-drawer' %}
+        </section>
+      </div>
 
-      <!-- Totals -->
-      <section class="CartDrawer__Totals">
-        {% if cart.total_discount > 0 %}
-          <div class="CartDrawer__Row CartDrawer__Row--savings">
-            <span>Savings</span>
-            <span>-{{ cart.total_discount | money }}</span>
+      <div class="CartDrawer__StickyStack">
+        <section class="CartDrawer__Summary">
+          <div class="CartDrawer__Row">
+            <span>{{ section.settings.subtotal_label | default: 'Subtotal' }}</span>
+            <span>{{ cart.total_price | money }}</span>
           </div>
-        {% endif %}
-
-        <div class="CartDrawer__Row CartDrawer__Row--subtotal">
-          <span>Subtotal</span>
-          <span>{{ cart.total_price | money }}</span>
-        </div>
-
-        <p class="CartDrawer__TaxNote">
-          Taxes and shipping calculated at checkout.
-        </p>
-      </section>
-
-      <!-- Button -->
-      <section class="CartDrawer__Buttons">
-        <a
-          href="{{ routes.checkout_url }}"
-          class="Button Button--primary CartDrawer__Button CartDrawer__Button--primary"
-        >
-          Checkout
+          <div class="CartDrawer__Row">
+            <span>{{ section.settings.shipping_label | default: 'Shipping' }}</span>
+            <span>{{ shipping_text }}</span>
+          </div>
+          {% if cart.total_discount > 0 %}
+            <div class="CartDrawer__Row CartDrawer__Row--discount">
+              <span>{{ section.settings.savings_label | default: 'Savings' }}</span>
+              <span>-{{ cart.total_discount | money }}</span>
+            </div>
+          {% endif %}
+          <div class="CartDrawer__Delivery">{{ section.settings.estimated_delivery_text | default: 'Estimated delivery: 2-4 business days' }}</div>
+          <p class="CartDrawer__TaxNote">{{ section.settings.tax_note | default: 'We cover all import duties & taxes for EU orders' }}</p>
+        </section>
+        <footer class="CartDrawer__Footer">
+          <a href="{{ routes.cart_url }}" class="Button Button--primary CartDrawer__CheckoutButton" aria-label="CHECKOUT SECURELY">
+            CHECKOUT SECURELY
+          </a>
+        </footer>
+      </div>
+    {% else %}
+      <section class="CartDrawer__EmptyState">
+        <p class="CartDrawer__EmptyTitle">{{ section.settings.empty_title | default: 'Your cart is empty' }}</p>
+        <p class="CartDrawer__EmptyText">{{ section.settings.empty_text | default: 'Looks like you have not added anything yet.' }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="Button Button--primary CartDrawer__ContinueButton">
+          {{ section.settings.empty_button_label | default: 'Continue shopping' }}
         </a>
       </section>
     {% endif %}
@@ -128,6 +114,96 @@
       "id": "free_shipping_threshold",
       "label": "Free shipping threshold (in shop currency)",
       "default": 499
+    },
+    {
+      "type": "text",
+      "id": "drawer_title",
+      "label": "Drawer title",
+      "default": "SHOPPING CART"
+    },
+    {
+      "type": "number",
+      "id": "campaign_item_threshold",
+      "label": "Campaign threshold (item count)",
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "campaign_message_empty",
+      "label": "Campaign message (empty cart)",
+      "default": "ADD [remaining] ITEMS & GET ONE FREE"
+    },
+    {
+      "type": "text",
+      "id": "campaign_message_progress",
+      "label": "Campaign message (in progress)",
+      "default": "ADD [remaining] ITEMS & GET ONE FREE"
+    },
+    {
+      "type": "text",
+      "id": "campaign_message_success",
+      "label": "Campaign message (success)",
+      "default": "YOU UNLOCKED YOUR REWARD"
+    },
+    {
+      "type": "text",
+      "id": "subtotal_label",
+      "label": "Subtotal label",
+      "default": "Subtotal"
+    },
+    {
+      "type": "text",
+      "id": "shipping_label",
+      "label": "Shipping label",
+      "default": "Shipping"
+    },
+    {
+      "type": "text",
+      "id": "shipping_paid_label",
+      "label": "Shipping paid label",
+      "default": "Calculated at checkout"
+    },
+    {
+      "type": "text",
+      "id": "shipping_free_label",
+      "label": "Shipping free label",
+      "default": "Free"
+    },
+    {
+      "type": "text",
+      "id": "savings_label",
+      "label": "Savings label",
+      "default": "Savings"
+    },
+    {
+      "type": "text",
+      "id": "estimated_delivery_text",
+      "label": "Estimated delivery text",
+      "default": "Estimated delivery: 2-4 business days"
+    },
+    {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Tax note",
+      "default": "We cover all import duties & taxes for EU orders"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Empty cart title",
+      "default": "Your cart is empty"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty cart text",
+      "default": "Looks like you have not added anything yet."
+    },
+    {
+      "type": "text",
+      "id": "empty_button_label",
+      "label": "Empty cart button label",
+      "default": "Continue shopping"
     }
   ]
 }
