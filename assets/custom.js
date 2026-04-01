@@ -29,11 +29,12 @@
 
   // klik på plus/minus/kryds
   document.addEventListener('click', function (event) {
+    const recAdd = event.target.closest('[data-cart-rec-add]');
     const minus  = event.target.closest('[data-cart-qty-minus]');
     const plus   = event.target.closest('[data-cart-qty-plus]');
     const remove = event.target.closest('[data-cart-remove]');
 
-    if (!minus && !plus && !remove) return;
+    if (!minus && !plus && !remove && !recAdd) return;
 
     event.preventDefault();
 
