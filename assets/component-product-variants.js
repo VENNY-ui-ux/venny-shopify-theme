@@ -429,7 +429,7 @@ class ProductVariants {
     let formElement = this.element.querySelector('form.ProductForm');
 
     if (!formElement.checkValidity()) {
-      if(!this.element.classList.contains(".ProductFormValidated")){
+      if(!this.element.classList.contains("ProductFormValidated")){
         this.element.classList.add('ProductFormValidated');
       }
       return;
@@ -464,7 +464,7 @@ class ProductVariants {
               bubbles: true,
               detail: {
                 variant: _this.currentVariant,
-                quantity: parseInt(_this.element.querySelector('[name="quantity"]').value),
+                quantity: parseInt(_this.element.querySelector('[name="quantity"]')?.value || 1, 10),
                 cartItemKey: data.key
               }
             }));
