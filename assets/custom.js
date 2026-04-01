@@ -146,7 +146,7 @@
   }
 
   function refreshCartDrawer() {
-    return fetch(window.location.pathname + '?section_id=cart-drawer')
+    return fetch(window.routes.cartUrl + '?section_id=cart-drawer')
       .then(function (res) { return res.text(); })
       .then(function (html) {
         const parser = new DOMParser();
