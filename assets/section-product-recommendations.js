@@ -7,6 +7,7 @@ if (!customElements.get('section-product-recommendations')) {
     connectedCallback() {
       this.element = this;
       this.options = JSON.parse(this.element.getAttribute('data-section-settings'));
+      this._setupTabs();
 
       if (Shopify.visualPreviewMode) {
         // This will only execute inside the theme editor's visual preview
@@ -19,6 +20,33 @@ if (!customElements.get('section-product-recommendations')) {
       }else{
           this._loadRecommendations();
       }
+    }
+
+    _setupTabs() {
+      this.tabs = this.element.querySelectorAll('[data-tab-target]');
+      this.panels = this.element.querySelectorAll('[data-tab-panel]');
+
+      if (!this.tabs.length || !this.panels.length) {
+        return;
+      }
+
+      this.tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const target = tab.getAttribute('data-tab-target');
+
+          this.tabs.forEach((innerTab) => {
+            const isActive = innerTab === tab;
+            innerTab.classList.toggle('is-active', isActive);
+            innerTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          });
+
+          this.panels.forEach((panel) => {
+            const isActive = panel.getAttribute('data-tab-panel') === target;
+            panel.classList.toggle('is-active', isActive);
+            panel.hidden = !isActive;
+          });
+        });
+      });
     }
 
 
