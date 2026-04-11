@@ -45,12 +45,6 @@
 
 {%- assign item_count = section.settings.grid_items_count -%}
 
-<style type="text/css">
-  section-product-recommendations{
-    display: block;
-  }
-</style>
-
 <section-product-recommendations class="Container ProductRecommendations {% unless section.settings.enable_recommendation_tabs %}ProductRecommendations--noTabs{% endunless %} no-js-hidden Container--{{ section.settings.section_spacing }} {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}" data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}'>
 
   {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
