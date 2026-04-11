@@ -3,12 +3,8 @@
 }
 
 @media screen and (min-width: 1008px) {
-  .Product--pdpLayoutEnabled .ProductDesign.Grid {
-    column-gap: var(--pdp-desktop-gap, 20px);
-  }
-
   .Product--pdpLayoutEnabled .ProductSummary {
-    padding-inline-start: 0.5rem;
+    padding-inline-start: calc(var(--pdp-desktop-gap, 20px) / 2);
   }
 }
 
