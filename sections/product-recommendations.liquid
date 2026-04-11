@@ -1,5 +1,6 @@
 {{ 'component-carousel.css' | asset_url | stylesheet_tag }}
 {{ 'component-placeholder.css' | asset_url | stylesheet_tag }}
+{{ 'section-product-recommendations-custom.css' | asset_url | stylesheet_tag }}
 
 {%- if section.settings.enable_quick_add -%}
   <script src="{{ 'component-quick-add-to-cart-button.js' | asset_url }}" defer="defer"></script>
@@ -50,7 +51,7 @@
   }
 </style>
 
-<section-product-recommendations class="Container ProductRecommendations no-js-hidden Container--{{ section.settings.section_spacing }} {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}" data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}'>
+<section-product-recommendations class="Container ProductRecommendations {% unless section.settings.enable_recommendation_tabs %}ProductRecommendations--noTabs{% endunless %} no-js-hidden Container--{{ section.settings.section_spacing }} {% if section.settings.section_width == 'full_width' %}Container--fluid{% endif %}" data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}'>
 
   {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
     <header class="SectionHeader SectionHeader--{{ section.settings.header_align }}">
@@ -70,7 +71,16 @@
     </header>
   {%- endif -%}
 
-  <div class="ProductRecommendations__Body ProductListWrapper">
+  {%- assign best_seller_collection = collections[section.settings.best_sellers_collection] -%}
+  {%- if section.settings.enable_recommendation_tabs -%}
+    <div class="ProductRecommendationsTabs" role="tablist" aria-label="{{ section.settings.heading | default: 'Product recommendations' }}">
+      <button class="ProductRecommendationsTab is-active" type="button" role="tab" aria-selected="true" aria-controls="recommendations-suggested-{{ section.id }}" id="recommendations-tab-suggested-{{ section.id }}" data-tab-target="suggested">{{ section.settings.suggested_tab_label }}</button>
+      <button class="ProductRecommendationsTab" type="button" role="tab" aria-selected="false" aria-controls="recommendations-best-{{ section.id }}" id="recommendations-tab-best-{{ section.id }}" data-tab-target="best">{{ section.settings.best_sellers_tab_label }}</button>
+    </div>
+  {%- endif -%}
+
+  <div class="ProductRecommendationsPane is-active" id="recommendations-suggested-{{ section.id }}" data-tab-panel="suggested">
+    <div class="ProductRecommendations__Body ProductListWrapper">
     {%- if recommendations.performed and template.name != 'product' -%}
       {%- if section.settings.layout_mode == 'carousel' -%}
         <div class="ProductList ProductList--carousel Carousel ProductList--hasProduct" data-carousel-config='{{ carousel_options }}'>
@@ -139,7 +149,30 @@
         </div>
       {%- endif -%}
     {%- endif -%}
+    </div>
   </div>
+
+  {%- if section.settings.enable_recommendation_tabs -%}
+    <div class="ProductRecommendationsPane" id="recommendations-best-{{ section.id }}" data-tab-panel="best" hidden>
+      <div class="ProductRecommendations__Body ProductListWrapper">
+        <div class="ProductList ProductList--grid Grid ProductList--hasProduct">
+          {%- if best_seller_collection != blank and best_seller_collection.products_count > 0 -%}
+            {%- for recommendation in best_seller_collection.products limit: item_count -%}
+              <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up">
+                {% render 'product-card', product: recommendation, section_is_grid_width: section.settings.section_width, show_rating: section.settings.show_rating, show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor, show_swatches: section.settings.show_swatches, show_quick_add: section.settings.enable_quick_add %}
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            {%- for i in (1..section.settings.grid_items_count) -%}
+              <div class="Grid__Item 1/{{ mobile_items_per_row }}--small 1/{{ desktop_items_per_row }}--medium-up">
+                {% render 'placeholder-card' %}
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
   
 </section-product-recommendations>
 
@@ -207,6 +240,29 @@
     {
       "type": "header",
       "content": "Section header"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_recommendation_tabs",
+      "label": "Enable tab layout",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "suggested_tab_label",
+      "label": "Suggested tab label",
+      "default": "Suggested"
+    },
+    {
+      "type": "text",
+      "id": "best_sellers_tab_label",
+      "label": "Best sellers tab label",
+      "default": "Best sellers"
+    },
+    {
+      "type": "collection",
+      "id": "best_sellers_collection",
+      "label": "Best sellers collection"
     },
     {
       "type": "text",
