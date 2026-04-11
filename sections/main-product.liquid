@@ -63,6 +63,7 @@
 {%- endcapture -%}
 
 {{ 'component-product-blocks.css' | asset_url | stylesheet_tag }}
+{{ 'section-main-product-pdp.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'component-product-variants.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'section-product.js' | asset_url }}" defer="defer"></script>
 {%- if section.settings.enable_image_zoom and section.settings.image_zoom_layout == 'stacked' and section.settings.image_zoom_bg_color != blank and section.settings.image_zoom_bg_color != 'rgba(0,0,0,0)' -%}
@@ -74,11 +75,32 @@
     }
   </style>
   {%- endif -%}
-<section-product style="display: block;" class="Product Product--{{ section.id }} {% unless product.media.size > 0 %}Product--noMedia{% endunless %} Container Container--specialSpacingFirstSection Container--spacingContainerGutter {% if section.settings.section_width == 'full_width' %}Container--fluid Product--fullWidth{% endif %}" 
+<style>
+  .Product--{{ section.id }} {
+    --pdp-navy-color: {{ section.settings.pdp_navy_color }};
+    --pdp-radius: {{ section.settings.pdp_corner_radius }}px;
+    --pdp-summary-text-color: {{ section.settings.pdp_summary_text_color }};
+    --pdp-desktop-gap: {{ section.settings.pdp_desktop_gap }}px;
+    --pdp-usp-text: {{ section.settings.pdp_usp_text_color }};
+    --pdp-mobile-media-bg: {{ section.settings.pdp_mobile_media_background }};
+    --pdp-mobile-content-bg: {{ section.settings.pdp_mobile_content_background }};
+    --pdp-mobile-content-padding: {{ section.settings.pdp_mobile_content_padding }}px;
+    --pdp-mobile-thumb-gap: {{ section.settings.pdp_mobile_thumb_gap }}px;
+    --pdp-mobile-thumb-height: {{ section.settings.pdp_mobile_thumb_height }}px;
+    --pdp-badge-background: {{ section.settings.pdp_badge_background }};
+    --pdp-badge-text: {{ section.settings.pdp_badge_text_color }};
+  }
+</style>
+<section-product style="display: block;" class="Product Product--{{ section.id }} {% if section.settings.enable_pdp_layout_style %}Product--pdpLayoutEnabled{% endif %} {% if section.settings.enable_mobile_pdp_style %}Product--mobilePdpEnabled{% endif %} {% unless product.media.size > 0 %}Product--noMedia{% endunless %} Container Container--specialSpacingFirstSection Container--spacingContainerGutter {% if section.settings.section_width == 'full_width' %}Container--fluid Product--fullWidth{% endif %}" 
   data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}' data-product-url="{{ product.url }}">
       <div class="ProductDesign Grid">
           {%- if product.media.size > 0 -%}
-              <div class="Grid__Item 8/12--large">
+              <div class="Grid__Item 8/12--large ProductMedia__Wrapper">
+                  {%- if section.settings.pdp_promo_badge != blank -%}
+                    <div class="ProductMediaBadgeWrapper">
+                      <span class="ProductPromoBadge">{{ section.settings.pdp_promo_badge }}</span>
+                    </div>
+                  {%- endif -%}
                   {%- render 'product-gallery' -%}
               </div>
           {%- endif -%}
@@ -87,38 +109,6 @@
             <div class="ProductSummary{% if section.settings.section_background_color != blank and section.settings.section_background_color != 'rgba(0,0,0,0)' %} ProductSummary--withBackgroundColor{% endif %}" 
               style="{% if section.settings.section_background_color != blank and section.settings.section_background_color != 'rgba(0,0,0,0)' %}--tg-product-summary-background-color: {{ section.settings.section_background_color }};{% endif %}"
             >
-              <div class="Product__Block Product__Block--usps">
-  <div class="USPRow">
-  <div class="USPBox">
-    <span>Buy 2 items, get 1 free</span>
-    <button
-      type="button"
-      class="USPInfo"
-      aria-label="More info about 'Buy 2 items, get 1 free'"
-      data-tooltip="Add 3 items to get the cheapest one for free."
-    ></button>
-  </div>
-
-  <div class="USPBox">
-    <span>Waterproof</span>
-    <button
-      type="button"
-      class="USPInfo"
-      aria-label="More info about 'Waterproof'"
-      data-tooltip="Can be worn in the shower and sea without discoloration."
-    ></button>
-  </div>
-
-  <div class="USPBox">
-    <span>Lifetime Guarantee</span>
-    <button
-      type="button"
-      class="USPInfo"
-      aria-label="More info about 'Lifetime Guarantee'"
-      data-tooltip="Covers color, plating and breakage under normal use."
-    ></button>
-  </div>
-</div>
               {%- render 'product-blocks', product_from: 'main-product' -%}
               
             </div>
@@ -159,6 +149,174 @@
       "type": "color",
       "id": "section_background_color",
       "label": "Summary background color"
+    },
+    {
+      "type": "header",
+      "content": "Desktop PDP style"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pdp_layout_style",
+      "label": "Enable PDP layout styling",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "pdp_navy_color",
+      "label": "Navy color",
+      "default": "#121B50"
+    },
+    {
+      "type": "color",
+      "id": "pdp_summary_text_color",
+      "label": "Summary text color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "pdp_corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "pdp_desktop_gap",
+      "label": "Desktop column gap",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Mobile PDP style"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mobile_pdp_style",
+      "label": "Enable mobile PDP style",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "pdp_mobile_media_background",
+      "label": "Mobile media background",
+      "default": "#ECECEC"
+    },
+    {
+      "type": "color",
+      "id": "pdp_mobile_content_background",
+      "label": "Mobile content background",
+      "default": "#F3F3F3"
+    },
+    {
+      "type": "range",
+      "id": "pdp_mobile_content_padding",
+      "label": "Mobile content side padding",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "pdp_mobile_thumb_gap",
+      "label": "Mobile thumbnail gap",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "pdp_mobile_thumb_height",
+      "label": "Mobile thumbnail height",
+      "min": 40,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "default": 90
+    },
+    {
+      "type": "header",
+      "content": "Promo badge"
+    },
+    {
+      "type": "text",
+      "id": "pdp_promo_badge",
+      "label": "Promo badge text",
+      "default": "3 FOR 2"
+    },
+    {
+      "type": "color",
+      "id": "pdp_badge_background",
+      "label": "Promo badge background",
+      "default": "#E7E7E7"
+    },
+    {
+      "type": "color",
+      "id": "pdp_badge_text_color",
+      "label": "Promo badge text color",
+      "default": "#111111"
+    },
+    {
+      "type": "header",
+      "content": "USP row"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_usp_row",
+      "label": "Show USP row",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "pdp_usp_text_color",
+      "label": "USP text color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "text",
+      "id": "usp_1_text",
+      "label": "USP 1 title",
+      "default": "Free shipping"
+    },
+    {
+      "type": "text",
+      "id": "usp_1_tooltip",
+      "label": "USP 1 description",
+      "default": "We cover all import duties & taxes for EU orders"
+    },
+    {
+      "type": "text",
+      "id": "usp_2_text",
+      "label": "USP 2 title",
+      "default": "30 days return"
+    },
+    {
+      "type": "text",
+      "id": "usp_2_tooltip",
+      "label": "USP 2 description",
+      "default": "Includes exchanges and full refund"
+    },
+    {
+      "type": "text",
+      "id": "usp_3_text",
+      "label": "USP 3 title",
+      "default": "Waterproof / lifetime guarantee"
+    },
+    {
+      "type": "text",
+      "id": "usp_3_tooltip",
+      "label": "USP 3 description",
+      "default": "Wear it in the sea, pool or shower"
     },
     {
       "type": "header",
