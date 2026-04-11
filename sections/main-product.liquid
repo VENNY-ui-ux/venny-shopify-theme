@@ -74,6 +74,108 @@
     }
   </style>
   {%- endif -%}
+<style>
+  .Product--{{ section.id }} {
+    --pdp-navy-color: {{ section.settings.pdp_navy_color }};
+    --pdp-radius: {{ section.settings.pdp_corner_radius }}px;
+    --pdp-summary-text-color: {{ section.settings.pdp_summary_text_color }};
+    --pdp-desktop-gap: {{ section.settings.pdp_desktop_gap }}px;
+    --pdp-usp-bg: {{ section.settings.pdp_usp_background }};
+    --pdp-usp-text: {{ section.settings.pdp_usp_text_color }};
+    --pdp-mobile-media-bg: {{ section.settings.pdp_mobile_media_background }};
+    --pdp-mobile-content-bg: {{ section.settings.pdp_mobile_content_background }};
+    --pdp-mobile-content-padding: {{ section.settings.pdp_mobile_content_padding }}px;
+    --pdp-mobile-thumb-gap: {{ section.settings.pdp_mobile_thumb_gap }}px;
+    --pdp-mobile-thumb-height: {{ section.settings.pdp_mobile_thumb_height }}px;
+    --pdp-mobile-cta-color: {{ section.settings.pdp_mobile_cta_color }};
+  }
+
+  @media screen and (min-width: 1008px) {
+    .Product--{{ section.id }} .ProductDesign.Grid {
+      column-gap: var(--pdp-desktop-gap);
+    }
+  }
+
+  .Product--{{ section.id }} .ProductGallery__ImageWrapper,
+  .Product--{{ section.id }} .ProductGallery__ImageWrapper img,
+  .Product--{{ section.id }} .ProductForm__AddToCart,
+  .Product--{{ section.id }} .ProductForm__AddToCart + .Button,
+  .Product--{{ section.id }} .VariantSwatch,
+  .Product--{{ section.id }} .VariantSelectors__Item,
+  .Product--{{ section.id }} .ColorSwatch,
+  .Product--{{ section.id }} .Accordion__Item,
+  .Product--{{ section.id }} .Accordion__Button {
+    border-radius: var(--pdp-radius);
+  }
+
+  .Product--{{ section.id }} .ProductSummary {
+    color: var(--pdp-summary-text-color);
+  }
+
+  .Product--{{ section.id }} .ProductForm__AddToCart {
+    background: var(--pdp-navy-color);
+    border-color: var(--pdp-navy-color);
+    color: #fff;
+  }
+
+  .Product--{{ section.id }} .Product__Block--usps .USPBox {
+    background: var(--pdp-usp-bg);
+    color: var(--pdp-usp-text);
+    border-radius: var(--pdp-radius);
+  }
+
+  .Product--{{ section.id }} .USPInfo {
+    border-radius: 50%;
+  }
+
+  {%- if section.settings.enable_mobile_pdp_style -%}
+    @media screen and (max-width: 767px) {
+      .Product--{{ section.id }} .ProductGallery,
+      .Product--{{ section.id }} .ProductGallery__Carousel,
+      .Product--{{ section.id }} .ProductGallery__Thumbnails {
+        background: var(--pdp-mobile-media-bg);
+      }
+
+      .Product--{{ section.id }} .ProductGallery__Thumbnails {
+        gap: var(--pdp-mobile-thumb-gap);
+        padding: 8px var(--pdp-mobile-content-padding);
+      }
+
+      .Product--{{ section.id }} .ProductGallery__Thumbnail {
+        max-height: var(--pdp-mobile-thumb-height);
+      }
+
+      .Product--{{ section.id }} .ProductGallery__Thumbnail img,
+      .Product--{{ section.id }} .ProductGallery__Thumbnail,
+      .Product--{{ section.id }} .ProductGallery__ImageWrapper,
+      .Product--{{ section.id }} .ProductGallery__ImageWrapper img {
+        border-radius: var(--pdp-radius);
+      }
+
+      .Product--{{ section.id }} .ProductSummary__Wrapper {
+        background: var(--pdp-mobile-content-bg);
+        padding: 0 var(--pdp-mobile-content-padding) var(--pdp-mobile-content-padding);
+      }
+
+      .Product--{{ section.id }} .ProductSummary {
+        margin-top: 0;
+        padding-top: 12px;
+        position: relative;
+        top: auto;
+      }
+
+      .Product--{{ section.id }} .ProductForm__AddToCart {
+        background: var(--pdp-mobile-cta-color);
+        border-color: var(--pdp-mobile-cta-color);
+      }
+
+      .Product--{{ section.id }} .ProductForm__AddToCart,
+      .Product--{{ section.id }} .ProductForm__AddToCart + .Button {
+        border-radius: var(--pdp-radius);
+      }
+    }
+  {%- endif -%}
+</style>
 <section-product style="display: block;" class="Product Product--{{ section.id }} {% unless product.media.size > 0 %}Product--noMedia{% endunless %} Container Container--specialSpacingFirstSection Container--spacingContainerGutter {% if section.settings.section_width == 'full_width' %}Container--fluid Product--fullWidth{% endif %}" 
   data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}' data-product-url="{{ product.url }}">
       <div class="ProductDesign Grid">
@@ -87,38 +189,53 @@
             <div class="ProductSummary{% if section.settings.section_background_color != blank and section.settings.section_background_color != 'rgba(0,0,0,0)' %} ProductSummary--withBackgroundColor{% endif %}" 
               style="{% if section.settings.section_background_color != blank and section.settings.section_background_color != 'rgba(0,0,0,0)' %}--tg-product-summary-background-color: {{ section.settings.section_background_color }};{% endif %}"
             >
-              <div class="Product__Block Product__Block--usps">
-  <div class="USPRow">
-  <div class="USPBox">
-    <span>Buy 2 items, get 1 free</span>
-    <button
-      type="button"
-      class="USPInfo"
-      aria-label="More info about 'Buy 2 items, get 1 free'"
-      data-tooltip="Add 3 items to get the cheapest one for free."
-    ></button>
-  </div>
+              {%- if section.settings.show_usp_row -%}
+                <div class="Product__Block Product__Block--usps">
+                  <div class="USPRow">
+                    {%- if section.settings.usp_1_text != blank -%}
+                      <div class="USPBox">
+                        <span>{{ section.settings.usp_1_text }}</span>
+                        {%- if section.settings.usp_1_tooltip != blank -%}
+                          <button
+                            type="button"
+                            class="USPInfo"
+                            aria-label="More info about '{{ section.settings.usp_1_text | escape }}'"
+                            data-tooltip="{{ section.settings.usp_1_tooltip | escape }}"
+                          ></button>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
 
-  <div class="USPBox">
-    <span>Waterproof</span>
-    <button
-      type="button"
-      class="USPInfo"
-      aria-label="More info about 'Waterproof'"
-      data-tooltip="Can be worn in the shower and sea without discoloration."
-    ></button>
-  </div>
+                    {%- if section.settings.usp_2_text != blank -%}
+                      <div class="USPBox">
+                        <span>{{ section.settings.usp_2_text }}</span>
+                        {%- if section.settings.usp_2_tooltip != blank -%}
+                          <button
+                            type="button"
+                            class="USPInfo"
+                            aria-label="More info about '{{ section.settings.usp_2_text | escape }}'"
+                            data-tooltip="{{ section.settings.usp_2_tooltip | escape }}"
+                          ></button>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
 
-  <div class="USPBox">
-    <span>Lifetime Guarantee</span>
-    <button
-      type="button"
-      class="USPInfo"
-      aria-label="More info about 'Lifetime Guarantee'"
-      data-tooltip="Covers color, plating and breakage under normal use."
-    ></button>
-  </div>
-</div>
+                    {%- if section.settings.usp_3_text != blank -%}
+                      <div class="USPBox">
+                        <span>{{ section.settings.usp_3_text }}</span>
+                        {%- if section.settings.usp_3_tooltip != blank -%}
+                          <button
+                            type="button"
+                            class="USPInfo"
+                            aria-label="More info about '{{ section.settings.usp_3_text | escape }}'"
+                            data-tooltip="{{ section.settings.usp_3_tooltip | escape }}"
+                          ></button>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
               {%- render 'product-blocks', product_from: 'main-product' -%}
               
             </div>
@@ -159,6 +276,158 @@
       "type": "color",
       "id": "section_background_color",
       "label": "Summary background color"
+    },
+    {
+      "type": "header",
+      "content": "Desktop PDP style"
+    },
+    {
+      "type": "color",
+      "id": "pdp_navy_color",
+      "label": "Navy color",
+      "default": "#121B50"
+    },
+    {
+      "type": "color",
+      "id": "pdp_summary_text_color",
+      "label": "Summary text color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "pdp_corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "pdp_desktop_gap",
+      "label": "Desktop column gap",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Mobile PDP style"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mobile_pdp_style",
+      "label": "Enable mobile PDP style",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "pdp_mobile_media_background",
+      "label": "Mobile media background",
+      "default": "#ECECEC"
+    },
+    {
+      "type": "color",
+      "id": "pdp_mobile_content_background",
+      "label": "Mobile content background",
+      "default": "#F3F3F3"
+    },
+    {
+      "type": "color",
+      "id": "pdp_mobile_cta_color",
+      "label": "Mobile CTA color",
+      "default": "#121B50"
+    },
+    {
+      "type": "range",
+      "id": "pdp_mobile_content_padding",
+      "label": "Mobile content side padding",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "pdp_mobile_thumb_gap",
+      "label": "Mobile thumbnail gap",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "pdp_mobile_thumb_height",
+      "label": "Mobile thumbnail height",
+      "min": 40,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "default": 90
+    },
+    {
+      "type": "header",
+      "content": "USP row"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_usp_row",
+      "label": "Show USP row",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "pdp_usp_background",
+      "label": "USP background",
+      "default": "#EFE7DB"
+    },
+    {
+      "type": "color",
+      "id": "pdp_usp_text_color",
+      "label": "USP text color",
+      "default": "#121B50"
+    },
+    {
+      "type": "text",
+      "id": "usp_1_text",
+      "label": "USP 1 text",
+      "default": "Buy 2 items, get 1 free"
+    },
+    {
+      "type": "text",
+      "id": "usp_1_tooltip",
+      "label": "USP 1 tooltip",
+      "default": "Add 3 items to get the cheapest one for free."
+    },
+    {
+      "type": "text",
+      "id": "usp_2_text",
+      "label": "USP 2 text",
+      "default": "Waterproof"
+    },
+    {
+      "type": "text",
+      "id": "usp_2_tooltip",
+      "label": "USP 2 tooltip",
+      "default": "Can be worn in the shower and sea without discoloration."
+    },
+    {
+      "type": "text",
+      "id": "usp_3_text",
+      "label": "USP 3 text",
+      "default": "Lifetime Guarantee"
+    },
+    {
+      "type": "text",
+      "id": "usp_3_tooltip",
+      "label": "USP 3 tooltip",
+      "default": "Covers color, plating and breakage under normal use."
     },
     {
       "type": "header",
