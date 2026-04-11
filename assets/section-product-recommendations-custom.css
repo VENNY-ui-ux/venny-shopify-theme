@@ -1,0 +1,56 @@
+.ProductRecommendationsTabs {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0 0 1.5rem;
+}
+
+.ProductRecommendationsTab {
+  border: 0;
+  background: transparent;
+  padding: 0.35rem 0.2rem;
+  border-bottom: 2px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  border-radius: 2px;
+}
+
+.ProductRecommendationsTab.is-active {
+  border-bottom-color: currentColor;
+  font-weight: 600;
+}
+
+.ProductRecommendationsTab:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ProductRecommendationsPane {
+  display: none;
+}
+
+.ProductRecommendationsPane.is-active {
+  display: block;
+}
+
+.ProductRecommendations--noTabs .ProductRecommendationsPane {
+  display: block;
+}
+
+.ProductRecommendations .ProductCard__Inner,
+.ProductRecommendations .ProductCard__ImageWrapper,
+.ProductRecommendations .ProductQuickAddToCardForm__AddToCart {
+  border-radius: 2px;
+}
+
+@media screen and (max-width: 767px) {
+  .ProductRecommendationsTabs {
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .ProductRecommendationsTab {
+    font-size: 0.92rem;
+  }
+}
