@@ -27,7 +27,7 @@
 .Product--pdpLayoutEnabled .ProductPromoBadge {
   display: inline-block;
   padding: 0.45rem 0.7rem;
-  border-radius: var(--pdp-radius, 2px);
+  border-radius: 0;
   background: var(--pdp-badge-background, #e7e7e7);
   color: var(--pdp-badge-text, #111);
   font-size: 0.8rem;
@@ -48,7 +48,7 @@
 .Product--pdpLayoutEnabled .Accordion__Button,
 .Product--pdpLayoutEnabled .Accordion__Collapse,
 .Product--pdpLayoutEnabled .ProductUSPIcon {
-  border-radius: var(--pdp-radius, 2px);
+  border-radius: 0 !important;
 }
 
 .Product--pdpLayoutEnabled .ProductGallery__Thumbnail[aria-current="true"],
@@ -88,7 +88,6 @@
   width: 1.5rem;
   height: 1.5rem;
   border: 1px solid rgba(0, 0, 0, 0.7);
-  border-radius: 50%;
   position: relative;
   margin-top: 0.05rem;
 }
@@ -97,7 +96,7 @@
   content: "";
   position: absolute;
   inset: 5px;
-  border-radius: 50%;
+  border-radius: 0;
   background: rgba(0, 0, 0, 0.08);
 }
 

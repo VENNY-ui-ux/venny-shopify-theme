@@ -16,7 +16,7 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: 500;
-  border-radius: 2px;
+  border-radius: 0;
   color: inherit;
 }
 
@@ -45,7 +45,7 @@
 .ProductRecommendations .ProductCard__Inner,
 .ProductRecommendations .ProductCard__ImageWrapper,
 .ProductRecommendations .ProductQuickAddToCardForm__AddToCart {
-  border-radius: 2px;
+  border-radius: 0;
 }
 
 @media screen and (max-width: 767px) {
