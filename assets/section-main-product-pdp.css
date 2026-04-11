@@ -4,12 +4,24 @@
 
 @media screen and (min-width: 1008px) {
   .Product--pdpLayoutEnabled .ProductSummary {
+    margin-top: 0;
     padding-inline-start: calc(var(--pdp-desktop-gap, 20px) / 2);
   }
 }
 
 .Product--pdpLayoutEnabled .ProductSummary {
   color: var(--pdp-summary-text-color, inherit);
+}
+
+.Product--pdpLayoutEnabled .ProductMedia__Wrapper {
+  position: relative;
+}
+
+.Product--pdpLayoutEnabled .ProductMediaBadgeWrapper {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 2;
 }
 
 .Product--pdpLayoutEnabled .ProductPromoBadge {
@@ -127,6 +139,11 @@
     padding-top: 12px;
     position: relative;
     top: auto;
+  }
+
+  .Product--mobilePdpEnabled .ProductMediaBadgeWrapper {
+    top: 0.5rem;
+    left: 0.5rem;
   }
 
   .Product--mobilePdpEnabled .ProductUSPList {

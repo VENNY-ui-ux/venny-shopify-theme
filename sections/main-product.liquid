@@ -95,7 +95,12 @@
   data-section-id="{{ section.id }}" data-section-settings='{{ section_settings }}' data-product-url="{{ product.url }}">
       <div class="ProductDesign Grid">
           {%- if product.media.size > 0 -%}
-              <div class="Grid__Item 8/12--large">
+              <div class="Grid__Item 8/12--large ProductMedia__Wrapper">
+                  {%- if section.settings.pdp_promo_badge != blank -%}
+                    <div class="ProductMediaBadgeWrapper">
+                      <span class="ProductPromoBadge">{{ section.settings.pdp_promo_badge }}</span>
+                    </div>
+                  {%- endif -%}
                   {%- render 'product-gallery' -%}
               </div>
           {%- endif -%}
@@ -104,11 +109,6 @@
             <div class="ProductSummary{% if section.settings.section_background_color != blank and section.settings.section_background_color != 'rgba(0,0,0,0)' %} ProductSummary--withBackgroundColor{% endif %}" 
               style="{% if section.settings.section_background_color != blank and section.settings.section_background_color != 'rgba(0,0,0,0)' %}--tg-product-summary-background-color: {{ section.settings.section_background_color }};{% endif %}"
             >
-              {%- if section.settings.pdp_promo_badge != blank -%}
-                <div class="Product__Block Product__Block--promoBadge">
-                  <span class="ProductPromoBadge">{{ section.settings.pdp_promo_badge }}</span>
-                </div>
-              {%- endif -%}
               {%- render 'product-blocks', product_from: 'main-product' -%}
               
             </div>
