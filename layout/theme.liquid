@@ -92,6 +92,7 @@
         {{ settings.custom_code_css }}
       </style>
     {%- endif -%}
+    {{ 'corner-reset.css' | asset_url | stylesheet_tag }}
 
     <script>
       window.theme = {

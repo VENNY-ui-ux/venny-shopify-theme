@@ -1,0 +1,73 @@
+/*
+  Global corner reset
+  Phase 1: reset design tokens + high-impact UI components to sharp corners (0px)
+*/
+:root {
+  --tg-sys-button-border-radius: 0px;
+  --tg-product-badge-corner-radius: 0px;
+  --tg-featured-columns-card-badge-border-radius: 0px;
+  --tg-sys-section-featured-nav-image-border-radius: 0px;
+  --shopify-accelerated-checkout-button-border-radius: 0px;
+}
+
+.Button,
+.Button::before,
+.Button::after,
+.Form__Input,
+input,
+select,
+textarea,
+label,
+.Card,
+.CartDrawer,
+.CartDrawer *,
+.Drawer,
+.Drawer *,
+.Modal,
+.Modal *,
+.Accordion,
+.Accordion *,
+.Product,
+.Product *,
+.ProductCard,
+.ProductCard *,
+.ProductQuickAddToCardForm__AddToCart,
+.ProductGallery,
+.ProductGallery *,
+.ProductSummary,
+.ProductSummary *,
+.ProductRecommendations,
+.ProductRecommendations *,
+.CollectionFilters,
+.CollectionFilters *,
+.PredictiveSearch,
+.PredictiveSearch *,
+.Header,
+.Header *,
+.FooterGroup,
+.FooterGroup *,
+.SectionHeader,
+.SectionHeader *,
+.Swatch,
+.Swatch *,
+.VariantSwatch,
+.VariantSelectors__Item,
+.ColorSwatch,
+.ColorDot,
+.USPBox,
+.USPInfo,
+.ProductUSPList,
+.ProductUSPItem,
+.Carousel,
+.Carousel *,
+noUi-target,
+noUi-base,
+noUi-connect,
+noUi-handle,
+.pswp__button,
+.pswp__img,
+.shopify-payment-button__button,
+.shopify-payment-button__button--branded,
+.shopify-payment-button__button--unbranded {
+  border-radius: 0 !important;
+}
