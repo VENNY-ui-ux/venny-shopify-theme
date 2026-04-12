@@ -137,24 +137,24 @@
   order: 1;
 }
 
-.Product--pdpLayoutEnabled .Product__Block--buyButtons > :not(.ProductForm):not(.ProductUSPList) {
+.Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] {
   order: 2;
-  margin-top: 0.65rem;
+  margin: 0.65rem 0 0 !important;
   background: transparent !important;
   border: 0 !important;
-  padding: 0.2rem 0 !important;
+  padding: 0 !important;
   box-shadow: none !important;
   font-size: 0.92rem !important;
   line-height: 1.35 !important;
 }
 
-.Product--pdpLayoutEnabled .Product__Block--buyButtons > :not(.ProductForm):not(.ProductUSPList) svg,
-.Product--pdpLayoutEnabled .Product__Block--buyButtons > :not(.ProductForm):not(.ProductUSPList) [class*='truck'],
-.Product--pdpLayoutEnabled .Product__Block--buyButtons > :not(.ProductForm):not(.ProductUSPList) [data-testid*='truck'] {
+.Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] svg,
+.Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] [class*='truck'],
+.Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] [data-testid*='truck'] {
   display: none !important;
 }
 
-.Product--pdpLayoutEnabled .Product__Block--buyButtons .ProductUSPList {
+.Product--pdpLayoutEnabled .ProductUSPList {
   order: 3;
 }
 
@@ -195,8 +195,7 @@
     gap: 0.85rem;
   }
 
-  .Product--mobilePdpEnabled .Product__Block--buyButtons > :not(.ProductForm):not(.ProductUSPList) {
+  .Product--mobilePdpEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] {
     font-size: 0.88rem !important;
-    padding: 0.15rem 0 !important;
   }
 }

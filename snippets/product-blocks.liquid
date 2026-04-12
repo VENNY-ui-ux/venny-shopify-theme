@@ -9,6 +9,8 @@
     assign inventory_quantity_threshold = 5 
     assign has_quantity_selector = false 
     assign has_variant_picker = false 
+    assign has_buy_buttons_block = false
+    assign usp_rendered = false
 
     for block in section.blocks 
         if block.type == 'quantity_selector' 
@@ -18,6 +20,9 @@
         endif
         if block.type == 'variant_picker' 
             assign has_variant_picker = true 
+        endif
+        if block.type == 'buy_buttons'
+            assign has_buy_buttons_block = true
         endif
     endfor
 
@@ -37,12 +42,56 @@
     endif
 -%}
 
+{%- capture product_usp_markup -%}
+    {%- if section.settings.show_usp_row -%}
+        <div class="ProductUSPList" role="list" aria-label="Product benefits">
+            {%- if section.settings.usp_1_text != blank -%}
+                <div class="ProductUSPItem" role="listitem">
+                    <span class="ProductUSPIcon" aria-hidden="true"></span>
+                    <div class="ProductUSPContent">
+                        <p class="ProductUSPTitle">{{ section.settings.usp_1_text }}</p>
+                        {%- if section.settings.usp_1_tooltip != blank -%}
+                            <p class="ProductUSPDescription">{{ section.settings.usp_1_tooltip }}</p>
+                        {%- endif -%}
+                    </div>
+                </div>
+            {%- endif -%}
+            {%- if section.settings.usp_2_text != blank -%}
+                <div class="ProductUSPItem" role="listitem">
+                    <span class="ProductUSPIcon" aria-hidden="true"></span>
+                    <div class="ProductUSPContent">
+                        <p class="ProductUSPTitle">{{ section.settings.usp_2_text }}</p>
+                        {%- if section.settings.usp_2_tooltip != blank -%}
+                            <p class="ProductUSPDescription">{{ section.settings.usp_2_tooltip }}</p>
+                        {%- endif -%}
+                    </div>
+                </div>
+            {%- endif -%}
+            {%- if section.settings.usp_3_text != blank -%}
+                <div class="ProductUSPItem" role="listitem">
+                    <span class="ProductUSPIcon" aria-hidden="true"></span>
+                    <div class="ProductUSPContent">
+                        <p class="ProductUSPTitle">{{ section.settings.usp_3_text }}</p>
+                        {%- if section.settings.usp_3_tooltip != blank -%}
+                            <p class="ProductUSPDescription">{{ section.settings.usp_3_tooltip }}</p>
+                        {%- endif -%}
+                    </div>
+                </div>
+            {%- endif -%}
+        </div>
+    {%- endif -%}
+{%- endcapture -%}
+
 {%- for block in section.blocks -%}
-    {%- case block.type -%}
+        {%- case block.type -%}
         {%- when '@app' -%}
             <div class="Product__Block Product__Block--app Product__Block--app{{ block.id }}">
                 {% render block %}
             </div>
+            {%- if has_buy_buttons_block and section.settings.show_usp_row and usp_rendered == false -%}
+                {{- product_usp_markup -}}
+                {%- assign usp_rendered = true -%}
+            {%- endif -%}
 
         {%- when 'custom_liquid' -%}
             <div id="block-{{ block.id }}" class="Product__Block Product__Block--customLiquid {% if block.settings.refresh_when_variant_changes %}Product__Block--refreshVariantChange{% endif %}" {{ block.shopify_attributes }}>
@@ -734,43 +783,6 @@
                     {%- endif -%}
                 {%- endform -%}
 
-                {%- if section.settings.show_usp_row -%}
-                    <div class="ProductUSPList" role="list" aria-label="Product benefits">
-                        {%- if section.settings.usp_1_text != blank -%}
-                            <div class="ProductUSPItem" role="listitem">
-                                <span class="ProductUSPIcon" aria-hidden="true"></span>
-                                <div class="ProductUSPContent">
-                                    <p class="ProductUSPTitle">{{ section.settings.usp_1_text }}</p>
-                                    {%- if section.settings.usp_1_tooltip != blank -%}
-                                        <p class="ProductUSPDescription">{{ section.settings.usp_1_tooltip }}</p>
-                                    {%- endif -%}
-                                </div>
-                            </div>
-                        {%- endif -%}
-                        {%- if section.settings.usp_2_text != blank -%}
-                            <div class="ProductUSPItem" role="listitem">
-                                <span class="ProductUSPIcon" aria-hidden="true"></span>
-                                <div class="ProductUSPContent">
-                                    <p class="ProductUSPTitle">{{ section.settings.usp_2_text }}</p>
-                                    {%- if section.settings.usp_2_tooltip != blank -%}
-                                        <p class="ProductUSPDescription">{{ section.settings.usp_2_tooltip }}</p>
-                                    {%- endif -%}
-                                </div>
-                            </div>
-                        {%- endif -%}
-                        {%- if section.settings.usp_3_text != blank -%}
-                            <div class="ProductUSPItem" role="listitem">
-                                <span class="ProductUSPIcon" aria-hidden="true"></span>
-                                <div class="ProductUSPContent">
-                                    <p class="ProductUSPTitle">{{ section.settings.usp_3_text }}</p>
-                                    {%- if section.settings.usp_3_tooltip != blank -%}
-                                        <p class="ProductUSPDescription">{{ section.settings.usp_3_tooltip }}</p>
-                                    {%- endif -%}
-                                </div>
-                            </div>
-                        {%- endif -%}
-                    </div>
-                {%- endif -%}
             </div>
         {%- when 'style_with' -%}
             {%- render 'product-group-buy', block: block -%}
@@ -782,6 +794,10 @@
             {%- render 'product-block-recommendations-related', block: block, recommendations_type: 'complementary' -%}
     {%- endcase -%}
 {%- endfor -%}
+
+{%- if has_buy_buttons_block and section.settings.show_usp_row and usp_rendered == false -%}
+    {{- product_usp_markup -}}
+{%- endif -%}
 
 
 {% comment %} Drawer use position: fixed, which can sometimes be a bit particular about its rendering. 
