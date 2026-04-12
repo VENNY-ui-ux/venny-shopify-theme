@@ -733,6 +733,44 @@
                         <div class="Product__StoreAvailabilityContainer"></div>
                     {%- endif -%}
                 {%- endform -%}
+
+                {%- if section.settings.show_usp_row -%}
+                    <div class="ProductUSPList" role="list" aria-label="Product benefits">
+                        {%- if section.settings.usp_1_text != blank -%}
+                            <div class="ProductUSPItem" role="listitem">
+                                <span class="ProductUSPIcon" aria-hidden="true"></span>
+                                <div class="ProductUSPContent">
+                                    <p class="ProductUSPTitle">{{ section.settings.usp_1_text }}</p>
+                                    {%- if section.settings.usp_1_tooltip != blank -%}
+                                        <p class="ProductUSPDescription">{{ section.settings.usp_1_tooltip }}</p>
+                                    {%- endif -%}
+                                </div>
+                            </div>
+                        {%- endif -%}
+                        {%- if section.settings.usp_2_text != blank -%}
+                            <div class="ProductUSPItem" role="listitem">
+                                <span class="ProductUSPIcon" aria-hidden="true"></span>
+                                <div class="ProductUSPContent">
+                                    <p class="ProductUSPTitle">{{ section.settings.usp_2_text }}</p>
+                                    {%- if section.settings.usp_2_tooltip != blank -%}
+                                        <p class="ProductUSPDescription">{{ section.settings.usp_2_tooltip }}</p>
+                                    {%- endif -%}
+                                </div>
+                            </div>
+                        {%- endif -%}
+                        {%- if section.settings.usp_3_text != blank -%}
+                            <div class="ProductUSPItem" role="listitem">
+                                <span class="ProductUSPIcon" aria-hidden="true"></span>
+                                <div class="ProductUSPContent">
+                                    <p class="ProductUSPTitle">{{ section.settings.usp_3_text }}</p>
+                                    {%- if section.settings.usp_3_tooltip != blank -%}
+                                        <p class="ProductUSPDescription">{{ section.settings.usp_3_tooltip }}</p>
+                                    {%- endif -%}
+                                </div>
+                            </div>
+                        {%- endif -%}
+                    </div>
+                {%- endif -%}
             </div>
         {%- when 'style_with' -%}
             {%- render 'product-group-buy', block: block -%}
