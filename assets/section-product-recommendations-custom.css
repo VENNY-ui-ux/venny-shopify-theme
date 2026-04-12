@@ -45,7 +45,7 @@
 .ProductRecommendations .ProductCard__Inner,
 .ProductRecommendations .ProductCard__ImageWrapper,
 .ProductRecommendations .ProductQuickAddToCardForm__AddToCart {
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 
 @media screen and (max-width: 767px) {
