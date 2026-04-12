@@ -3515,15 +3515,7 @@ html, body {
   display: none !important;
 }
 .uNyo_AFtPek8e903Avt3::before {
-  content: '';
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #3fcf55; /* grøn */
-  margin-right: 8px;
-  animation: pulse 1.5s infinite ease-in-out;
-  vertical-align: middle;
+  display: none;
 }
 
 /* Animation for "blus" */
@@ -3726,8 +3718,8 @@ input[type="radio"]:checked + label {
   border-radius: 4px !important;
 }
 .zA7gzY36g4yHEtu5TfBW {
-  border-radius: 4px !important;
-  overflow: hidden;
+  border-radius: 0 !important;
+  overflow: visible;
 }
 .USPBox {
   background-color: #EFE7DB;      /* din ivory */
@@ -4310,4 +4302,3 @@ input[type="radio"]:checked + label {
 #CartDrawer .CartDrawerItem * {
   max-width: 100% !important;
 }
-
