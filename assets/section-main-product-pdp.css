@@ -148,6 +148,25 @@
   line-height: 1.35 !important;
 }
 
+.Product--pdpLayoutEnabled .zA7gzY36g4yHEtu5TfBW {
+  --od-root-background-color: transparent !important;
+  --od-root-padding: 0 !important;
+  --od-root-border-width: 0 !important;
+  --od-root-border-color: transparent !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.3 !important;
+}
+
+.Product--pdpLayoutEnabled .zA7gzY36g4yHEtu5TfBW,
+.Product--pdpLayoutEnabled .zA7gzY36g4yHEtu5TfBW * {
+  font-size: 0.82rem !important;
+  line-height: 1.3 !important;
+}
+
 .Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] svg,
 .Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] [class*='truck'],
 .Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] [data-testid*='truck'] {
@@ -197,5 +216,11 @@
 
   .Product--mobilePdpEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] {
     font-size: 0.82rem !important;
+  }
+
+  .Product--mobilePdpEnabled .zA7gzY36g4yHEtu5TfBW,
+  .Product--mobilePdpEnabled .zA7gzY36g4yHEtu5TfBW * {
+    font-size: 0.76rem !important;
+    line-height: 1.25 !important;
   }
 }
