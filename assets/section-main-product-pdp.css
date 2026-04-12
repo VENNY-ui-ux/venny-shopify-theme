@@ -144,7 +144,7 @@
   border: 0 !important;
   padding: 0 !important;
   box-shadow: none !important;
-  font-size: 0.92rem !important;
+  font-size: 0.85rem !important;
   line-height: 1.35 !important;
 }
 
@@ -196,6 +196,6 @@
   }
 
   .Product--mobilePdpEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] {
-    font-size: 0.88rem !important;
+    font-size: 0.82rem !important;
   }
 }

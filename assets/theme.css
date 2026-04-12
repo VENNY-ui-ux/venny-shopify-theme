@@ -3515,7 +3515,15 @@ html, body {
   display: none !important;
 }
 .uNyo_AFtPek8e903Avt3::before {
-  display: none;
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #3fcf55;
+  margin-right: 8px;
+  animation: pulse 1.5s infinite ease-in-out;
+  vertical-align: middle;
 }
 
 /* Animation for "blus" */
