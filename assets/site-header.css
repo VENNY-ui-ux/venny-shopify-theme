@@ -456,8 +456,16 @@
 .Header__Localization--icon .Dropdown__Toggle {
   border: 0;
   background: transparent;
-  padding: 0;
+  padding: 0.5rem 1rem;
   min-width: auto;
+}
+
+.Header__Localization--icon .Dropdown__Toggle::after {
+  display: none;
+}
+
+.Header__Localization--icon .CountryFlagWrapper {
+  margin-inline-end: 0;
 }
 
 [dir=rtl] .Header__MainMenu .DropdownMenu.DropdownMenu--withChevronIcon .Nav__Link--levelOne::before {
