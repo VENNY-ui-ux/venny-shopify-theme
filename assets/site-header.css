@@ -456,7 +456,7 @@
 .Header__Localization--icon .Dropdown__Toggle {
   border: 0;
   background: transparent;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0;
   min-width: auto;
 }
 
@@ -466,6 +466,10 @@
 
 .Header__Localization--icon .CountryFlagWrapper {
   margin-inline-end: 0;
+}
+
+.Header__SecondaryMenu .Header__Localization--icon + li .Nav__Link {
+  padding-inline-start: 0;
 }
 
 [dir=rtl] .Header__MainMenu .DropdownMenu.DropdownMenu--withChevronIcon .Nav__Link--levelOne::before {
