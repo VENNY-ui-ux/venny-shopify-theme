@@ -3640,7 +3640,7 @@ input[type="radio"]:checked + label {
   }
 
   .Product__Block--buyButtons {
-    margin-top: 0 !important;
+    margin-top: -2px !important;
   }
 
   .Product--mobilePdpEnabled .Product__Block--buyButtons .ProductForm {
