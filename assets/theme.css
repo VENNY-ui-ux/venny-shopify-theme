@@ -3632,11 +3632,15 @@ input[type="radio"]:checked + label {
   }
 
   .ColorDotWrapper {
-    margin-bottom: 4px !important;
+    margin-bottom: 0 !important;
   }
 
   .Product__Block--delivery {
     margin-top: 6px !important;
+  }
+
+  .Product__Block--buyButtons {
+    margin-top: 0 !important;
   }
 }
 .Product__Block--buyButtons {
