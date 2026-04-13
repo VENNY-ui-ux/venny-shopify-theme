@@ -3642,6 +3642,10 @@ input[type="radio"]:checked + label {
   .Product__Block--buyButtons {
     margin-top: 0 !important;
   }
+
+  .Product--mobilePdpEnabled .Product__Block--buyButtons .ProductForm {
+    margin-top: 0 !important;
+  }
 }
 .Product__Block--buyButtons {
   margin-top: 6px !important;
