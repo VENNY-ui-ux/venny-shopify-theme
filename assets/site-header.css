@@ -449,6 +449,17 @@
           margin-inline-start: 0.5rem;
 }
 
+.Header__Localization--icon {
+  margin-inline-start: 0;
+}
+
+.Header__Localization--icon .Dropdown__Toggle {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-width: auto;
+}
+
 [dir=rtl] .Header__MainMenu .DropdownMenu.DropdownMenu--withChevronIcon .Nav__Link--levelOne::before {
   right: auto;
   left: -1.25rem;
