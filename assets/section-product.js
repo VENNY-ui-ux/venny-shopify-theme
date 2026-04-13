@@ -65,12 +65,14 @@ if (!customElements.get('section-product')) {
       }
   
       this._bindEventsListeners();
+      this._placeDeliveryRowAboveCta();
     }
 
     disconnectedCallback(){
       if(this.delegateElement)this.delegateElement.destroy();
       if(this.productSlideshow)this.productSlideshow.destroy();
       if(this.productSlideshowNav)this.productSlideshowNav.destroy();
+      if(this.deliveryPlacementObserver)this.deliveryPlacementObserver.disconnect();
       if(this.styleWithCarousels){
         this.styleWithCarousels.forEach(function (carousel) {
           carousel.destroy();
@@ -85,6 +87,42 @@ if (!customElements.get('section-product')) {
         this._onBreakpointChangedListener = this._onBreakpointChanged.bind(this);
         document.addEventListener('breakpoint:changed', this._onBreakpointChangedListener);
       }
+    }
+
+    _placeDeliveryRowAboveCta() {
+      let _this = this;
+
+      let moveRow = function () {
+        let buyButtonsBlock = _this.element.querySelector('.Product__Block--buyButtons');
+        if (!buyButtonsBlock) return;
+
+        let formElement = buyButtonsBlock.querySelector('.ProductForm');
+        if (!formElement) return;
+
+        let addToCartButton = formElement.querySelector('.ProductForm__AddToCart');
+        if (!addToCartButton) return;
+
+        let deliveryInForm = formElement.querySelector('.zA7gzY36g4yHEtu5TfBW');
+        if (deliveryInForm && deliveryInForm.previousElementSibling !== addToCartButton) {
+          formElement.insertBefore(deliveryInForm, addToCartButton);
+          return;
+        }
+
+        let appBlock = _this.element.querySelector(".Product__Block--app[class*='order_deadline_2_app_block_product']");
+        if (appBlock && appBlock.nextElementSibling === buyButtonsBlock) {
+          buyButtonsBlock.parentNode.insertBefore(appBlock, buyButtonsBlock);
+        }
+      };
+
+      moveRow();
+
+      let summaryElement = this.element.querySelector('.ProductSummary');
+      if (!summaryElement) return;
+
+      this.deliveryPlacementObserver = new MutationObserver(function () {
+        moveRow();
+      });
+      this.deliveryPlacementObserver.observe(summaryElement, { childList: true, subtree: true });
     }
 
     _onBreakpointChanged(event) {
