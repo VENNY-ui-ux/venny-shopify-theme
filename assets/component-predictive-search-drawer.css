@@ -60,9 +60,16 @@
   padding: 0;
 }
 
+.SearchDrawer__Input:focus,
+.SearchDrawer__Input:focus-visible {
+  border: 0;
+  box-shadow: none;
+  outline: 0;
+}
+
 .PredictiveSearch:focus-visible {
   box-shadow: none;
-  border-width: 2px;
+  border-width: 0;
 }
 
 .SearchDrawer__Submit {
