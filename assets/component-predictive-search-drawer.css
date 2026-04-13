@@ -33,6 +33,9 @@
   display: flex;
   align-items: center;
   flex: 1 0 auto;
+  background: #f3f3f3;
+  min-height: 42px;
+  padding: 0 0.75rem;
 }
 
 .SearchDrawer__Form .Icon--search {
@@ -41,20 +44,19 @@
 }
 
 .SearchDrawer__InputIconWrapper {
-  position: relative;
-  top: -1px;
-  -webkit-margin-end: 12px;
-          margin-inline-end: 12px;
+  -webkit-margin-end: 0.5rem;
+          margin-inline-end: 0.5rem;
   color: var(--tg-sys-color-on-surface-variant);
 }
 
 .SearchDrawer__Input {
-  background: none;
+  background: transparent;
   width: auto;
   border: none;
   vertical-align: middle;
   flex-grow: 1;
   min-height: 42px;
+  padding: 0;
 }
 
 .PredictiveSearch:focus-visible {
@@ -64,6 +66,13 @@
 
 .SearchDrawer__Submit {
   min-height: 42px;
+}
+
+.SearchDrawer__Close {
+  padding: 0.5rem;
+  -webkit-margin-start: 0.375rem;
+          margin-inline-start: 0.375rem;
+  color: var(--tg-sys-color-on-surface-variant);
 }
 
 .SearchDrawer__Input::-moz-placeholder {
@@ -121,8 +130,8 @@ input[type=search]::-webkit-search-cancel-button {
 
 @media screen and (min-width: 641px) {
   .SearchDrawer__InputIconWrapper {
-    -webkit-margin-end: 20px;
-            margin-inline-end: 20px;
+    -webkit-margin-end: 0.5rem;
+            margin-inline-end: 0.5rem;
   }
 }
 .PredictiveSearchDrawerDrawer {
