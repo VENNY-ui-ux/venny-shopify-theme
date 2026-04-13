@@ -74,6 +74,7 @@
 }
 
 .Product--pdpLayoutEnabled .ProductGallery feature-img,
+.Product--pdpLayoutEnabled .ProductGallery .MediaModalOpener,
 .Product--pdpLayoutEnabled .ProductGallery .Product__MediaWrapper,
 .Product--pdpLayoutEnabled .ProductGallery__ImageWrapper {
   overflow: visible !important;
