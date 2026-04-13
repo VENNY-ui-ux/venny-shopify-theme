@@ -3627,16 +3627,24 @@ input[type="radio"]:checked + label {
 }
 @media only screen and (max-width: 767px) {
   .ProductForm__AddToCart {
-    margin-top: 4px !important;
+    margin-top: 0 !important;
     margin-bottom: 4px !important;
   }
 
   .ColorDotWrapper {
-    margin-bottom: 4px !important;
+    margin-bottom: 0 !important;
   }
 
   .Product__Block--delivery {
     margin-top: 6px !important;
+  }
+
+  .Product__Block--buyButtons {
+    margin-top: 0 !important;
+  }
+
+  .Product--mobilePdpEnabled .Product__Block--buyButtons .ProductForm {
+    margin-top: 0 !important;
   }
 }
 .Product__Block--buyButtons {
