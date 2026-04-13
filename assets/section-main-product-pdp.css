@@ -40,6 +40,12 @@
 
 .Product--pdpLayoutEnabled .ProductGallery__ImageWrapper,
 .Product--pdpLayoutEnabled .ProductGallery__ImageWrapper img,
+.Product--pdpLayoutEnabled .ProductGallery feature-img,
+.Product--pdpLayoutEnabled .ProductGallery feature-img img,
+.Product--pdpLayoutEnabled .ProductGallery .MediaModalOpener,
+.Product--pdpLayoutEnabled .ProductGallery .MediaModalOpener img,
+.Product--pdpLayoutEnabled .ProductGallery .Product__MediaWrapper,
+.Product--pdpLayoutEnabled .ProductGallery .Product__MediaWrapper img,
 .Product--pdpLayoutEnabled .ProductGallery__Thumbnail,
 .Product--pdpLayoutEnabled .ProductGallery__Thumbnail img,
 .Product--pdpLayoutEnabled .ProductSummary,
@@ -65,6 +71,13 @@
 .Product--pdpLayoutEnabled .Accordion__Collapse,
 .Product--pdpLayoutEnabled .ProductUSPIcon {
   border-radius: 0 !important;
+}
+
+.Product--pdpLayoutEnabled .ProductGallery feature-img,
+.Product--pdpLayoutEnabled .ProductGallery .MediaModalOpener,
+.Product--pdpLayoutEnabled .ProductGallery .Product__MediaWrapper,
+.Product--pdpLayoutEnabled .ProductGallery__ImageWrapper {
+  overflow: visible !important;
 }
 
 .Product--pdpLayoutEnabled .ProductGallery__Thumbnail[aria-current="true"],
