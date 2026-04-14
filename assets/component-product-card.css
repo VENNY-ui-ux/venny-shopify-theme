@@ -144,6 +144,88 @@
   margin-bottom: 0.5rem;
 }
 
+.ProductCard__HoverCTA {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.ProductCard__HoverCTA .ProductCard__AddToCartForm {
+  margin: 0 !important;
+}
+
+.ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ProductCard__HoverCTA {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+  }
+
+  .ProductCard__ImageWrapper:hover .ProductCard__HoverCTA,
+  .ProductCard__ImageWrapper:focus-within .ProductCard__HoverCTA {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .ProductCard__HoverCTA {
+    left: auto;
+    right: 0.5rem;
+    bottom: 0.5rem;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__AddToCart {
+    width: 2.25rem !important;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border-radius: 999px !important;
+    background: transparent !important;
+    border: 0 !important;
+    color: var(--tg-sys-color-on-background) !important;
+    box-shadow: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__Label {
+    display: none;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon .Icon--cart {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon .Icon--plus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    transform: translate(-50%, -50%);
+  }
+}
+
 .Loading.ProductCard__Action {
   width: 44px;
   height: 44px;

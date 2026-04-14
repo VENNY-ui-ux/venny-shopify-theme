@@ -11,7 +11,11 @@
               class="Button Button--secondary ProductQuickAddToCardForm__AddToCart"
               data-action="quick-add-to-cart"
               style="width: 100%;">
-        ADD TO CART
+        <span class="ProductQuickAddToCardForm__Label">ADD TO CART</span>
+        <span class="ProductQuickAddToCardForm__Icon" aria-hidden="true">
+          {%- render 'icons', icon: 'cart' -%}
+          {%- render 'icons', icon: 'plus' -%}
+        </span>
       </button>
     </form>
   </quick-add-to-cart-button>
