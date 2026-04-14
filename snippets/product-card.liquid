@@ -164,7 +164,7 @@
 
 
         {%- if show_product_info -%}
-        <div class="ProductCard__Info ProductCard__Info--{{ settings.product_info_alignment }}">
+        <div class="ProductCard__Info ProductCard__Info--{{ settings.product_info_alignment }}" style="margin-top:0.5rem; padding-bottom:0.5rem;">
             {%- if show_vendor -%}
                 <div class="ProductCard__Vendor TextMuted">
                     {%- assign vendor_handle = product.vendor | handle -%}
