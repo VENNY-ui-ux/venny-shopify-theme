@@ -125,14 +125,15 @@
                 </div>
             {%- endif -%}
 
+            {%- if product.available -%}
+              {%- assign first_available_variant = product.variants | where: "available", true | first -%}
+              {%- if first_available_variant -%}
+                <div class="ProductCard__HoverCTA no-js-hidden">
+                  {% render 'product-quick-add-to-cart-button', card_product: product, show_quick_add: show_quick_add %}
+                </div>
+              {%- endif -%}
+            {%- endif -%}
         </div>
-                      
-{%- if product.available -%}
-  {%- assign first_available_variant = product.variants | where: "available", true | first -%}
-  {%- if first_available_variant -%}
-    {% render 'product-quick-add-to-cart-button', card_product: product, show_quick_add: show_quick_add %}
-  {%- endif -%}
-{%- endif -%}
 
 
         {%- if show_product_info -%}
