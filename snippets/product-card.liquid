@@ -184,9 +184,9 @@
             {%- assign product_title_downcase = product.title | downcase -%}
             {%- assign guarantee_text = '' -%}
             {%- if product_title_downcase contains 'golden' -%}
-              {%- assign guarantee_text = 'Waterproof | Lifetime guarantee | 14k Gold' -%}
+              {%- assign guarantee_text = 'Waterproof | 14k Gold' -%}
             {%- elsif product_title_downcase contains 'silver' -%}
-              {%- assign guarantee_text = 'Waterproof | Lifetime guarantee | Polished' -%}
+              {%- assign guarantee_text = 'Waterproof | Polished' -%}
             {%- endif -%}
 
             {%- if guarantee_text != blank -%}
