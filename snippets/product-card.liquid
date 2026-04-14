@@ -181,6 +181,15 @@
   | remove: ' (Golden)' 
   | remove: ' (Silver)' 
 %}
+            {%- assign product_title_downcase = product.title | downcase -%}
+            {%- assign guarantee_text = 'Lifetime guarantee' -%}
+            {%- if product_title_downcase contains 'golden' -%}
+              {%- assign guarantee_text = 'Waterproof | Lifetime guarantee | 14k Gold' -%}
+            {%- elsif product_title_downcase contains 'silver' -%}
+              {%- assign guarantee_text = 'Waterproof | Lifetime guarantee | Polished' -%}
+            {%- endif -%}
+
+            <p style="font-size:14.4px; color:#666; margin:0 0 2px 0; text-align:center;">{{ guarantee_text }}</p>
 
             <p style="font-size:12px; color:#666; margin:0 0 2px 0; text-align:center;">Lifetime guarantee</p>
 
