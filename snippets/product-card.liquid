@@ -40,8 +40,18 @@
 
                 <a href="{{ product.url }}">
                   <div class="ProductCard__BadgeWrapper">
-                    {% if product.tags contains 'waterproof' %}
+                    {%- assign product_tags_downcase = ',' | append: product.tags | join: ',' | downcase | append: ',' -%}
+                    {% if product_tags_downcase contains ',waterproof,' %}
                       <span class="ProductCard__Badge ProductCard__Badge--waterproof">WATERPROOF</span>
+                   {% endif %}
+                    {% if product_tags_downcase contains ',new,' %}
+                      <span class="ProductCard__Badge ProductCard__Badge--new">NEW</span>
+                   {% endif %}
+                    {% if product_tags_downcase contains ',bestselling,' %}
+                      <span class="ProductCard__Badge ProductCard__Badge--bestselling">BESTSELLING</span>
+                   {% endif %}
+                    {% if product_tags_downcase contains ',in high demand,' %}
+                      <span class="ProductCard__Badge ProductCard__Badge--inHighDemand">IN HIGH DEMAND</span>
                    {% endif %}
                  </div>
                   
