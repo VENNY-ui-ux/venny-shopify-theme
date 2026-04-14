@@ -108,11 +108,11 @@
   width: fit-content;
   background: #fff;
   color: var(--tg-sys-color-on-background);
-  font-size: 0.4744rem;
+  font-size: 0.5456rem;
   font-weight: 500;
-  line-height: 1.27;
+  line-height: 1.46;
   letter-spacing: 0.03em;
-  padding: 0.31rem 0.48rem;
+  padding: 0.36rem 0.55rem;
   border-radius: 2px;
 }
 
