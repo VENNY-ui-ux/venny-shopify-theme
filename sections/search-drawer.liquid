@@ -12,7 +12,7 @@
         <label class="VisuallyHidden" for="SearchDrawerQueryString">{{ 'search.general.input_placeholder' | t }}</label>
         <input type="hidden" name="options[prefix]" value="last">
         {%- unless predictive_search_enabled -%}<button type="submit" class="Button Button--primary Form__Submit Button--small SearchDrawer__Submit">{{ 'search.general.title' | t }}</button>{%- endunless -%}
-        <button type="button" class="Button Button--icon" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}">{% render 'icons', icon: 'close' %}</button>
+        <button type="button" class="Button Button--icon SearchDrawer__Close" data-tg-dismiss="Drawer" aria-label="{{ 'general.drawer.close' | t }}">{% render 'icons', icon: 'close' %}</button>
     </form>
   </div>
   {%- if predictive_search_enabled or section.settings.rec_product_list != blank -%}
