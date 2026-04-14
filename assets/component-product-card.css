@@ -91,6 +91,31 @@
   border-radius: var(--tg-product-badge-corner-radius);
 }
 
+.ProductCard__BadgeWrapper {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ProductCard__Badge {
+  display: inline-block;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  background: #fff;
+  color: var(--tg-sys-color-on-background);
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  padding: 0.25rem 0.4rem;
+  border-radius: 2px;
+}
+
 .ProductCard quick-add-to-cart-button,
 .ProductCard .ProductCard__SelectOptionButton {
   display: block;
@@ -142,6 +167,79 @@
   align-items: center;
   border-radius: 2px;
   margin-bottom: 0.5rem;
+}
+
+.ProductCard__HoverCTA {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.ProductCard__HoverCTA .ProductCard__AddToCartForm {
+  margin: 0 !important;
+}
+
+.ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ProductCard__HoverCTA {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+  }
+
+  .ProductCard__ImageWrapper:hover .ProductCard__HoverCTA,
+  .ProductCard__ImageWrapper:focus-within .ProductCard__HoverCTA {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .ProductCard__HoverCTA {
+    left: auto;
+    right: 5px;
+    bottom: 5px;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__AddToCart {
+    width: 2.5rem !important;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 999px !important;
+    background: transparent !important;
+    border: 0 !important;
+    color: var(--tg-sys-color-on-background) !important;
+    box-shadow: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__Label {
+    display: none;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon .Icon--cart-plus {
+    width: 1rem;
+    height: 1rem;
+  }
 }
 
 .Loading.ProductCard__Action {

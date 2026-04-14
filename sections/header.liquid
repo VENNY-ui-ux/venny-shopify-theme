@@ -328,6 +328,14 @@
   {%- endif -%}
 {%- endcapture -%}
 
+{%- capture header_country_selector_icon -%}
+  {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
+    <div class="Header__Localization Header__Localization--icon">
+      {%- render 'localization-selector', country_selector: true, language_selector: false, show_country_flag: true, show_country_name: false, hide_country_label: true -%}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
 {%- if section.settings.logo_position == 'topCenter' -%}
   <!-- Third Menu --> 
   {%- capture header_third_menu -%}
@@ -349,6 +357,12 @@
     {% assign show_search_in_secondary = true %}
     {%- if section.settings.logo_position == 'topCenter' and header_third_menu == blank and localization_form == blank -%}
       {% assign show_search_in_secondary = false %}
+    {%- endif -%}
+
+    {%- if header_country_selector_icon != blank -%}
+      <li>
+        {{ header_country_selector_icon }}
+      </li>
     {%- endif -%}
 
     {%- if section.settings.show_search_icon -%}
@@ -430,9 +444,8 @@
       </div>
     {%- endunless -%}    
 
-    {%- if shop.customer_accounts_enabled or section.settings.show_cart_icon or section.settings.show_search_icon -%}
+    {%- if shop.customer_accounts_enabled or section.settings.show_cart_icon or section.settings.show_search_icon or header_country_selector_icon != blank -%}
       <div class="Header__SecondaryMenu"><!-- Secondary Menu -->
-        {%- unless section.settings.logo_position == 'topCenter' -%}<div class="HiddenMediumDown">{{ localization_form }}</div>{%- endunless -%}   
         {{ header_secondary_menu }}
       </div>
     {%- endif -%}   
