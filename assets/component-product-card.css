@@ -181,8 +181,8 @@
 @media screen and (max-width: 640px) {
   .ProductCard__HoverCTA {
     left: auto;
-    right: 0.35rem;
-    bottom: 0.25rem;
+    right: 5px;
+    bottom: 5px;
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__AddToCart {
