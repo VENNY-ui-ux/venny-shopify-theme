@@ -181,14 +181,14 @@
 @media screen and (max-width: 640px) {
   .ProductCard__HoverCTA {
     left: auto;
-    right: 0.5rem;
-    bottom: 0.5rem;
+    right: 0.35rem;
+    bottom: 0.25rem;
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__AddToCart {
-    width: 2.25rem !important;
-    min-width: 2.25rem;
-    height: 2.25rem;
+    width: 2.5rem !important;
+    min-width: 2.5rem;
+    height: 2.5rem;
     padding: 0;
     border-radius: 999px !important;
     background: transparent !important;
@@ -212,16 +212,16 @@
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon .Icon--cart {
-    width: 0.875rem;
-    height: 0.875rem;
+    width: 1rem;
+    height: 1rem;
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon .Icon--plus {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.625rem;
+    height: 0.625rem;
     transform: translate(-50%, -50%);
   }
 }
