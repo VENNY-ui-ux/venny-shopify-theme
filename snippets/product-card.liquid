@@ -40,8 +40,35 @@
 
                 <a href="{{ product.url }}">
                   <div class="ProductCard__BadgeWrapper">
-                    {% if product.tags contains 'waterproof' %}
+                    {%- assign has_waterproof_badge = false -%}
+                    {%- assign has_new_badge = false -%}
+                    {%- assign has_bestselling_badge = false -%}
+                    {%- assign has_in_high_demand_badge = false -%}
+                    {%- for tag in product.tags -%}
+                      {%- assign normalized_tag = tag | strip | downcase -%}
+                      {%- case normalized_tag -%}
+                        {%- when 'waterproof' -%}
+                          {%- assign has_waterproof_badge = true -%}
+                        {%- when 'new' -%}
+                          {%- assign has_new_badge = true -%}
+                        {%- when 'bestselling' -%}
+                          {%- assign has_bestselling_badge = true -%}
+                        {%- when 'in high demand' -%}
+                          {%- assign has_in_high_demand_badge = true -%}
+                      {%- endcase -%}
+                    {%- endfor -%}
+
+                    {% if has_waterproof_badge %}
                       <span class="ProductCard__Badge ProductCard__Badge--waterproof">WATERPROOF</span>
+                   {% endif %}
+                    {% if has_new_badge %}
+                      <span class="ProductCard__Badge ProductCard__Badge--new">NEW</span>
+                   {% endif %}
+                    {% if has_bestselling_badge %}
+                      <span class="ProductCard__Badge ProductCard__Badge--bestselling">BESTSELLING</span>
+                   {% endif %}
+                    {% if has_in_high_demand_badge %}
+                      <span class="ProductCard__Badge ProductCard__Badge--inHighDemand">IN HIGH DEMAND</span>
                    {% endif %}
                  </div>
                   
@@ -125,14 +152,15 @@
                 </div>
             {%- endif -%}
 
+            {%- if product.available -%}
+              {%- assign first_available_variant = product.variants | where: "available", true | first -%}
+              {%- if first_available_variant -%}
+                <div class="ProductCard__HoverCTA no-js-hidden">
+                  {% render 'product-quick-add-to-cart-button', card_product: product, show_quick_add: show_quick_add %}
+                </div>
+              {%- endif -%}
+            {%- endif -%}
         </div>
-                      
-{%- if product.available -%}
-  {%- assign first_available_variant = product.variants | where: "available", true | first -%}
-  {%- if first_available_variant -%}
-    {% render 'product-quick-add-to-cart-button', card_product: product, show_quick_add: show_quick_add %}
-  {%- endif -%}
-{%- endif -%}
 
 
         {%- if show_product_info -%}
@@ -153,13 +181,19 @@
   | remove: ' (Golden)' 
   | remove: ' (Silver)' 
 %}
+            {%- assign product_title_downcase = product.title | downcase -%}
+            {%- assign guarantee_text = 'Lifetime guarantee' -%}
+            {%- if product_title_downcase contains 'golden' -%}
+              {%- assign guarantee_text = 'Waterproof | Lifetime guarantee | 14k Gold' -%}
+            {%- elsif product_title_downcase contains 'silver' -%}
+              {%- assign guarantee_text = 'Waterproof | Lifetime guarantee | Polished' -%}
+            {%- endif -%}
+
+            <p style="font-size:14.4px; color:#666; margin:0 0 2px 0; text-align:center;">{{ guarantee_text }}</p>
 
 <h3 class="ProductCard__Title" style="font-size:13px; font-weight:400; line-height:1.3; margin:4px 0 2px 0; text-align:center;">
   <a href="{{ product.url | default: '#' }}" style="color:#000; text-decoration:none;">{{ clean_title }}</a>
 </h3>
-
-          
-            <p style="font-size:12px; color:#666; margin:0 0 2px 0; text-align:center;">Lifetime guarantee</p>
 
             {%- if show_rating and product.metafields.reviews.rating.value != blank -%}
               {% liquid
