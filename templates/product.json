@@ -143,6 +143,8 @@
       "settings": {
         "section_width": "full_width",
         "section_background_color": "",
+        "show_usp_row": false,
+        "pdp_mobile_content_background": "#FFFFFF",
         "gallery_media_size": "3x4",
         "gallery_design": "stack_carousel",
         "gallery_media_fit_cover": true,
