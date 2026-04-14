@@ -12,11 +12,13 @@ COUNTRY AND LANGUAGE SELECTORS
             <button class="Button Button--outline Button--small Dropdown__Toggle" type="button" data-tg-toggle="Dropdown" aria-expanded="false">
                 {%- if show_country_flag -%}<div class="Ratio CountryFlagWrapper">{{- localization.country | image_url: width: 60, format: 'jpg' | image_tag: loading: 'lazy', class: 'CountryFlag' -}}</div> {%- endif -%}
 
-                {%- if show_country_name -%}
-                    <span>{{ localization.country.name }} ({{ localization.country.currency.iso_code }} {% if localization.country.currency.symbol %}{{ localization.country.currency.symbol }}){%- endif -%}</span>
-                {%- else -%}
-                    <span>{{ localization.country.currency.iso_code }} {% if localization.country.currency.symbol %}{{ localization.country.currency.symbol }}{%- endif -%}</span>
-                {%- endif -%}
+                {%- unless hide_country_label -%}
+                    {%- if show_country_name -%}
+                        <span>{{ localization.country.name }} ({{ localization.country.currency.iso_code }} {% if localization.country.currency.symbol %}{{ localization.country.currency.symbol }}){%- endif -%}</span>
+                    {%- else -%}
+                        <span>{{ localization.country.currency.iso_code }} {% if localization.country.currency.symbol %}{{ localization.country.currency.symbol }}{%- endif -%}</span>
+                    {%- endif -%}
+                {%- endunless -%}
             </button>
             <ul class="Dropdown__Body"></ul>
             <template>
