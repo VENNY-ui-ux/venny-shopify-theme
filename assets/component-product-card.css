@@ -91,6 +91,31 @@
   border-radius: var(--tg-product-badge-corner-radius);
 }
 
+.ProductCard__BadgeWrapper {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ProductCard__Badge {
+  display: inline-block;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  background: #fff;
+  color: var(--tg-sys-color-on-background);
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  padding: 0.25rem 0.4rem;
+  border-radius: 2px;
+}
+
 .ProductCard quick-add-to-cart-button,
 .ProductCard .ProductCard__SelectOptionButton {
   display: block;
