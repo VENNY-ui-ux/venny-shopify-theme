@@ -144,6 +144,36 @@
   margin-bottom: 0.5rem;
 }
 
+.ProductCard__HoverCTA {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.ProductCard__HoverCTA .ProductCard__AddToCartForm {
+  margin: 0 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ProductCard__HoverCTA {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+  }
+
+  .ProductCard__ImageWrapper:hover .ProductCard__HoverCTA,
+  .ProductCard__ImageWrapper:focus-within .ProductCard__HoverCTA {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
 .Loading.ProductCard__Action {
   width: 44px;
   height: 44px;
