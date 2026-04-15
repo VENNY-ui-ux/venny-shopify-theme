@@ -3632,7 +3632,7 @@ input[type="radio"]:checked + label {
   }
 
   .ColorDotWrapper {
-    margin-bottom: 24px !important;
+    margin-bottom: 12px !important;
   }
 
   .Product__Block--delivery {
@@ -3650,7 +3650,7 @@ input[type="radio"]:checked + label {
 
   .ProductForm .zA7gzY36g4yHEtu5TfBW {
     display: block;
-    margin: 16px 0 !important;
+    margin: 8px 0 !important;
     position: relative;
   }
 }
