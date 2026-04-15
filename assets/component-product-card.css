@@ -314,6 +314,14 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+
+  .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon .Icon--cart-plus path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 }
 
 .Loading.ProductCard__Action {
