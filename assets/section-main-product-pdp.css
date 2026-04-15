@@ -147,12 +147,14 @@
   display: flex;
   flex-direction: column;
   order: 30;
+  margin-top: 0 !important;
 }
 
 .Product--pdpLayoutEnabled .Product__Block--buyButtons .ProductForm {
   order: 1;
   display: flex;
   flex-direction: column;
+  margin-top: 0 !important;
 }
 
 .Product--pdpLayoutEnabled .Product__Block--buyButtons .ProductForm .ProductForm__AddToCart {
@@ -161,7 +163,7 @@
 
 .Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] {
   order: 29;
-  margin: 0 0 0.65rem !important;
+  margin: 24px 0 16px !important;
   background: transparent !important;
   border: 0 !important;
   padding: 0 !important;
@@ -185,7 +187,9 @@
 
 .Product--pdpLayoutEnabled .Product__Block--buyButtons .ProductForm > .zA7gzY36g4yHEtu5TfBW {
   order: 1;
-  margin: 0 0 0.65rem !important;
+  display: block;
+  position: relative;
+  margin: 24px 0 16px !important;
 }
 
 .Product--pdpLayoutEnabled .zA7gzY36g4yHEtu5TfBW,

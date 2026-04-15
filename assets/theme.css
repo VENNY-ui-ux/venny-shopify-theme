@@ -3632,19 +3632,45 @@ input[type="radio"]:checked + label {
   }
 
   .ColorDotWrapper {
-    margin-bottom: 0 !important;
+    margin-bottom: 24px !important;
   }
 
   .Product__Block--delivery {
     margin-top: 6px !important;
+    margin-bottom: 10px !important;
   }
 
-  .Product__Block--buyButtons {
-    margin-top: -2px !important;
+  .ProductSummary .Product__Block--buyButtons {
+    margin-top: 8px !important;
   }
 
   .Product--mobilePdpEnabled .Product__Block--buyButtons .ProductForm {
     margin-top: 0 !important;
+  }
+
+  .ProductForm .zA7gzY36g4yHEtu5TfBW {
+    display: block;
+    margin: 16px 0 !important;
+    position: relative;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .ColorDotWrapper {
+    margin-bottom: 24px !important;
+  }
+
+  .Product__Block--delivery {
+    margin-bottom: 10px !important;
+  }
+
+  .ProductSummary .Product__Block--buyButtons {
+    margin-top: 8px !important;
+  }
+
+  .ProductForm .zA7gzY36g4yHEtu5TfBW {
+    display: block;
+    margin: 16px 0 !important;
+    position: relative;
   }
 }
 .Product__Block--buyButtons {
