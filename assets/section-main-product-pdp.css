@@ -161,7 +161,7 @@
 
 .Product--pdpLayoutEnabled .Product__Block--app[class*='order_deadline_2_app_block_product'] {
   order: 29;
-  margin: 16px 0 !important;
+  margin: 24px 0 16px !important;
   background: transparent !important;
   border: 0 !important;
   padding: 0 !important;
@@ -187,7 +187,7 @@
   order: 1;
   display: block;
   position: relative;
-  margin: 16px 0 !important;
+  margin: 24px 0 16px !important;
 }
 
 .Product--pdpLayoutEnabled .zA7gzY36g4yHEtu5TfBW,
