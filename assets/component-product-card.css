@@ -284,8 +284,7 @@
     color: var(--tg-sys-color-on-background) !important;
     box-shadow: none !important;
     display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
+    position: relative;
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__Label {
@@ -296,13 +295,17 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    top: 5px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: rgba(0, 0, 0, 0.38);
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__Icon .Icon--cart-plus {
     width: 1rem;
     height: 1rem;
+    fill: currentColor;
+    stroke: currentColor;
   }
 }
 
