@@ -3632,7 +3632,7 @@ input[type="radio"]:checked + label {
   }
 
   .ColorDotWrapper {
-    margin-bottom: 10px !important;
+    margin-bottom: 24px !important;
   }
 
   .Product__Block--delivery {
@@ -3656,7 +3656,7 @@ input[type="radio"]:checked + label {
 }
 @media only screen and (min-width: 768px) {
   .ColorDotWrapper {
-    margin-bottom: 10px !important;
+    margin-bottom: 24px !important;
   }
 
   .Product__Block--delivery {
