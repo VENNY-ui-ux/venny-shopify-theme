@@ -3479,6 +3479,12 @@ html, body {
     margin-inline-start: 10px;
   }
 
+  #Header__SearchTrigger,
+  .Header__SecondaryMenu .Button--account {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
   #Header__CartTrigger.Button--icon {
     margin-inline-end: 0 !important;
   }
