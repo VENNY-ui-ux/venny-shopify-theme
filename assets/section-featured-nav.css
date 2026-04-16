@@ -15,6 +15,12 @@ section-featured-nav {
   border-radius: var(--tg-sys-section-featured-nav-image-border-radius);
 }
 
+.NavCard__ImageWrapper {
+  width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .NavCard__Title {
   margin-top: 0.75rem;
   text-align: center;
@@ -54,9 +60,13 @@ section-featured-nav {
   content: "";
 }
 .NavCardList--carousel .Carousel__Item {
-  padding: 0.4rem calc(var(--tg-grid-gutter-x) * 0.5);
+  padding: 0.08rem calc(var(--tg-grid-gutter-x) * 0.05);
 }
 @media screen and (max-width: 1007px) {
+  .NavCard__ImageWrapper {
+    width: 92%;
+  }
+
   .NavCardList--carousel {
     white-space: nowrap;
     overflow-x: auto;
