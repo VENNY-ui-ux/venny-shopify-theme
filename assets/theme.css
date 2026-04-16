@@ -3464,6 +3464,8 @@ html, body {
 }
 @media only screen and (min-width: 768px) {
   .shopify-section--header .Header__Main {
+    box-sizing: border-box;
+    width: 100%;
     padding-left: 10px !important;
     padding-right: 10px !important;
   }
