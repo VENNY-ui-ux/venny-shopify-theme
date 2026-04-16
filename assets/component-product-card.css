@@ -274,7 +274,7 @@
   .ProductCard__HoverCTA {
     left: auto;
     right: 11px;
-    bottom: -1px;
+    bottom: -2px;
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__AddToCart {
