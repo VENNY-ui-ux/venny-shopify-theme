@@ -302,6 +302,7 @@
     justify-content: center;
     position: relative;
     top: 5px;
+    color: rgba(0, 0, 0, 0.38);
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__Plus {
