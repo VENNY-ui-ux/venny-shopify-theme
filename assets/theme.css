@@ -3431,7 +3431,7 @@ textarea.Form__Input {
   }
 }
 #Header__CartTrigger {
-  margin-right: 8px;
+  margin-right: 0;
 }
 
 .MenuDrawer,
@@ -3468,6 +3468,19 @@ html, body {
     width: 100%;
     padding-left: 10px !important;
     padding-right: 10px !important;
+  }
+
+  .Header__SecondaryMenu .Nav--icons {
+    display: flex;
+    align-items: center;
+  }
+
+  .Header__SecondaryMenu .Nav--icons > li + li {
+    margin-inline-start: 10px;
+  }
+
+  #Header__CartTrigger.Button--icon {
+    margin-inline-end: 0 !important;
   }
 }
 .ColorDot {
