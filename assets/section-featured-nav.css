@@ -60,9 +60,17 @@ section-featured-nav {
   content: "";
 }
 .NavCardList--carousel .Carousel__Item {
+<<<<<<< codex/adjust-spacing-between-elements-dx8oxf
+  padding: 0.08rem calc(var(--tg-grid-gutter-x) * 0.05);
+=======
   padding: 0.12rem calc(var(--tg-grid-gutter-x) * 0.15);
+>>>>>>> main
 }
 @media screen and (max-width: 1007px) {
+  .NavCard__ImageWrapper {
+    width: 92%;
+  }
+
   .NavCardList--carousel {
     white-space: nowrap;
     overflow-x: auto;
