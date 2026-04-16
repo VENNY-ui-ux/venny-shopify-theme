@@ -3462,6 +3462,12 @@ html, body {
     right: 12px;
   }
 }
+@media only screen and (min-width: 768px) {
+  .shopify-section--header .Header__Main {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
 .ColorDot {
   width: 20px;
   height: 20px;
