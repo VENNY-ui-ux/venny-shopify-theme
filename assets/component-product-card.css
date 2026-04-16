@@ -288,8 +288,8 @@
     color: var(--tg-sys-color-on-background) !important;
     box-shadow: none !important;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: flex-end;
   }
 
   .ProductCard__HoverCTA .ProductQuickAddToCardForm__Label {
