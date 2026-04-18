@@ -16,7 +16,9 @@ section-featured-nav {
 }
 
 .NavCard__ImageWrapper {
-  width: 100%;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .NavCard__Title {
@@ -62,7 +64,6 @@ section-featured-nav {
   padding-right: calc(var(--tg-grid-gutter-x) * 0.5);
   padding-top: calc(var(--tg-grid-gutter-y) * 0.5);
   padding-bottom: calc(var(--tg-grid-gutter-y) * 0.5);
-  padding: 0.08rem calc(var(--tg-grid-gutter-x) * 0.05);
 }
 @media screen and (max-width: 1007px) {
   .NavCard__ImageWrapper {
