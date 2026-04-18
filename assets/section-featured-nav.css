@@ -16,9 +16,7 @@ section-featured-nav {
 }
 
 .NavCard__ImageWrapper {
-  width: 60%;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 }
 
 .NavCard__Title {
