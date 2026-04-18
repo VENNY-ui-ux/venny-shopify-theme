@@ -65,6 +65,24 @@ section-featured-nav {
   padding-top: calc(var(--tg-grid-gutter-y) * 0.5);
   padding-bottom: calc(var(--tg-grid-gutter-y) * 0.5);
 }
+@media screen and (min-width: 1008px) {
+  .NavCardList--carousel .CarouselWrapper {
+    display: flex;
+    justify-content: center;
+    gap: var(--tg-grid-gutter-x);
+  }
+
+  .NavCardList--carousel .Carousel__Item {
+    width: auto !important;
+    flex: 0 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .NavCardList--carousel .NavCard {
+    width: 160px;
+  }
+}
 @media screen and (max-width: 1007px) {
   .NavCard__ImageWrapper {
     width: 92%;
