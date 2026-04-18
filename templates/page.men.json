@@ -11,6 +11,7 @@
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "custom_css": [
         "h1 {font-size: 32px; line-height: 1.2; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0;}"
       ],
@@ -91,9 +92,9 @@
         "collection": "men",
         "layout_mode": "grid",
         "animation_type": "staggering",
-        "heading": "",
+        "heading": "For him",
         "header_align": "center",
-        "heading_font_size": "HeadlineMedium",
+        "heading_font_size": "HeadlineSmall",
         "subheading": "",
         "button_label": "View all",
         "grid_items_count": 24,
