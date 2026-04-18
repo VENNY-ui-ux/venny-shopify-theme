@@ -96,7 +96,7 @@ section-featured-nav {
   }
   .NavCardList--carousel .CarouselWrapper {
     display: flex;
-    gap: 1px !important;
+    gap: 0.5px !important;
   }
   .NavCardList--carousel .Carousel__Item {
     white-space: normal;
