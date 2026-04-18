@@ -1,9 +1,24 @@
 {%- liquid
   assign animation_image_loading_tag = 'div'
   assign animation_image_loading_class = 'NavCard__Image Image--fadeIn'
+  assign linked_collection = blank
+  assign fallback_collection_image = blank
+  assign nav_card_image = block.settings.image
+
   if settings.animation_image_loading == 'circle_icon'
     assign animation_image_loading_tag = 'feature-img'
     assign animation_image_loading_class = 'Image--withLoader Image--fadeIn NavCard__Image'
+  endif
+
+  if block.settings.link_url.type == 'collection_link' and block.settings.link_url.object != blank
+    assign linked_collection = block.settings.link_url.object
+    if linked_collection.products_count > 0 and linked_collection.products.first.featured_image != blank
+      assign fallback_collection_image = linked_collection.products.first.featured_image
+    endif
+  endif
+
+  if nav_card_image == blank and fallback_collection_image != blank
+    assign nav_card_image = fallback_collection_image
   endif
 -%}
 
@@ -14,9 +29,9 @@
       <div class="NavCard__Inner">
     {%- endif -%}
 
-    {%- if block.settings.image != blank -%}
+    {%- if nav_card_image != blank -%}
       <{{- animation_image_loading_tag }} class="NavCard__ImageWrapper Ratio {% if section.settings.featured_image_size != 'natural' %} Ratio--{{ section.settings.featured_image_size }}{% endif %}" 
-        {% if section.settings.featured_image_size == 'natural' %}style="--tg-aspect-ratio: {{ block.settings.image.aspect_ratio }}"{% endif %}>
+        {% if section.settings.featured_image_size == 'natural' %}style="--tg-aspect-ratio: {{ nav_card_image.aspect_ratio }}"{% endif %}>
         
         {%- capture tg_sizes -%}
           {%- if section.settings.section_width == 'default' -%}
@@ -25,7 +40,7 @@
             (min-width: 641px) calc((100vw - 64px) / {{ section.settings.grid_desktop_items_per_row }}), {% if section.settings.layout_mode == 'carousel' %}30vw{% else %}calc((100vw - 32px) / {{ section.settings.grid_mobile_items_per_row }}){%- endif -%}
           {%- endif -%}
         {%- endcapture -%}
-        {{ block.settings.image | image_url: width: 2000 | image_tag:
+        {{ nav_card_image | image_url: width: 2000 | image_tag:
             sizes: tg_sizes,
             widths: '375, 550, 750, 1100, 1500, 1780, 2000',
             class: animation_image_loading_class
