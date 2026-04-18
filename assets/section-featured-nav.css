@@ -66,6 +66,10 @@ section-featured-nav {
   padding-bottom: calc(var(--tg-grid-gutter-y) * 0.5);
 }
 @media screen and (max-width: 1007px) {
+  .NavCard__ImageWrapper {
+    width: 92%;
+  }
+
   .NavCardList--carousel {
     white-space: nowrap;
     overflow-x: auto;
