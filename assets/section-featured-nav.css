@@ -94,9 +94,15 @@ section-featured-nav {
     padding-bottom: 1rem;
     margin-bottom: -1rem;
   }
+  .NavCardList--carousel .CarouselWrapper {
+    display: flex;
+    gap: 4px;
+  }
   .NavCardList--carousel .Carousel__Item {
     white-space: normal;
     display: inline-block !important;
+    padding-left: 0;
+    padding-right: 0;
     width: 22%;
   }
 }
