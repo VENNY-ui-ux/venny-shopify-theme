@@ -15,6 +15,12 @@
                 assign has_alternate_image = false 
             endif 
 
+            assign card_images = product.media | where: 'media_type', 'image'
+            assign show_collection_mobile_slider = false
+            if request.page_type == 'collection' and card_images.size > 1
+              assign show_collection_mobile_slider = true
+            endif
+
             assign card_desktop_items_per_row = card_desktop_items_per_row | default: section.settings.grid_desktop_items_per_row | default: 3
             assign card_mobile_items_per_row = card_mobile_items_per_row | default: section.settings.grid_mobile_items_per_row | default: 1
 
@@ -34,7 +40,7 @@
             {%- endif -%}
         {%- endcapture -%}
 
-        <div class="ProductCard__ImageWrapper {% if has_alternate_image %}ProductCard__ImageWrapper--withAlternateImage{% endif %}">
+        <div class="ProductCard__ImageWrapper {% if has_alternate_image %}ProductCard__ImageWrapper--withAlternateImage{% endif %}{% if show_collection_mobile_slider %} ProductCard__ImageWrapper--withMobileSlider{% endif %}">
             {%- if product.featured_media -%}
                 {%- assign media_aspect_ratio = product.featured_media.aspect_ratio | default: product.featured_media.preview_image.aspect_ratio -%}
 
@@ -117,6 +123,52 @@
                         {%- endif -%}
                     </{{- animation_image_loading_tag }}>
                 </a>
+
+                {%- if show_collection_mobile_slider -%}
+                  <div class="ProductCard__MobileSlider no-js-hidden" data-product-card-slider>
+                    <div class="ProductCard__BadgeWrapper">
+                      {% if has_waterproof_badge %}
+                        <span class="ProductCard__Badge ProductCard__Badge--waterproof">WATERPROOF</span>
+                      {% endif %}
+                      {% if has_new_badge %}
+                        <span class="ProductCard__Badge ProductCard__Badge--new">NEW</span>
+                      {% endif %}
+                      {% if has_bestselling_badge %}
+                        <span class="ProductCard__Badge ProductCard__Badge--bestselling">BESTSELLING</span>
+                      {% endif %}
+                      {% if has_in_high_demand_badge %}
+                        <span class="ProductCard__Badge ProductCard__Badge--inHighDemand">IN HIGH DEMAND</span>
+                      {% endif %}
+                    </div>
+
+                    <div class="ProductCard__MobileSliderTrack" data-product-card-slider-track>
+                      {%- for image_media in card_images -%}
+                        <a href="{{ product.url }}" class="ProductCard__MobileSlide">
+                          <img class="ProductCard__Image"
+                            srcset="{%- if image_media.width >= 165 -%}{{ image_media | image_url: width: 165 }} 165w,{%- endif -%}
+                            {%- if image_media.width >= 360 -%}{{ image_media | image_url: width: 360 }} 360w,{%- endif -%}
+                            {%- if image_media.width >= 533 -%}{{ image_media | image_url: width: 533 }} 533w,{%- endif -%}
+                            {%- if image_media.width >= 720 -%}{{ image_media | image_url: width: 720 }} 720w,{%- endif -%}
+                            {%- if image_media.width >= 940 -%}{{ image_media | image_url: width: 940 }} 940w,{%- endif -%}
+                            {%- if image_media.width >= 1066 -%}{{ image_media | image_url: width: 1066 }} 1066w,{%- endif -%}
+                            {%- if image_media.width >= 1280 -%}{{ image_media | image_url: width: 1280 }} 1280w,{%- endif -%}
+                            {{ image_media | image_url }} {{ image_media.width }}w"
+                            src="{{ image_media | image_url: width: 533 }}"
+                            sizes="{{ tg_sizes }}"
+                            alt="{{ image_media.alt | escape }}"
+                            loading="eager"
+                            width="{{ image_media.width }}"
+                            height="{{ image_media.height }}">
+                        </a>
+                      {%- endfor -%}
+                    </div>
+                    <div class="ProductCard__MobileSliderDots" data-product-card-slider-dots>
+                      {%- for image_media in card_images -%}
+                        <button type="button" class="ProductCard__MobileSliderDot{% if forloop.first %} is-active{% endif %}" aria-label="Go to image {{ forloop.index }}" data-product-card-slide-dot="{{ forloop.index0 }}"></button>
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                {%- endif -%}
             {%- else -%}  
                 <div class="Ratio ProductCard__NoImage {% unless use_natural_size %}Ratio--{{ settings.product_image_size }}{% endunless %}"
                     {% if use_natural_size %}style="--tg-aspect-ratio: 1;"{% endif %}>
