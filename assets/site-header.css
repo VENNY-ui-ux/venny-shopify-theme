@@ -456,7 +456,12 @@
 .Header__Localization--icon .Dropdown__Toggle {
   border: 0;
   background: transparent;
-  padding: 0.5rem 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  min-height: 28px;
+  padding: 0;
   min-width: auto;
 }
 
@@ -465,6 +470,8 @@
 }
 
 .Header__Localization--icon .CountryFlagWrapper {
+  width: 22px;
+  height: 16px;
   margin-inline-end: 0;
 }
 
