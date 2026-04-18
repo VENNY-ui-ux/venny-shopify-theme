@@ -69,7 +69,7 @@ section-featured-nav {
   .NavCardList--carousel .CarouselWrapper {
     display: flex;
     justify-content: center;
-    gap: var(--tg-grid-gutter-x);
+    gap: 8px;
   }
 
   .NavCardList--carousel .Carousel__Item {
