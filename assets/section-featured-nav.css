@@ -67,7 +67,7 @@ section-featured-nav {
   .NavCardList--carousel .CarouselWrapper {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 4px;
   }
 
   .NavCardList--carousel .Carousel__Item {
