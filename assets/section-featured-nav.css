@@ -16,9 +16,7 @@ section-featured-nav {
 }
 
 .NavCard__ImageWrapper {
-  width: 85%;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 }
 
 .NavCard__Title {
@@ -60,11 +58,11 @@ section-featured-nav {
   content: "";
 }
 .NavCardList--carousel .Carousel__Item {
-<<<<<<< codex/adjust-spacing-between-elements-dx8oxf
+  padding-left: calc(var(--tg-grid-gutter-x) * 0.5);
+  padding-right: calc(var(--tg-grid-gutter-x) * 0.5);
+  padding-top: calc(var(--tg-grid-gutter-y) * 0.5);
+  padding-bottom: calc(var(--tg-grid-gutter-y) * 0.5);
   padding: 0.08rem calc(var(--tg-grid-gutter-x) * 0.05);
-=======
-  padding: 0.12rem calc(var(--tg-grid-gutter-x) * 0.15);
->>>>>>> main
 }
 @media screen and (max-width: 1007px) {
   .NavCard__ImageWrapper {
