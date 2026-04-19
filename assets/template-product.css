@@ -16,9 +16,8 @@
 }
 .Template--product .ProductSummary {
   margin-top: 1rem;
-  position: -webkit-sticky;
-  position: sticky;
-  top: calc(var(--tg-header-height, 0px) * var(--use-sticky-header, 0) + 1.5rem + var(--tg-other-sticky-elements-height, 0px));
+  position: static;
+  top: auto;
 }
 @media screen and (min-width: 1008px) {
   .Template--product .ProductSummary {

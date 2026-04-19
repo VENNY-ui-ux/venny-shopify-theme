@@ -453,10 +453,23 @@
   margin-inline-start: 0;
 }
 
+.Header__Localization--icon .LocalizationForm,
+.Header__Localization--icon .CountrySelector,
+.Header__Localization--icon .Dropdown {
+  display: flex;
+  align-items: center;
+  height: 44px;
+}
+
 .Header__Localization--icon .Dropdown__Toggle {
   border: 0;
   background: transparent;
-  padding: 0.5rem 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  padding: 0 8px;
   min-width: auto;
 }
 
@@ -465,6 +478,8 @@
 }
 
 .Header__Localization--icon .CountryFlagWrapper {
+  width: 22px;
+  height: 16px;
   margin-inline-end: 0;
 }
 
