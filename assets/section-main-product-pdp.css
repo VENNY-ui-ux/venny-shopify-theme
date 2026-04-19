@@ -3,11 +3,11 @@
 }
 
 @media screen and (min-width: 1008px) {
-  .shopify-section--main-product .ProductSummary {
+  .Template--product .shopify-section--main-product .ProductSummary {
     margin-top: 0;
     padding-inline-start: calc(var(--pdp-desktop-gap, 20px) / 2);
-    position: static;
-    top: auto;
+    position: static !important;
+    top: auto !important;
     align-self: stretch;
   }
 }
