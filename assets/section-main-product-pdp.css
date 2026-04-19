@@ -3,6 +3,11 @@
 }
 
 @media screen and (min-width: 1008px) {
+  .Template--product .shopify-section--main-product .ProductGallery {
+    position: static !important;
+    top: auto !important;
+  }
+
   .Template--product .shopify-section--main-product .ProductSummary {
     margin-top: 0;
     padding-inline-start: calc(var(--pdp-desktop-gap, 20px) / 2);
