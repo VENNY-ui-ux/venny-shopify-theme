@@ -93,7 +93,11 @@
     "featured_collection_MqBhJ9": {
       "type": "featured-collection",
       "custom_css": [
-        ".ProductCard__Title {text-transform: uppercase;}"
+        ".ProductCard__Title {text-transform: uppercase;}",
+        "section-featured-collection {margin-top: calc(var(--tg-container-gutter-y) * 0.7);}",
+        ".FeaturedCollection .SectionHeader {margin-bottom: 0.75rem;}",
+        "@media screen and (min-width: 641px) {section-featured-collection {margin-top: calc(var(--tg-container-gutter-y) * 1.05);} .FeaturedCollection .SectionHeader {margin-bottom: 1.5rem;}}",
+        "@media screen and (min-width: 1280px) {section-featured-collection {margin-top: calc(var(--tg-container-gutter-y) * 1.4);}}"
       ],
       "settings": {
         "section_width": "default",
