@@ -45,6 +45,26 @@ section-featured-nav {
   text-align: center;
 }
 
+section-featured-nav + section-featured-collection {
+  margin-top: calc(var(--tg-container-gutter-y) * 0.7);
+}
+section-featured-nav + section-featured-collection .SectionHeader {
+  margin-bottom: 0.75rem;
+}
+@media screen and (min-width: 641px) {
+  section-featured-nav + section-featured-collection {
+    margin-top: calc(var(--tg-container-gutter-y) * 1.05);
+  }
+  section-featured-nav + section-featured-collection .SectionHeader {
+    margin-bottom: 1.5rem;
+  }
+}
+@media screen and (min-width: 1280px) {
+  section-featured-nav + section-featured-collection {
+    margin-top: calc(var(--tg-container-gutter-y) * 1.4);
+  }
+}
+
 @media screen and (max-width: 1007px) {
   .FeaturedNav__Body {
     overflow: hidden;
@@ -82,6 +102,10 @@ section-featured-nav {
   }
 }
 @media screen and (max-width: 1007px) {
+  .NavCard__ImageWrapper {
+    width: 92%;
+  }
+
   .NavCardList--carousel {
     white-space: nowrap;
     overflow-x: auto;
