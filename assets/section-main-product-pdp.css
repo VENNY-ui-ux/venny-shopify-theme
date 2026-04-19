@@ -6,6 +6,9 @@
   .Product--pdpLayoutEnabled .ProductSummary {
     margin-top: 0;
     padding-inline-start: calc(var(--pdp-desktop-gap, 20px) / 2);
+    position: sticky;
+    top: calc(var(--header-min-height-desktop, 64px) + 16px);
+    align-self: flex-start;
   }
 }
 
