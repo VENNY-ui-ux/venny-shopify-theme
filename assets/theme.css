@@ -3656,6 +3656,13 @@ input[type="radio"]:checked + label {
   .ProductSummary {
     padding-left: 0 !important;
     margin-left: 0 !important;
+    position: static !important;
+    top: auto !important;
+  }
+
+  .ProductGallery {
+    position: static !important;
+    top: auto !important;
   }
 
   .Product__Block--usps,
