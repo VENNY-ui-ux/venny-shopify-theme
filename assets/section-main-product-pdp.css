@@ -3,7 +3,7 @@
 }
 
 @media screen and (min-width: 1008px) {
-  .Product--pdpLayoutEnabled .ProductSummary {
+  .shopify-section--main-product .ProductSummary {
     margin-top: 0;
     padding-inline-start: calc(var(--pdp-desktop-gap, 20px) / 2);
     position: sticky;
