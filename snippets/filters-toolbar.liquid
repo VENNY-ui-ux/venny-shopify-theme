@@ -189,10 +189,6 @@
         </div>
     {%- endif -%}
     
-    <div class="Toolbar__ResultCount">
-        {{ 'collection.general.product_count' | t: count: products_results_count }}
-    </div>
-
     <div class="Toolbar__LayoutSwitch">
         <div class="HiddenMediumUp LayoutSwitch LayoutSwitch--small TextEnd">
             <button aria-label="{{ 'collection.layout.show_one_per_row' | t }}" class="Button Button--icon {% if mobile_items_per_row == 1 %}Active{% endif %}" data-tg-action="change-layout-mode" data-grid-type="mobile" data-grid-template="{{ template.name }}" data-count="1" title="{{ 'collection.layout.show_one_per_row' | t }}">{% render 'icons', icon: 'square' %}</button>
