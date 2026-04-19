@@ -71,42 +71,11 @@
         "section_spacing": "spacingMedium",
         "custom_liquid": "{{ collection.description }}"
       }
-    },
-    "scrolling_bar_p7R67W": {
-      "type": "scrolling-bar",
-      "blocks": {
-        "text_6fQCTx": {
-          "type": "text",
-          "settings": {
-            "text": "3 for 2, get 1 free",
-            "link": "",
-            "text_color": "",
-            "text_font_size_desktop": 28,
-            "text_font_size_mobile": 20,
-            "italic_font": true,
-            "text_font_weight": "500"
-          }
-        }
-      },
-      "block_order": [
-        "text_6fQCTx"
-      ],
-      "settings": {
-        "section_width": "full_width",
-        "section_spacing": "spacingSmall",
-        "scroll_direction": "right_to_left",
-        "scroll_speed": 15,
-        "pause_marquee_on_hover": true,
-        "background": "#f4eddd",
-        "padding_top": 4,
-        "padding_bottom": 4
-      }
     }
   },
   "order": [
     "custom_liquid_hazdgK",
     "main",
-    "custom_liquid_3pFqYV",
-    "scrolling_bar_p7R67W"
+    "custom_liquid_3pFqYV"
   ]
 }
