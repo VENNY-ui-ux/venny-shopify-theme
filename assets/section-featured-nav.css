@@ -16,7 +16,9 @@ section-featured-nav {
 }
 
 .NavCard__ImageWrapper {
-  width: 100%;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .NavCard__Title {
@@ -87,7 +89,7 @@ section-featured-nav + section-featured-collection .SectionHeader {
   .NavCardList--carousel .CarouselWrapper {
     display: flex;
     justify-content: center;
-    gap: 4px;
+    gap: 1px;
   }
 
   .NavCardList--carousel .Carousel__Item {
@@ -98,12 +100,12 @@ section-featured-nav + section-featured-collection .SectionHeader {
   }
 
   .NavCardList--carousel .NavCard {
-    width: 160px;
+    width: 96px;
   }
 }
 @media screen and (max-width: 1007px) {
   .NavCard__ImageWrapper {
-    width: 92%;
+    width: 55.2%;
   }
 
   .NavCardList--carousel {
@@ -116,7 +118,7 @@ section-featured-nav + section-featured-collection .SectionHeader {
   }
   .NavCardList--carousel .CarouselWrapper {
     display: flex;
-    gap: 0.5px !important;
+    gap: 1px !important;
   }
   .NavCardList--carousel .Carousel__Item {
     white-space: normal;
