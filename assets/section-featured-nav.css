@@ -100,8 +100,6 @@ section-featured-nav + section-featured-collection .SectionHeader {
   }
 
   .NavCardList--carousel .Carousel__Item {
-    width: auto !important;
-    flex: 0 0 auto;
     padding-left: 0;
     padding-right: 0;
   }
