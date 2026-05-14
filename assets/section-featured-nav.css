@@ -16,7 +16,7 @@ section-featured-nav {
 }
 
 .NavCard__ImageWrapper {
-  width: 60%;
+  width: 39%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -99,7 +99,7 @@ section-featured-nav + section-featured-collection .SectionHeader {
 }
 @media screen and (max-width: 1007px) {
   .NavCard__ImageWrapper {
-    width: 55.2%;
+    width: 35.88%;
   }
 
   .NavCardList--carousel {
