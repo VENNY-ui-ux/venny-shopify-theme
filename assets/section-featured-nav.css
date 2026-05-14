@@ -89,7 +89,7 @@ section-featured-nav + section-featured-collection .SectionHeader {
   .NavCardList--carousel .CarouselWrapper {
     display: flex;
     justify-content: center;
-    gap: 4px;
+    gap: 1px;
   }
 
   .NavCardList--carousel .Carousel__Item {
@@ -118,7 +118,7 @@ section-featured-nav + section-featured-collection .SectionHeader {
   }
   .NavCardList--carousel .CarouselWrapper {
     display: flex;
-    gap: 0.5px !important;
+    gap: 1px !important;
   }
   .NavCardList--carousel .Carousel__Item {
     white-space: normal;
