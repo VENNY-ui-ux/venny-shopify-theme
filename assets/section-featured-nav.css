@@ -15,8 +15,16 @@ section-featured-nav {
   border-radius: var(--tg-sys-section-featured-nav-image-border-radius);
 }
 
+
+.NavCard {
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .NavCard__ImageWrapper {
-  width: 60%;
+  width: 39%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -98,14 +106,10 @@ section-featured-nav + section-featured-collection .SectionHeader {
     padding-left: 0;
     padding-right: 0;
   }
-
-  .NavCardList--carousel .NavCard {
-    width: 96px;
-  }
 }
 @media screen and (max-width: 1007px) {
   .NavCard__ImageWrapper {
-    width: 55.2%;
+    width: 35.88%;
   }
 
   .NavCardList--carousel {
@@ -123,14 +127,8 @@ section-featured-nav + section-featured-collection .SectionHeader {
   .NavCardList--carousel .Carousel__Item {
     white-space: normal;
     display: inline-block !important;
+    width: auto !important;
     padding-left: 0;
     padding-right: 0;
-    width: 22%;
-  }
-}
-@media screen and (max-width: 640px) {
-  .NavCardList--carousel .Carousel__Item {
-    display: inline-block !important;
-    width: 30%;
   }
 }
