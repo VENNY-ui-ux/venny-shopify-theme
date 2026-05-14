@@ -100,7 +100,7 @@ section-featured-nav + section-featured-collection .SectionHeader {
   }
 
   .NavCardList--carousel .NavCard {
-    width: 160px;
+    width: 96px;
   }
 }
 @media screen and (max-width: 1007px) {
